@@ -586,7 +586,7 @@ var theModel = {
                 fieldsNeedSearch.push(theModel.fields[f].nameInFields);
             }
         }
-        let searchedIssues = await theToolSet.getCurrentIssues(fieldsNeedSearch)
+        let searchedIssues = await theToolSet.getJQLIssues(window.jql, fieldsNeedSearch)
         // 更新所有field的数据
         for (const i of searchedIssues){
             let issue = {};
