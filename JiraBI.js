@@ -1,643 +1,15 @@
 var theToolSet = {
-    // 获取当前JQL的所有Issues
-    getCurrentIssues : async function(fields){
-        let jql = theToolSet.getCurrentJQL();
-        let issues = await theToolSet._fetchJqlIssues(jql, fields, 1000);
-        return issues.issues;
-    },
-    // 获取JQL的Issues
-    getJQLIssues : async function(fields, jql){
-        let issues = await theToolSet._fetchJqlIssues(jql, fields, 1000);
-        return issues.issues;
-    },
     // 统一的Date2String yyyy-mm-dd
     date2String : function(date){
         return date.toISOString().substring(0, 10);
     },
-    // 获得当前JQL
-    getCurrentJQL : function(){
-        // 保证当前是高级状态
-        if ($('.switcher-item.active').attr('data-id') == 'basic'){
-            $('.switcher-item.active')[0].click();
-        }
-
-        return $('#advanced-search').val();
-    },
-//--------------------private--------------------------
-    // 获得当前页面的filter ID
-    _getFilterId : function(){
-        var url = window.location.href;
-        const regexpUrl = /https:\/\/jira.pkpm.cn\/.*\/.*\?filter=([0-9]+)/;
-        const match = url.match(regexpUrl);
-        return match[1];
-    },
-    // 获取Filter的Json
-    _fetchFilterJson : function(filterId){
-        var url = 'https://jira.pkpm.cn/rest/api/2/filter/' + filterId;
-        return fetch(url, {
-            "method": "GET",
-            "headers": {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-            },
-            "body": null,
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "mode": "cors",
-            "credentials": "include"
-        }).then(response => response.json());
-    },
-    // 获取Issues
-    _fetchJqlIssues : function(jql, fields, maxResults){
-        return fetch('https://jira.pkpm.cn/rest/api/2/search/', {
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            body: JSON.stringify({jql: jql,
-                                maxResults : maxResults,
-                                fields: fields,
-                                }), // must match 'Content-Type' header
-            headers: {
-                'user-agent': 'Mozilla/4.0 MDN Example',
-                'content-type': 'application/json'
-            },
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, same-origin, *omit
-            mode: 'cors', // no-cors, cors, *same-origin
-            redirect: 'follow', // manual, *follow, error
-            referrer: 'no-referrer', // *client, no-referrer
-        }).then(response => response.json());
-    },
 };
-
-
-var theView = {
-    Requirements : {
-        fields : [
-            "recid",
-            "category",
-            "title",
-            "status",
-            "designer",
-            "developer",
-            "tester",
-            "confluence_link",
-            "doc_plan_commit_date",
-            "program_plan_commit_date",
-        ],
-        filter : {
-            status : {
-                type : 'DropDown',
-                id : 'statusFilter',
-                label : '状态',
-                width : '400px',
-                placeholder : "请选择状态",
-                hasChart : true,
-                isShowChart : true,
-                labelMenu : [{
-                    btnName : "自动选中产品相关状态",
-                    selects : ["Backlog", "需求待评审", "需求待设计", "需求设计中", "需求验证"],     
-                },{
-                    btnName : "自动选中测试相关状态",
-                    selects : ["测试完成", "测试中", "已提测"],     
-                },{    
-                    btnName : "自动选中研发相关状态",
-                    selects : ["待研发", "研发中"],        
-                }]
-            },
-            category : {
-                type : 'DropDown',
-                id : 'categoryFilter',
-                label : '模块',
-                width : '200px',
-                placeholder : "请选择模块",
-                hasChart : true,
-                isShowChart : true,
-            },
-            designer : {
-                type : 'DropDown',
-                id : 'designerFilter',
-                label : '产品',
-                width : '200px',
-                placeholder : '请选择产品设计人员',
-                hasChart : true,
-                isShowChart : false,
-            },
-            developer : {
-                type : 'DropDown',
-                id : 'developerFilter',
-                label : '研发',
-                width : '200px',
-                placeholder : '请选择研发人员',
-                hasChart : true,
-                isShowChart : false,
-            },
-            tester : {
-                type : 'DropDown',
-                id : 'testerFilter',
-                label : '测试',
-                width : '200px',
-                placeholder : '请选择测试人员',
-                hasChart : true,
-                isShowChart : false,
-            },
-            title : {
-                type : 'Text',
-                id : 'titleFilter',
-                label : '标题',
-                width : '400px',
-                placeholder : "请输入标题，回车后过滤",
-            },
-            doc_plan_commit_date : {
-                type : 'DateRange',
-                id : 'docPlanCommitDateFilter',
-                label : '产品计划日期',
-                width : '80px',
-            },
-            program_plan_commit_date : {
-                type : 'DateRange',
-                id : 'programPlanCommitDateFilter',
-                label : '研发计划日期',
-                width : '80px',
-            },
-        },
-        grid : {
-            recid : {
-                caption: 'ID',
-                sortable: true,
-                size: '100px',
-                render: function (record) {
-                    return '<div><a target="_blank" href="https://jira.pkpm.cn/browse/' + record.recid + '">' + record.recid + '</a></div>';
-                }
-            },
-            category : {
-                caption: '模块',
-                sortable: true,
-                size: '100px',
-                render: function (record) {
-                    if (record.category == "Empty Field") {
-                        return '<div><i style="color:#A9A9A9">' + record.category + '</i></div>';
-                    } else {
-                        return '<div>' + record.category + '</div>';
-                    }
-                },
-            },
-            status : {
-                caption: '状态',
-                sortable: true,
-                size: '100px',
-                render: function (record) {
-                    if (record.status == "Empty Field") {
-                        return '<div><i style="color:#A9A9A9">' + record.status + '</i></div>';
-                    } else {
-                        return '<div>' + record.status + '</div>';
-                    }
-                },
-            },
-            title : {
-                caption: '标题',
-                sortable: true,
-                size: '200px',
-                render: function (record) {
-                    if (record.confluence_link == "Empty Field") {
-                        return '<div>' + record.title + '</div>';
-                    } else {
-                        return '<div><a target="_blank" href="' + record.confluence_link + '">' + record.title + '</a></div>';
-                    }
-                },
-            },
-            designer : {
-                caption: '产品设计负责人',
-                sortable: true,
-                size: '100px',
-                render: function (record) {
-                    if (record.designer == "Empty Field") {
-                        return '<div><i style="color:#A9A9A9">' + record.designer + '</i></div>';
-                    } else {
-                        return '<div>' + record.designer + '</div>';
-                    }
-                },
-            },
-            doc_plan_commit_date : {
-                caption: '产品计划日期',
-                sortable: true,
-                size: '100px',
-                render: function (record) {
-                    if (record.doc_plan_commit_date == theModel.invalidDate) {
-                        return '<div><i style="color:#A9A9A9">Empty Field</i></div>';
-                    } else {
-                        return '<div>' + theToolSet.date2String(record.doc_plan_commit_date) + '</div>';
-                    }
-                },
-            },
-            developer : {
-                caption: '研发负责人',
-                sortable: true,
-                size: '100px',
-                render: function (record) {
-                    if (record.developer == "Empty Field") {
-                        return '<div><i style="color:#A9A9A9">' + record.developer + '</i></div>';
-                    } else {
-                        return '<div>' + record.developer + '</div>';
-                    }
-                },
-            },
-            program_plan_commit_date : {
-                caption: '研发计划日期',
-                sortable: true,
-                size: '100px',
-                render: function (record) {
-                    if (record.program_plan_commit_date == theModel.invalidDate) {
-                        return '<div><i style="color:#A9A9A9">Empty Field</i></div>';
-                    } else {
-                        return '<div>' + theToolSet.date2String(record.program_plan_commit_date) + '</div>';
-                    }
-                },
-            },
-            tester : {
-                caption: '测试负责人',
-                sortable: true,
-                size: '100px',
-                render: function (record) {
-                    if (record.tester == "Empty Field") {
-                        return '<div><i style="color:#A9A9A9">' + record.tester + '</i></div>';
-                    } else {
-                        return '<div>' + record.tester + '</div>';
-                    }
-                },
-            },
-        },
-    },
-    Bugs : {
-        fields : [
-            "recid",
-            "category",
-            "title",
-            "status",
-            "tester_in_bug",
-            "assignee_in_bug",
-            "resolve_person",
-            "resolution",
-            "create_date",
-            "resolution_date",
-            "bug_level",
-        ],
-        filter : {
-            status : {
-                type : 'DropDown',
-                id : 'statusFilter',
-                label : '状态',
-                width : '400px',
-                placeholder : "请选择状态",
-                hasChart : true,
-                isShowChart : true,
-            },
-            resolution : {
-                type : 'DropDown',
-                id : 'resolutionFilter',
-                label : '解决结果',
-                width : '200px',
-                placeholder : "请选择解决结果",
-                hasChart : true,
-                isShowChart : false,
-            },
-            category : {
-                type : 'DropDown',
-                id : 'categoryFilter',
-                label : '模块',
-                width : '200px',
-                placeholder : "请选择模块",
-                hasChart : true,
-                isShowChart : true,
-            },
-            assignee_in_bug : {
-                type : 'DropDown',
-                id : 'assigneeInBugFilter',
-                label : '指派给',
-                width : '200px',
-                placeholder : "请选择指派给谁",
-                hasChart : true,
-                isShowChart : false,
-            },
-            tester_in_bug : {
-                type : 'DropDown',
-                id : 'testerInBugFilter',
-                label : '测试',
-                width : '200px',
-                placeholder : "请选择测试人员",
-                hasChart : true,
-                isShowChart : false,
-            },
-            resolve_person : {
-                type : 'DropDown',
-                id : 'resolvePersonFilter',
-                label : '解决人',
-                width : '200px',
-                placeholder : "请选择解决人",
-                hasChart : true,
-                isShowChart : false,
-            },
-            title : {
-                type : 'Text',
-                id : 'titleFilter',
-                label : '标题',
-                width : '400px',
-                placeholder : "请输入标题，回车后过滤",
-            },
-            create_date : {
-                type : 'DateRange',
-                id : 'createDateFilter',
-                label : '创建日期',
-                width : '80px',
-            },
-            resolution_date : {
-                type : 'DateRange',
-                id : 'resolutionDateFilter',
-                label : '解决日期',
-                width : '80px',
-            },
-        },
-        grid : {
-            recid : {
-                caption: 'ID',
-                sortable: true,
-                size: '100px',
-                render: function (record) {
-                    return '<div><a target="_blank" href="https://jira.pkpm.cn/browse/' + record.recid + '">' + record.recid + '</a></div>';
-                }
-            },
-            category : {
-                caption: '模块',
-                sortable: true,
-                size: '100px',
-                render: function (record) {
-                    if (record.category == "Empty Field") {
-                        return theView._greyout(record.category);
-                    } else {
-                        return '<div>' + record.category + '</div>';
-                    }
-                },
-            },
-            status : {
-                caption: '状态',
-                sortable: true,
-                size: '60px',
-                render: function (record) {
-                    if (record.status == "Empty Field") {
-                        return theView._greyout(record.status);
-                    } else {
-                        return '<div>' + record.status + '</div>';
-                    }
-                },
-            },
-            resolution : {
-                caption: '解决结果',
-                sortable: true,
-                size: '100px',
-                render: function (record) {
-                    if (record.resolution == "Empty Field") {
-                        return theView._greyout(record.resolution);
-                    } else {
-                        return '<div>' + record.resolution + '</div>';
-                    }
-                },
-            },
-            bug_level : {
-                caption: '严重等级',
-                sortable: true,
-                size: '70px',
-                render: function (record) {
-                    if (record.bug_level == "Empty Field") {
-                        return theView._greyout(record.bug_level);
-                    } else {
-                        return '<div>' + record.bug_level + '</div>';
-                    }
-                },
-            },
-            title : {
-                caption: '标题',
-                sortable: true,
-                size: '200px',
-                render: function (record) {
-                    if (record.title == "Empty Field") {
-                        return theView._greyout(record.title);
-                    } else {
-                        return '<div>' + record.title + '</div>';
-                    }
-                },
-            },
-            tester_in_bug : {
-                caption: '测试',
-                sortable: true,
-                size: '60px',
-                render: function (record) {
-                    if (record.tester_in_bug == "Empty Field") {
-                        return theView._greyout(record.tester_in_bug);
-                    } else {
-                        return '<div>' + record.tester_in_bug + '</div>';
-                    }
-                },
-            },
-            assignee_in_bug : {
-                caption: '指派给',
-                sortable: true,
-                size: '60px',
-                render: function (record) {
-                    if (record.assignee_in_bug == "Empty Field") {
-                        return theView._greyout(record.assignee_in_bug);
-                    } else {
-                        return '<div>' + record.assignee_in_bug + '</div>';
-                    }
-                },
-            },
-            resolve_person : {
-                caption: '解决人',
-                sortable: true,
-                size: '60px',
-                render: function (record) {
-                    if (record.resolve_person == "Empty Field") {
-                        return theView._greyout(record.resolve_person);
-                    } else {
-                        return '<div>' + record.resolve_person + '</div>';
-                    }
-                },
-            },
-            create_date : {
-                caption: '创建日期',
-                sortable: true,
-                size: '100px',
-                render: function (record) {
-                    if (record.create_date == theModel.invalidDate) {
-                        return '<div><i style="color:#A9A9A9">Empty Field</i></div>';
-                    } else {
-                        return '<div>' + theToolSet.date2String(record.create_date) + '</div>';
-                    }
-                },
-            },
-            resolution_date : {
-                caption: '解决日期',
-                sortable: true,
-                size: '100px',
-                render: function (record) {
-                    if (record.resolution_date == theModel.invalidDate) {
-                        return '<div><i style="color:#A9A9A9">Empty Field</i></div>';
-                    } else {
-                        return '<div>' + theToolSet.date2String(record.resolution_date) + '</div>';
-                    }
-                },
-            },
-        },
-    },
-    // 各种控件ID定义
-    ids : {
-        showVersionId 	                : 'showVersion',                    // 显示版本号
-        showRequirementsTraceMatId 	    : 'showRequirementsTraceMat',        // “需求跟踪矩阵”按钮的ID
-        showBugMatId                    : 'showBugMat',                     // “Bug矩阵”按钮的ID
-        showMatDivId                    : 'showMatDiv',                     // “需求跟踪矩阵”div的ID
-        frameLayout                     : 'frameLayout',                    // 最外层级的布局，w2ui的布局名，用来后续引用用
-        topPanelLayout                  : 'topPanelLayout',                 // Top Panel的布局，w2ui的布局名，用来后续引用用
-        gridId                          : 'grid',
-        gridName                        : 'jiraGrid',                       // w2ui grid的名字，用来后续引用
-        chartContainer                  : 'chartContainer',                 // chart外围的容器，目前是ul，为了可以拖拽
-        chartClass                      : 'chartClass',                     // chart被统一选择的class
-        filterContainerId               : 'filterContainer',                // 上面一排Filter的容器Div的Id
-    },
-    _greyout : function(o){
-        return '<div><i style="color:#A9A9A9">' + o + '</i></div>';
-    },
-};
-
-var theModel = {
-    currentMode : 'Requirements',       // Requirements or Bugs
-    fields : {
-        recid  : {
-            nameInFields : null,        // 在JQL搜索时，指定的字段
-            fnGetDataFromIssue : function(i){return i.key;},     // 如何从issue中获取数据
-        },
-        category  : {
-            nameInFields : 'components',
-            fnGetDataFromIssue : function(i){return 'components' in i.fields && i.fields.components.length > 0 ? i.fields.components[0].name : 'Empty Field';},
-        },
-        title  : {
-            nameInFields : 'summary',
-            fnGetDataFromIssue : function(i){return i.fields.summary;},
-        },
-        status  : {
-            nameInFields : 'status',
-            fnGetDataFromIssue : function(i){return i.fields.status.name;},
-        },
-        designer  : {
-            nameInFields : 'customfield_10537',
-            fnGetDataFromIssue : function(i){return 'customfield_10537' in i.fields && i.fields.customfield_10537 !== null ? i.fields.customfield_10537.displayName : 'Empty Field';},
-        },
-        developer  : {
-            nameInFields : 'customfield_10538',
-            fnGetDataFromIssue : function(i){return 'customfield_10538' in i.fields && i.fields.customfield_10538 !== null ? i.fields.customfield_10538.displayName : 'Empty Field';},
-        },
-        tester  : {
-            nameInFields : 'customfield_10539',
-            fnGetDataFromIssue : function(i){return 'customfield_10539' in i.fields && i.fields.customfield_10539 !== null ? i.fields.customfield_10539.displayName : 'Empty Field';},
-        },
-        confluence_link  : {
-            nameInFields : 'customfield_10713',
-            fnGetDataFromIssue : function(i){return 'customfield_10713' in i.fields && i.fields.customfield_10713 !== null ? i.fields.customfield_10713 : 'Empty Field';},
-        },
-        doc_plan_commit_date  : {
-            nameInFields : 'customfield_11415',
-            fnGetDataFromIssue : function(i){return 'customfield_11415' in i.fields && i.fields.customfield_11415 !== null ? new Date(i.fields.customfield_11415) : theModel.invalidDate;},
-        },
-        program_plan_commit_date  : {
-            nameInFields : 'customfield_11408',
-            fnGetDataFromIssue : function(i){return 'customfield_11408' in i.fields && i.fields.customfield_11408 !== null ? new Date(i.fields.customfield_11408) : theModel.invalidDate;},
-        },
-        tester_in_bug : {
-            nameInFields : 'reporter',
-            fnGetDataFromIssue : function(i){return 'reporter' in i.fields && i.fields.reporter !== null ? i.fields.reporter.displayName : 'Empty Field';},
-        },
-        assignee_in_bug : {
-            nameInFields : 'assignee',
-            fnGetDataFromIssue : function(i){return 'assignee' in i.fields && i.fields.assignee !== null ? i.fields.assignee.displayName : 'Empty Field';},
-        },
-        resolve_person : {
-            nameInFields : 'customfield_10716',
-            fnGetDataFromIssue : function(i){return 'customfield_10716' in i.fields && i.fields.customfield_10716 !== null ? i.fields.customfield_10716.displayName : 'Empty Field';},
-        },
-        resolution : {
-            nameInFields : 'resolution',
-            fnGetDataFromIssue : function(i){return 'resolution' in i.fields && i.fields.resolution !== null ? i.fields.resolution.name : 'Empty Field';},
-        },
-        create_date : {
-            nameInFields : 'created',
-            fnGetDataFromIssue : function(i){return 'created' in i.fields && i.fields.created !== null ? new Date(i.fields.created.slice(0,10)) : theModel.invalidDate;},
-        },
-        resolution_date : {
-            nameInFields : 'resolutiondate',
-            fnGetDataFromIssue : function(i){return 'resolutiondate' in i.fields && i.fields.resolutiondate !== null ? new Date(i.fields.resolutiondate.slice(0,10)) : theModel.invalidDate;},
-        },
-        bug_level : {
-            nameInFields : 'customfield_10510',
-            fnGetDataFromIssue : function(i){return 'customfield_10510' in i.fields && i.fields.customfield_10510 !== null ? i.fields.customfield_10510.value : 'Empty Field';},
-        },
-    },           // 所有可能使用字段的定义
-    issues : [],
-    filter : {},
-    initModel : async function(){
-        // 获得所有需要fields
-        let fieldsNeedSearch = [];
-        for (const f of theView[theModel.currentMode].fields){
-            if (theModel.fields[f].nameInFields != null){
-                fieldsNeedSearch.push(theModel.fields[f].nameInFields);
-            }
-        }
-        let searchedIssues = await theToolSet.getJQLIssues(window.jql, fieldsNeedSearch)
-        // 更新所有field的数据
-        for (const i of searchedIssues){
-            let issue = {};
-            for (const field of theView[theModel.currentMode].fields){
-                issue[field] = theModel.fields[field].fnGetDataFromIssue(i);
-            }
-            theModel.issues.push(issue);
-        }
-        // 给filterView建立数据
-        for (const f of Object.keys(theView[theModel.currentMode].filter)){
-            if (theView[theModel.currentMode].filter[f].type == 'DropDown'){
-                theModel.filter[f + 'Set']         = new Set();
-                theModel.filter[f + 'Selected']         = new Set();
-            }else if(theView[theModel.currentMode].filter[f].type == 'Text'){
-                theModel.filter[f + 'Selected']       = "";
-            }else if(theView[theModel.currentMode].filter[f].type == 'DateRange'){
-                theModel.filter[f + 'Selected']       = [theToolSet.date2String(theModel.initStartDate), theToolSet.date2String(theModel.initEndDate)];
-            }
-        }
-        for (const issue of theModel.issues) {
-            for (const [k, v] of Object.entries(theView[theModel.currentMode].filter)){
-                if (issue[k] && v.type == 'DropDown'){
-                    theModel.filter[k + 'Set'].add(issue[k]);
-                }
-            }
-        }
-    },
-    // 设置当前模式，是需求展示还是Bug展示
-    setMode : function(mode){
-        theModel.currentMode = mode;
-    },
-    // 无效日期的定义
-    invalidDate : new Date('1999-01-01'),
-    initStartDate : new Date('1999-01-01'),
-    initEndDate : new Date('2999-01-01'),
-
-    /*private*/
-};
-
-
 var theApp = {
 
-    showRequirementFrame : function(){
-        theModel.setMode('Requirements');
-        theApp._initFrame();
+    initFrame : function(){
+        w2utils.settings.dateFormat = 'yyyy-mm-dd';
+        theApp._initLayout();
     },
-    initBugFrame : function(){
-        theModel.setMode('Bugs');
-        theApp._initFrame();
-    },
-
     /**
      *
      * Description. 更新各个视图
@@ -707,16 +79,7 @@ var theApp = {
 
 
 //--------------------private--------------------------
-    _initFrame : async function(){
-        try{
-            await theModel.initModel();
-            alert(theModel.issues.length);
-            //w2utils.settings.dateFormat = 'yyyy-mm-dd';
-            //theApp._initLayout();
-        }catch{
-            alert('无法获取Jira的数据');
-        }
-    },
+
     _initLayout : function(){
         // 删除默认展示的表格
         $('body').empty();
@@ -955,4 +318,382 @@ var theApp = {
             w2ui[theView.ids.frameLayout].sizeTo('top', height + 15, true);
         }
     },
+};
+
+
+var theGridView = {
+
+    // 绘制表格，考虑过滤器
+    showGrid : function() {
+        if (!w2ui[theView.ids.gridName])
+            theGridView._initGrid();
+
+        // 执行过滤结果
+        w2ui[theView.ids.gridName].searchReset();
+        var sd = w2ui[theView.ids.gridName].searchData;
+        for (const  [k, v] of  Object.entries(theView[theModel.currentMode].filter)){
+            if (v.type == 'DropDown'){
+                if (theModel.filter[k + 'Selected'].size != 0){
+                    sd.push({
+                        field:  k, // search field name
+                        value: Array.from(theModel.filter[k + 'Selected']), // field value (array of two values for operators: between, in)
+                        type: 'list', // type of the field, if not defined search.type for the field will be used
+                        operator: 'in' // search operator, can be 'is', 'between', 'begins with', 'contains', 'ends with'
+                        // if not defined it will be selected based on the type
+                    });
+                }
+            }else if(v.type == 'Text'){
+                if (theModel.filter[k + 'Selected'] != ''){
+                    sd.push({
+                        field:  k, // search field name
+                        value: theModel.filter[k + 'Selected'], // field value (array of two values for operators: between, in)
+                        type: 'text', // type of the field, if not defined search.type for the field will be used
+                        operator: 'contains' // search operator, can be 'is', 'between', 'begins with', 'contains', 'ends with'
+                        // if not defined it will be selected based on the type
+                    });
+                }
+            }else if(v.type == 'DateRange'){
+                if (theModel.filter[k + 'Selected'].size != 0){
+                    sd.push({
+                        field:  k, // search field name
+                        value: theModel.filter[k + 'Selected'], // field value (array of two values for operators: between, in)
+                        type: 'date', // type of the field, if not defined search.type for the field will be used
+                        operator: 'between' // search operator, can be 'is', 'between', 'begins with', 'contains', 'ends with'
+                        // if not defined it will be selected based on the type
+                    });
+                }
+            }
+        }
+        w2ui[theView.ids.gridName].search(sd, 'AND');
+
+    },
+    // 获得表格中过滤后的所有条目
+    getFilteredIssues : function() {
+        let gridName = theView.ids.gridName;
+        w2ui[gridName].selectAll();
+        var records = []
+        for (const sel of w2ui[gridName].getSelection()){
+            records.push(w2ui[gridName].get(sel));
+        }
+        w2ui[theView.ids.gridName].selectNone();
+        return records;
+    },
+//--------------------private--------------------------
+    _initGrid : function(){
+        var searches = [];
+        for (const  [k, v] of  Object.entries(theView[theModel.currentMode].filter)){
+            if (v.type == 'DropDown'){
+                searches.push({
+                    field : k,
+                    label :  v.label,
+                    operator : 'in',
+                    type : 'list',
+                    options: {
+                        items: Array.from(theModel.filter[k + 'Set'])
+                    }
+                });
+            }else if(v.type == 'Text'){
+                searches.push({
+                    field : k,
+                    label :  v.label,
+                    operator : 'contains',
+                    type : 'text',
+                });
+            }else if(v.type == 'DateRange'){
+                searches.push({
+                    field : k,
+                    label :  v.label,
+                    type : 'date',
+                    operator: 'between',
+                });
+            }
+        }
+
+        var columns = [];
+        for (const [k, v] of Object.entries(theView[theModel.currentMode].grid)){
+            columns.push({
+                field : k,
+                caption : v.caption,
+                sortable : v.sortable,
+                size : v.size,
+                render : v.render,
+            });
+        }
+        $('#' + theView.ids.gridId).w2grid({
+            name: theView.ids.gridName,
+            show: {
+                //toolbar: true,
+                footer: true
+            },
+            records: theModel.issues,
+            searches: searches,
+            columns: columns,
+            textSearch:'contains',
+            onSearch: function (event) {
+            //    event.done(function () {
+            //        updateCharts();
+            //    });
+            },
+            onContextMenu: function(event) {
+                event.preventDefault();
+            },
+        });
+    },
+};
+
+
+var theChartView = {
+    showChart : function() {
+        var filteredIssues = theGridView.getFilteredIssues();
+        for (const [k, v] of Object.entries(theView[theModel.currentMode].filter)){
+            if (v.hasChart && v.isShowChart){
+                theChartView._showPieChart(filteredIssues, k, v.id + "Canvas");
+            }
+        }
+    },
+//--------------------private--------------------------
+    // 绘制状态Chart
+    _showPieChart : function(issues, field, canvasId) {
+        var labelsData = {};
+        for (const issue of issues) {
+            if (issue[field] in labelsData) {
+                labelsData[issue[field]] += 1;
+            } else {
+                labelsData[issue[field]] = 1;
+            }
+        }
+
+        var canvas = $('#' + canvasId);
+        if (theChartView[canvasId + "Chart"])
+            theChartView[canvasId + "Chart"].destroy();
+        theChartView[canvasId + "Chart"] = new Chart(canvas, {
+            type: 'pie',
+            data: {
+                labels: Object.keys(labelsData),
+                datasets: [{
+                        //label: '状态',
+                        data: Object.values(labelsData),
+                        backgroundColor: theChartView._poolColors(Object.keys(labelsData).length),
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                aspectRatio: 1,
+                legend: {
+                    display: false
+                },
+                tooltips: {
+                    enabled: false
+                },
+                onClick: function (c, i) {
+                    var e = i[0];
+                    //console.log("index", e._index)
+                    var x_value = this.data.labels[e._index];
+                    var y_value = this.data.datasets[0].data[e._index];
+                    //console.log("x value", x_value);
+                    //console.log("y value", y_value);
+                    theApp.updateFilter({operation:'replace', type: field, value:[x_value]});
+                },
+                plugins: {
+                    datalabels: {
+                        align: 'start',
+                        anchor: 'end',
+                        color: 'black',
+                        font: function (context) {
+                            return {
+                                size: 12,
+                                weight: 'bold',
+                            };
+                        },
+                        formatter: function (value, context) {
+                            return context.chart.data.labels[context.dataIndex] + context.dataset.data[context.dataIndex];
+                        }
+                    }
+                }
+            }
+        });
+    },
+
+    /**
+     *
+     * Description. 返回一个随机颜色的字符串
+     *
+     * @return string
+     */
+    _dynamicColors : function () {
+        var r = Math.floor(Math.random() * 255);
+        var g = Math.floor(Math.random() * 255);
+        var b = Math.floor(Math.random() * 255);
+        return "rgba(" + r + "," + g + "," + b + ", 0.5)";
+    },
+
+    /**
+     *
+     * Description. 返回n个随机颜色字符串
+     *
+     * @param {int} n     数目
+     * @return array of string
+     */
+    _poolColors : function (n) {
+        var pool = [];
+        for (var i = 0; i < n; i++) {
+            pool.push(theChartView._dynamicColors());
+        }
+        return pool;
+    },
+
+};
+
+
+var theFilterView = {
+    // 绘制过滤器，根据model里的过滤器数据
+    showFilter : function () {
+        for (const [k, v] of Object.entries(theView[theModel.currentMode].filter)){
+            if (v.type == 'DropDown'){
+                theFilterView._showFilter(theModel.filter[k + 'Set'], theModel.filter[k + 'Selected'], v.id, v.placeholder, k);
+            }else if (v.type == 'Text'){
+                theFilterView._showFreeTextFilter(theModel.filter[k + 'Selected'], v.id, v.placeholder, k);
+            }else if (v.type == 'DateRange'){
+                theFilterView._showDateRangeFilter(theModel.filter[k + 'Selected'], v.id, k);
+            }
+        }
+    },
+
+//--------------------private--------------------------
+
+
+    /**
+     *
+     * Description. 通用的过滤器展示
+     *
+     * @param {Set} options     可供展示的选项
+     * @param {Set} selected    哪些选项是被选中的
+     * @param {string} filterId    控件ID
+     * @param {string} placeholder    控件上展示的占位字符串
+     * @param {string} filterType    当前筛选器类型
+     * @return None
+     */
+    _showFilter : function (options, selected, filterId, placeholder, filterType){
+        var data = [];
+        var selectedOption = [];
+        for (const[i, v]of Array.from(options).entries()) {
+            data.push({
+                id: i + 1,
+                text: v
+            });
+            if (selected.has(v)) selectedOption.push(i+1);
+        }
+        // 数据排序，Empty Field排前面，英文次之，中文最后按拼音顺序
+        data = data.sort((x,y)=>{
+            if (x.text === "Empty Field") return -1;
+            if (y.text === "Empty Field") return 1;
+            
+            let reg = /[a-zA-Z0-9]/;
+            if(reg.test(x.text)|| reg.test(y.text)){
+                if(x.text>y.text){
+                    return 1;
+                }else if(x.text<y.text){
+                    return -1;
+                }else{
+                    return 0;
+                }
+            }else{
+                return x.text.localeCompare(y.text, 'zh-Hans-CN', {sensitivity: 'accent'});
+            }
+         });
+        $('#' + filterId).select2({
+            data: data,
+            placeholder: placeholder,
+            allowClear: true,
+            closeOnSelect:false,
+        });
+        $('#' + filterId).val(selectedOption).trigger('change');
+
+        // 添加消息响应
+        $('#' + filterId).on('change.select2', function (e) {
+            var optionSelected = theFilterView._getSelectedOptions(e.target);
+            var optionTexts = [];
+            for (const o of optionSelected){
+                optionTexts.push(o.innerText);
+            }
+            theApp.updateFilter({operation:'replace',type:filterType,value:optionTexts, fromView:'filter'});
+        });
+    },
+
+    _showFreeTextFilter : function (selected, filterId, placeholder, filterType){
+        
+        // 根据筛选器的值设置input的值
+        if (selected == ""){
+            $("#"+filterId).empty().trigger('change');
+        }
+
+        // 初始化select2
+        $("#"+filterId).select2({
+            data:[selected],
+            width:"100%",
+            tags: true,
+            allowClear: false,
+            maximumSelectionLength: 1,
+        });
+        // 设置CSS
+        $('#titleFilter').siblings().find('.select2-search__field').on( "change keyup keydown paste cut", function() {
+            $( this ).css('width','100%');
+        });
+        $('#titleFilter').siblings().find('.select2-selection.select2-selection--multiple').css('display','flex'); 
+        $('#titleFilter').siblings().find('.select2-selection.select2-selection--multiple').css('flex-direction','row'); 
+        $('#titleFilter').siblings().find('.select2-selection__rendered').css('flex','0'); 
+        
+        // 添加消息响应
+        $("#"+filterId).on('select2:open', function (e) {
+            $('.select2-container--open .select2-dropdown--below').css('display','none');
+        }).on('change.select2', function (e) {
+            var optionTexts = e.target.value;
+            theApp.updateFilter({operation:'replace',type:filterType,value:optionTexts, fromView:'filter'});
+        });
+    },
+    // 显示Date Range Filter
+    _showDateRangeFilter : function(selected, filterId, filterType){
+        
+        // 根据当前筛选器的值，决定初始化input的值
+        if (selected[0] == theToolSet.date2String(theModel.initStartDate)){
+            $("#"+filterId+"1").val('');
+        }
+        if (selected[1] == theToolSet.date2String(theModel.initEndDate)){
+            $("#"+filterId+"2").val('');
+        }
+        // 设置w2field类型
+        $("#"+filterId+"1").w2field('date', { format: 'yyyy-mm-dd', end: $("#"+filterId+"2") });
+        $("#"+filterId+"2").w2field('date', { format: 'yyyy-mm-dd', start: $("#"+filterId+"1") });
+        // 添加消息响应
+        $("#"+filterId+"1").on('change', function (e) {
+            let dateFrom = $("#"+filterId+"1").val();
+            let dateTo = $("#"+filterId+"2").val();
+            dateFrom = dateFrom === "" ? theToolSet.date2String(theModel.initStartDate) : dateFrom;
+            dateTo = dateTo === "" ? theToolSet.date2String(theModel.initEndDate) : dateTo;
+            theApp.updateFilter({operation:'replace',type:filterType, value:[dateFrom, dateTo], fromView:'filter'});
+        });
+        $("#"+filterId+"2").on('change', function (e) {
+            let dateFrom = $("#"+filterId+"1").val();
+            let dateTo = $("#"+filterId+"2").val();
+            dateFrom = dateFrom === "" ? theToolSet.date2String(theModel.initStartDate) : dateFrom;
+            dateTo = dateTo === "" ? theToolSet.date2String(theModel.initEndDate) : dateTo;
+            theApp.updateFilter({operation:'replace',type:filterType, value:[dateFrom, dateTo], fromView:'filter'});
+        });
+    },
+    // 获得Select的所有选择的Option
+    _getSelectedOptions : function (sel) {
+        var opts = [], opt;
+        var len = sel.options.length;
+        for (var i = 0; i < len; i++) {
+           opt = sel.options[i];
+
+           if (opt.selected) {
+               opts.push(opt);
+           }
+        }
+
+        return opts;
+    }
 };
