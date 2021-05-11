@@ -608,6 +608,25 @@ var theFilterView = {
             placeholder: placeholder,
             allowClear: true,
             closeOnSelect:false,
+            matcher: function(params, data) {
+                // If there are no search terms, return all of the data
+                if ($.trim(params.term) === '') {
+                  return data;
+                }
+            
+                // Do not display the item if there is no 'text' property
+                if (typeof data.text === 'undefined') {
+                  return null;
+                }
+
+                if (/^[a-zA-Z]+$/.test(params.term)){
+                    let py = pinyinUtil.getPinyin(data.text, '', false, false);
+                    if (py.includes(params.term)) return data;
+                }
+
+                // Return `null` if the term should not be displayed
+                return null;
+            },
         });
         $('#' + filterId).val(selectedOption).trigger('change');
 
