@@ -620,7 +620,7 @@ var theFilterView = {
                 }
 
                 if (/^[a-zA-Z]+$/.test(params.term)){
-                    let py = Pinyin.convertToPinyin(data.text, '', true);
+                    let py = pinyinUtil.getPinyin(data.text, '', false, false);
                     if (py.includes(params.term)) return data;
                 }
 
