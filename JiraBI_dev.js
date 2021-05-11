@@ -618,6 +618,14 @@ var theFilterView = {
                 if (typeof data.text === 'undefined') {
                   return null;
                 }
+
+                if (/^[a-zA-Z]+$/.test(params.term)){
+                    let py = Pinyin.convertToPinyin(data.text, '', true);
+                    if (py.includes(params.term)) return data;
+                }
+
+                // Return `null` if the term should not be displayed
+                return null;
             },
         });
         $('#' + filterId).val(selectedOption).trigger('change');
