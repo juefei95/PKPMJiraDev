@@ -329,7 +329,7 @@ var theGridView = {
             theGridView._initGrid();
 
         // 执行过滤结果
-        w2ui[theView.ids.gridName].searchReset();
+        //w2ui[theView.ids.gridName].searchReset();
         var sd = w2ui[theView.ids.gridName].searchData;
         for (const  [k, v] of  Object.entries(theView[theModel.currentMode].filter)){
             if (v.type == 'DropDown'){
@@ -625,9 +625,9 @@ var theFilterView = {
     _showFreeTextFilter : function (selected, filterId, placeholder, filterType){
         
         // 根据筛选器的值设置input的值
-        if (selected == ""){
-            $("#"+filterId).empty().trigger('change');
-        }
+        //if (selected == ""){
+        //    $("#"+filterId).empty().trigger('change');
+        //}
 
         // 初始化select2
         $("#"+filterId).select2({
