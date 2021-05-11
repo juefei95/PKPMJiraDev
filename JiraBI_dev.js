@@ -329,7 +329,7 @@ var theGridView = {
             theGridView._initGrid();
 
         // 执行过滤结果
-        //w2ui[theView.ids.gridName].searchReset();
+        w2ui[theView.ids.gridName].searchReset(noRefresh = true);
         var sd = w2ui[theView.ids.gridName].searchData;
         for (const  [k, v] of  Object.entries(theView[theModel.currentMode].filter)){
             if (v.type == 'DropDown'){
