@@ -55,7 +55,7 @@ class DesignerDelay extends Inconsistency {
     toHtml(){
         
         var html = `
-        <b>产品设计逾期：</b><a href="https://jira.pkpm.cn/browse/${this.jiraId}"  target="_blank">${this.jiraId}</a> 产品 ${this.developer}，计划日期${this.planDate.toISOString().substring(0, 10)}，标题为${this.title}
+        <b>产品设计逾期：</b><a href="https://jira.pkpm.cn/browse/${this.jiraId}"  target="_blank">${this.jiraId}</a> 产品 ${this.responsible}，计划日期${this.planDate.toISOString().substring(0, 10)}，标题为${this.title}
         `;
         return html;
     }
