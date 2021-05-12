@@ -64,6 +64,14 @@ class DesignerDelay extends Inconsistency {
 var theApp = {
 
     initFrame : function(){
+        document.body.innerHTML = '';   // 清空Body
+        let copyBtn = document.createElement("button");
+        copyBtn.onclick = function(){
+            const blobInput = new Blob([document.body.innerHTML], {type: 'text/html'});
+            const clipboardItemInput = new ClipboardItem({'text/html' : blobInput});
+            navigator.clipboard.write([clipboardItemInput]);
+        };
+        document.appendChild(copyBtn);
         let qaInconsistency = {};
         let checkFuncs = [
             DeveloperDelay.check,
@@ -98,4 +106,5 @@ var theApp = {
         }
         window.document.body.appendChild(ul);
     },
+
 };
