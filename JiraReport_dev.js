@@ -8,15 +8,15 @@ class ToolSet{
 
 // 不一致项的基类
 class Inconsistency{
-    constructor(responsible){
-        this.responsible = responsible;
+    constructor(key){
+        this.key = key;
     }
     static check(issue) {
         // do nothing
         return undefined;
     }
-    Responsible(){
-        return this.responsible;
+    key(){
+        return this.key;
     }
     toHtml(){
         return undefined;
@@ -49,6 +49,7 @@ class DeveloperDelay extends Inconsistency {
 class DesignerDelay extends Inconsistency {
     constructor(jiraId, title, designer, planDate){
         super(designer);
+        this.designer = designer;
         this.jiraId = jiraId;
         this.title = title;
         this.planDate = planDate;
@@ -62,7 +63,7 @@ class DesignerDelay extends Inconsistency {
     toHtml(){
         
         var html = `
-        <b>产品设计逾期：</b><a href="https://jira.pkpm.cn/browse/${this.jiraId}"  target="_blank">${this.jiraId}</a> 产品 ${this.responsible}，计划日期${this.planDate.toISOString().substring(0, 10)}，标题为${this.title}
+        <b>产品设计逾期：</b><a href="https://jira.pkpm.cn/browse/${this.jiraId}"  target="_blank">${this.jiraId}</a> 产品 ${this.designer}，计划日期${this.planDate.toISOString().substring(0, 10)}，标题为${this.title}
         `;
         return html;
     }
@@ -72,6 +73,7 @@ class DesignerDelay extends Inconsistency {
 class BugResolveDelay extends Inconsistency {
     constructor(jiraId, title, assignee, category, createDate, status, tester){
         super(assignee);
+        this.assignee = assignee;
         this.jiraId = jiraId;
         this.title = title;
         this.category = category;
@@ -91,7 +93,31 @@ class BugResolveDelay extends Inconsistency {
     toHtml(){
         
         var html = `
-        <b>Bug解决逾期：</b><a href="https://jira.pkpm.cn/browse/${this.jiraId}"  target="_blank">${this.jiraId}</a> ${this.tester} 指派给 ${this.responsible}，创建日期${this.createDate.toISOString().substring(0, 10)}，标题为${this.title}
+        <b>Bug解决逾期：</b><a href="https://jira.pkpm.cn/browse/${this.jiraId}"  target="_blank">${this.jiraId}</a> ${this.tester} 指派给 ${this.assignee}，创建日期${this.createDate.toISOString().substring(0, 10)}，标题为 ${this.title}
+        `;
+        return html;
+    }
+}
+
+// 没有按照约定给Bug标题命名的Bug——【功能名】Bug描述
+class BugTitleNotFolloeRule extends Inconsistency{
+    constructor(jiraId, title, tester){
+        super(tester);
+        this.jiraId = jiraId;
+        this.title = title;
+        this.tester = tester;
+    }
+    static check(i){
+        if (i.tester_in_bug !== 'Empty Field' 
+        && !/^【.+】.+$/.test(i.title)){ // 标题格式测试不通过
+            return new BugTitleNotFolloeRule(i.recid, i.title, i.tester_in_bug);
+        }
+        return undefined;
+    }
+    toHtml(){
+        
+        var html = `
+        <b>Bug标题不符合规范：</b><a href="https://jira.pkpm.cn/browse/${this.jiraId}"  target="_blank">${this.jiraId}</a> ${this.tester} 创建的标题为 ${this.title}
         `;
         return html;
     }
@@ -107,7 +133,8 @@ var theApp = {
         },
         "BugReport" : {
             "checkFuncs" : [
-                BugResolveDelay.check,
+                //BugResolveDelay.check,
+                BugTitleNotFolloeRule.check,
             ],
         },
     },
@@ -125,10 +152,10 @@ var theApp = {
             checkFuncs.forEach(f => {
                 let ret = f(i);
                 if (ret){
-                    if(ret.Responsible() in qaInconsistency){
-                        qaInconsistency[ret.Responsible()].push(ret);
+                    if(ret.key() in qaInconsistency){
+                        qaInconsistency[ret.key()].push(ret);
                     }else{
-                        qaInconsistency[ret.Responsible()] = [ret];
+                        qaInconsistency[ret.key()] = [ret];
                     }
                 }
             });
