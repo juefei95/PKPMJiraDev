@@ -79,7 +79,7 @@ class BugResolveDelay extends Inconsistency {
         this.status = status;
         this.tester = tester;
     }
-    static overdaysi = 15;      // 超时多少天会计入，可以外部配置
+    static overdays = 15;      // 超时多少天会计入，可以外部配置
     static check(i){
         if (i.assignee_in_bug !== 'Empty Field' 
         && ["开放", "重新打开", "已确认"].includes(i.status)    // 仍未解决的Bug
