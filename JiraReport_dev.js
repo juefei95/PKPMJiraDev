@@ -117,7 +117,7 @@ class BugTitleNotFolloeRule extends Inconsistency{
     toHtml(){
         
         var html = `
-        <b>Bug标题不符合规范：</b><a href="https://jira.pkpm.cn/browse/${this.jiraId}"  target="_blank">${this.jiraId}</a> ${this.tester} 创建的标题为 ${this.title}
+        <b>Bug标题不符合规范：</b><a href="https://jira.pkpm.cn/browse/${this.jiraId}"  target="_blank">${this.jiraId}</a> 标题为 ${this.title}
         `;
         return html;
     }
