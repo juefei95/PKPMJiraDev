@@ -8,15 +8,15 @@ class ToolSet{
 
 // 不一致项的基类
 class Inconsistency{
-    constructor(key){
-        this.key = key;
+    constructor(k){
+        this.k = k;
     }
     static check(issue) {
         // do nothing
         return undefined;
     }
     key(){
-        return this.key;
+        return this.k;
     }
     toHtml(){
         return undefined;
