@@ -1,4 +1,11 @@
 
+class ToolSet{
+    // date1-date2的天数
+    static diffDays(date1, date2){
+        Math.ceil((date1.getTime() - date2.getTime()) / (1000 * 3600 * 24));
+    }
+}
+
 // 不一致项的基类
 class Inconsistency{
     constructor(responsible){
@@ -61,10 +68,50 @@ class DesignerDelay extends Inconsistency {
     }
 }
 
-var theApp = {
+// Bug长时间没有解决
+class BugResolveDelay extends Inconsistency {
+    constructor(jiraId, title, assignee, category, createDate, status, tester){
+        super(assignee);
+        this.jiraId = jiraId;
+        this.title = title;
+        this.category = category;
+        this.createDate = createDate;
+        this.status = status;
+        this.tester = tester;
+    }
+    static overdaysi = 15;      // 超时多少天会计入，可以外部配置
+    static check(i){
+        if (i.assignee !== 'Empty Field' 
+        && ["开放", "重新打开", "已确认"].includes(i.status)    // 仍未解决的Bug
+        && ToolSet.diffDays(new Date(), i.create_date) > overdays){ // 超时
+            return new BugResolveDelay(i.recid, i.title, i.assignee_in_bug, i.category, i.create_date, i.status, i.tester_in_bug);
+        }
+        return undefined;
+    }
+    toHtml(){
+        
+        var html = `
+        <b>Bug解决逾期：</b><a href="https://jira.pkpm.cn/browse/${this.jiraId}"  target="_blank">${this.jiraId}</a> ${this.tester} 指派给 ${this.responsible}，创建日期${this.createDate.toISOString().substring(0, 10)}，标题为${this.title}
+        `;
+        return html;
+    }
+}
 
+var theApp = {
+    config : {
+        "RequirementReport" : {
+            "checkFuncs" : [
+                DeveloperDelay.check,
+                DesignerDelay.check,
+            ],
+        },
+        "BugReport" : {
+            "checkFuncs" : [
+                BugResolveDelay.check,
+            ],
+        },
+    },
     initFrame : function(){
-        document.body.innerHTML = '';   // 清空Body
         //let copyBtn = document.createElement("button");
         //copyBtn.onclick = function(){
         //    const blobInput = new Blob([document.body.innerHTML], {type: 'text/html'});
@@ -73,10 +120,7 @@ var theApp = {
         //};
         //document.appendChild(copyBtn);
         let qaInconsistency = {};
-        let checkFuncs = [
-            DeveloperDelay.check,
-            DesignerDelay.check,
-        ];
+        let checkFuncs = theApp.config[theModel.currentMode]["checkFuncs"];
         theModel.issues.forEach(i => {
             checkFuncs.forEach(f => {
                 let ret = f(i);
@@ -89,6 +133,7 @@ var theApp = {
                 }
             });
         });
+        document.body.innerHTML = '';   // 清空Body
         let ul = document.createElement("ul");
         for (const [k, v] of Object.entries(qaInconsistency)){
             let li = document.createElement("li");
