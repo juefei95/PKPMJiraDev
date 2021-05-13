@@ -2,7 +2,7 @@
 class ToolSet{
     // date1-date2的天数
     static diffDays(date1, date2){
-        Math.ceil((date1.getTime() - date2.getTime()) / (1000 * 3600 * 24));
+        return Math.ceil((date1.getTime() - date2.getTime()) / (1000 * 3600 * 24));
     }
 }
 
@@ -83,7 +83,7 @@ class BugResolveDelay extends Inconsistency {
     static check(i){
         if (i.assignee_in_bug !== 'Empty Field' 
         && ["开放", "重新打开", "已确认"].includes(i.status)    // 仍未解决的Bug
-        && ToolSet.diffDays(Date.now(), i.create_date) > BugResolveDelay.overdays){ // 超时
+        && ToolSet.diffDays(new Date(), i.create_date) > BugResolveDelay.overdays){ // 超时
             return new BugResolveDelay(i.recid, i.title, i.assignee_in_bug, i.category, i.create_date, i.status, i.tester_in_bug);
         }
         return undefined;
