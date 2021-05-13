@@ -81,7 +81,7 @@ class BugResolveDelay extends Inconsistency {
     }
     static overdaysi = 15;      // 超时多少天会计入，可以外部配置
     static check(i){
-        if (i.assignee !== 'Empty Field' 
+        if (i.assignee_in_bug !== 'Empty Field' 
         && ["开放", "重新打开", "已确认"].includes(i.status)    // 仍未解决的Bug
         && ToolSet.diffDays(new Date(), i.create_date) > BugResolveDelay.overdays){ // 超时
             return new BugResolveDelay(i.recid, i.title, i.assignee_in_bug, i.category, i.create_date, i.status, i.tester_in_bug);
