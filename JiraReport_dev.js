@@ -100,7 +100,7 @@ class BugResolveDelay extends Inconsistency {
 }
 
 // 没有按照约定给Bug标题命名的Bug——【功能名】Bug描述
-class BugTitleNotFolloeRule extends Inconsistency{
+class BugTitleNotFollowRule extends Inconsistency{
     constructor(jiraId, title, tester){
         super(tester);
         this.jiraId = jiraId;
@@ -110,7 +110,7 @@ class BugTitleNotFolloeRule extends Inconsistency{
     static check(i){
         if (i.tester_in_bug !== 'Empty Field' 
         && !/^【.+】.+$/.test(i.title)){ // 标题格式测试不通过
-            return new BugTitleNotFolloeRule(i.recid, i.title, i.tester_in_bug);
+            return new BugTitleNotFollowRule(i.recid, i.title, i.tester_in_bug);
         }
         return undefined;
     }
@@ -123,44 +123,147 @@ class BugTitleNotFolloeRule extends Inconsistency{
     }
 }
 
-var theApp = {
-    config : {
-        "RequirementReport" : {
-            "checkFuncs" : [
-                DeveloperDelay.check,
-                DesignerDelay.check,
-            ],
-        },
-        "BugReport" : {
-            "checkFuncs" : [
-                //BugResolveDelay.check,
-                BugTitleNotFolloeRule.check,
-            ],
-        },
+var theConfig = {
+    IDS : {
+        tabs : "tabs",
+        toolbar : "toolbar",
+        report : "report",
+        DeveloperDelay : "DeveloperDelay",
+        DesignerDelay : "DesignerDelay",
+        BugResolveDelay : "BugResolveDelay",
+        BugResolveDelayDays : "BugResolveDelayDays",
+        BugTitleNotFollowRule : "BugTitleNotFollowRule",
     },
+}
+
+var theApp = {
     initFrame : function(){
-        //let copyBtn = document.createElement("button");
-        //copyBtn.onclick = function(){
-        //    const blobInput = new Blob([document.body.innerHTML], {type: 'text/html'});
-        //    const clipboardItemInput = new ClipboardItem({'text/html' : blobInput});
-        //    navigator.clipboard.write([clipboardItemInput]);
-        //};
-        //document.appendChild(copyBtn);
-        let qaInconsistency = {};
-        let checkFuncs = theApp.config[theModel.currentMode]["checkFuncs"];
-        theModel.issues.forEach(i => {
-            checkFuncs.forEach(f => {
-                let ret = f(i);
-                if (ret){
-                    if(ret.key() in qaInconsistency){
-                        qaInconsistency[ret.key()].push(ret);
-                    }else{
-                        qaInconsistency[ret.key()] = [ret];
-                    }
+        theApp._initLayout();
+    },
+    // private
+    _initLayout : function(){
+        // 清空Body
+        document.body.innerHTML = '';   
+        // 创建容器div
+        let tabs = document.createElement('div');
+        tabs.id = theConfig.IDS.tabs;
+        tabs.style.width = "100%";
+        document.body.appendChild(tabs);
+        let toolbar = document.createElement('div');
+        toolbar.id = theConfig.IDS.toolbar;
+        document.body.appendChild(toolbar);
+        let report = document.createElement('div');
+        report.id = theConfig.IDS.report;
+        document.body.appendChild(report);
+
+        // 设置tabs
+        if (theModel.currentMode == "RequirementReport") {
+            $('#'+theConfig.IDS.tabs).w2tabs({
+                name: 'tabs',
+                active: theConfig.IDS.DeveloperDelay,
+                tabs: [
+                    { id: theConfig.IDS.DeveloperDelay, text: '研发提测逾期' },
+                    { id: theConfig.IDS.DesignerDelay, text: '产品设计逾期' },
+                ],
+                onClick: function (event) {
+                    $('#'+theConfig.IDS.toolbar).w2destroy(theConfig.IDS.toolbar);
+                    theApp["_Show" + event.target + "ToolBar"]();
+                },
+            });
+    
+            // 设置初始的toolbar
+            theApp._ShowDeveloperDelayToolBar();
+            
+        }
+        else if (theModel.currentMode == "BugReport") {
+            $('#'+theConfig.IDS.tabs).w2tabs({
+                name: 'tabs',
+                active: theConfig.IDS.BugResolveDelay,
+                tabs: [
+                    { id: theConfig.IDS.BugResolveDelay, text: 'Bug解决逾期' },
+                    { id: theConfig.IDS.BugTitleNotFollowRule, text: 'Bug标题不符规定' },
+                ],
+                onClick: function (event) {
+                    $('#'+theConfig.IDS.toolbar).w2destroy(theConfig.IDS.toolbar);
+                    theApp["_Show" + event.target + "ToolBar"]();
                 }
             });
+    
+            // 设置初始的toolbar
+            theApp._ShowBugResolveDelayToolBar();
+            
+        }
+    },
+    // 显示研发逾期的工具条
+    _ShowDeveloperDelayToolBar : function(){
+        theApp._ShowDeveloperDelayReport();
+    },
+    // 显示研发逾期的报告
+    _ShowDeveloperDelayReport : function(){
+        let show = new ULView();
+        show.show(DeveloperDelay.check, theConfig.IDS.report);
+    },
+    // 产品设计逾期
+    _ShowDesignerDelayToolBar : function(){
+        theApp._ShowDesignerDelayReport();
+    },
+    _ShowDesignerDelayReport : function(){
+        new ULView().show(DesignerDelay.check, theConfig.IDS.report);
+    },
+    // Bug解决逾期
+    _ShowBugResolveDelayToolBar : function(){
+        $('#'+theConfig.IDS.toolbar).w2toolbar({
+            name: theConfig.IDS.toolbar,
+            items: [
+                { type: 'break' },
+                { type: 'html',
+                    html: function (item) {
+                        var html =`
+                            <div style="padding: 3px 10px;">
+                            逾期天数:<input id="${theConfig.IDS.BugResolveDelayDays}" value=${BugResolveDelay.overdays} size="10" style="padding: 3px; border-radius: 2px; border: 1px solid silver"/>
+                            </div>
+                        `;
+                        return html;
+                    }
+                },
+                { type: 'break' },
+                { type: 'button', text: '应用', onClick : theApp._ShowBugResolveDelayReport },
+                { type: 'break' },
+            ],
+            onRender: function(event) {
+                event.onComplete = theApp._ShowBugResolveDelayReport();
+                
+            },
+        });        
+    },
+    _ShowBugResolveDelayReport : function(){
+        let days = parseInt($("#"+theConfig.IDS.BugResolveDelayDays).val());
+        if ($.isNumeric(days)) BugResolveDelay.overdays = days;
+        new ULView().show(BugResolveDelay.check, theConfig.IDS.report);
+    },
+    // Bug标题不符合规范
+    _ShowBugTitleNotFollowRuleToolBar : function(){
+        theApp._ShowBugTitleNotFollowRuleReport();
+    },
+    _ShowBugTitleNotFollowRuleReport : function(){
+        new ULView().show(BugTitleNotFollowRule.check, theConfig.IDS.report);
+    },
+};
+
+
+class ULView{
+    show(checkFunc, reportId){
+        let qaInconsistency = {};
+        theModel.issues.forEach(i => {
+            let ret = checkFunc(i);
+            if (ret){
+                if(ret.key() in qaInconsistency){
+                    qaInconsistency[ret.key()].push(ret);
+                }else{
+                    qaInconsistency[ret.key()] = [ret];
+                }
+            }
         });
-        document.body.innerHTML = '';   // 清空Body
         let ul = document.createElement("ul");
         for (const [k, v] of Object.entries(qaInconsistency)){
             let li = document.createElement("li");
@@ -176,7 +279,7 @@ var theApp = {
             }
             ul.appendChild(li)
         }
-        window.document.body.appendChild(ul);
-    },
-
-};
+        $("#"+reportId).empty();
+        $("#"+reportId).append(ul);
+    }
+}
