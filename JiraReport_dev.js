@@ -1,3 +1,33 @@
+class IssueTool{
+    // 最后一个状态的日期
+    static LastStatusDate(i){
+        for (let index = i.changelog.length  - 1; index >= 0; index--) {
+            const items = i.changelog[index].items;
+            for (let index2 = 0; index2<items.length; index2++){
+                if (items[index2].field == "status"){
+                    let status = items[index2].toString;
+                    let date = i.changelog[index].date;
+                    return [status, date];
+                }
+            }
+        }
+        return [undefined, undefined];
+    }
+    // 第一次出现某个状态的日期
+    static FirstStatusDate(i, status){
+        for (let index = 0; index < i.changelog.length; index++) {
+            const items = i.changelog[index].items;
+            for (let index2 = 0; index2<items.length; index2++){
+                if (items[index2].field == "status" && items[index2].toString == status){
+                    let status = items[index2].toString;
+                    let date = i.changelog[index].date;
+                    return date;
+                }
+            }
+        }
+        return undefined;
+    }
+}
 
 class ToolSet{
     // date1-date2的天数
@@ -23,6 +53,7 @@ class Inconsistency{
     }
 }
 
+// 研发逾期
 class DeveloperDelay extends Inconsistency {
     constructor(jiraId, title, designer, developer, planDate){
         super(designer);
@@ -46,6 +77,7 @@ class DeveloperDelay extends Inconsistency {
     }
 }
 
+// 产品设计逾期
 class DesignerDelay extends Inconsistency {
     constructor(jiraId, title, designer, planDate){
         super(designer);
@@ -66,6 +98,64 @@ class DesignerDelay extends Inconsistency {
         <b>产品设计逾期：</b><a href="https://jira.pkpm.cn/browse/${this.jiraId}"  target="_blank">${this.jiraId}</a> 产品 ${this.designer}，计划日期${this.planDate.toISOString().substring(0, 10)}，标题为${this.title}
         `;
         return html;
+    }
+}
+
+// 需求验证时间过长
+class RequirementVerifyLongTime extends Inconsistency{
+    static overdays = 15;      // 超时多少天会计入，可以外部配置
+    constructor(jiraId, title, inRequirementVerifyDate, designer){
+        super(designer);
+        this.jiraId = jiraId;
+        this.title = title;
+        this.inRequirementVerifyDate = inRequirementVerifyDate;
+        this.designer = designer;
+    }
+    toHtml(){
+        
+        var html = `
+        <b>需求验证时间过长：</b><a href="https://jira.pkpm.cn/browse/${this.jiraId}"  target="_blank">${this.jiraId}</a> ${this.inRequirementVerifyDate.toISOString().substring(0, 10)}开始需求验证，标题为${this.title}
+        `;
+        return html;
+    }
+    static check(i){
+        if (i.status==="需求验证" ) {
+            const  date = IssueTool.FirstStatusDate(i, "需求验证");
+            if (ToolSet.diffDays(new Date(), date) > RequirementVerifyLongTime.overdays){
+                return new RequirementVerifyLongTime(i.recid, i.title, date, i.designer);
+            } 
+        }
+        return undefined;
+    }
+}
+
+// 测试时间过长
+class TestLongTime extends Inconsistency{
+    static overdays = 15;      // 超时多少天会计入，可以外部配置
+    constructor(jiraId, title, inTestDate, tester){
+        super(tester);
+        this.jiraId = jiraId;
+        this.title = title;
+        this.inTestDate = inTestDate;
+        this.tester = tester;
+    }
+    toHtml(){
+        
+        var html = `
+        <b>测试时间过长：</b><a href="https://jira.pkpm.cn/browse/${this.jiraId}"  target="_blank">${this.jiraId}</a> ${this.inTestDate.toISOString().substring(0, 10)}开始测试，标题为${this.title}
+        `;
+        return html;
+    }
+    static check(i){
+        if (i.status==="测试中" ) {
+            const [status, date] = IssueTool.LastStatusDate(i);
+            if (status && date) {
+                if (ToolSet.diffDays(new Date(), date) > TestLongTime.overdays){
+                    return new TestLongTime(i.recid, i.title, date, i.tester);
+                } 
+            }
+        }
+        return undefined;
     }
 }
 
@@ -133,6 +223,10 @@ var theConfig = {
         BugResolveDelay : "BugResolveDelay",
         BugResolveDelayDays : "BugResolveDelayDays",
         BugTitleNotFollowRule : "BugTitleNotFollowRule",
+        TestLongTime : "TestLongTime",
+        TestLongTimeDays : "TestLongTimeDays",
+        RequirementVerifyLongTime : "RequirementVerifyLongTime",
+        RequirementVerifyLongTimeDays : "RequirementVerifyLongTimeDays",
     },
 }
 
@@ -164,6 +258,8 @@ var theApp = {
                 tabs: [
                     { id: theConfig.IDS.DeveloperDelay, text: '研发提测逾期' },
                     { id: theConfig.IDS.DesignerDelay, text: '产品设计逾期' },
+                    { id: theConfig.IDS.TestLongTime, text: '测试时间过长' },
+                    { id: theConfig.IDS.RequirementVerifyLongTime, text: '需求验证时间过长' },
                 ],
                 onClick: function (event) {
                     $('#'+theConfig.IDS.toolbar).w2destroy(theConfig.IDS.toolbar);
@@ -209,6 +305,68 @@ var theApp = {
     },
     _ShowDesignerDelayReport : function(){
         new ULView().show(DesignerDelay.check, theConfig.IDS.report);
+    },
+    // 测试中太长时间
+    _ShowTestLongTimeToolBar : function(){
+        $('#'+theConfig.IDS.toolbar).w2toolbar({
+            name: theConfig.IDS.toolbar,
+            items: [
+                { type: 'break' },
+                { type: 'html',
+                    html: function (item) {
+                        var html =`
+                            <div style="padding: 3px 10px;">
+                            逾期天数:<input id="${theConfig.IDS.TestLongTimeDays}" value=${TestLongTime.overdays} size="10" style="padding: 3px; border-radius: 2px; border: 1px solid silver"/>
+                            </div>
+                        `;
+                        return html;
+                    }
+                },
+                { type: 'break' },
+                { type: 'button', text: '应用', onClick : theApp._ShowTestLongTimeReport },
+                { type: 'break' },
+            ],
+            onRender: function(event) {
+                event.onComplete = theApp._ShowTestLongTimeReport();
+                
+            },
+        });        
+    },
+    _ShowTestLongTimeReport : function(){
+        let days = parseInt($("#"+theConfig.IDS.TestLongTimeDays).val());
+        if ($.isNumeric(days)) TestLongTime.overdays = days;
+        new ULView().show(TestLongTime.check, theConfig.IDS.report);
+    },
+    // 需求验证太长时间
+    _ShowRequirementVerifyLongTimeToolBar : function(){
+        $('#'+theConfig.IDS.toolbar).w2toolbar({
+            name: theConfig.IDS.toolbar,
+            items: [
+                { type: 'break' },
+                { type: 'html',
+                    html: function (item) {
+                        var html =`
+                            <div style="padding: 3px 10px;">
+                            逾期天数:<input id="${theConfig.IDS.RequirementVerifyLongTimeDays}" value=${RequirementVerifyLongTime.overdays} size="10" style="padding: 3px; border-radius: 2px; border: 1px solid silver"/>
+                            </div>
+                        `;
+                        return html;
+                    }
+                },
+                { type: 'break' },
+                { type: 'button', text: '应用', onClick : theApp._ShowRequirementVerifyLongTimeReport },
+                { type: 'break' },
+            ],
+            onRender: function(event) {
+                event.onComplete = theApp._ShowRequirementVerifyLongTimeReport();
+                
+            },
+        });        
+    },
+    _ShowRequirementVerifyLongTimeReport : function(){
+        let days = parseInt($("#"+theConfig.IDS.RequirementVerifyLongTimeDays).val());
+        if ($.isNumeric(days)) RequirementVerifyLongTime.overdays = days;
+        new ULView().show(RequirementVerifyLongTime.check, theConfig.IDS.report);
     },
     // Bug解决逾期
     _ShowBugResolveDelayToolBar : function(){
