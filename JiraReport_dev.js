@@ -1,12 +1,24 @@
-class IssueTool{
+class Issue{
+    constructor(i){
+        this.issue = i;
+    }
+    id(){
+        return this.issue.recid;
+    }
+    status(){
+        return this.issue.status;
+    }
+    category(){
+        return this.issue.category;
+    }
     // 最后一个状态的日期
-    static LastStatusDate(i){
-        for (let index = i.changelog.length  - 1; index >= 0; index--) {
-            const items = i.changelog[index].items;
+    lastStatusDate(){
+        for (let index = this.issue.changelog.length  - 1; index >= 0; index--) {
+            const items = this.issue.changelog[index].items;
             for (let index2 = 0; index2<items.length; index2++){
                 if (items[index2].field == "status"){
                     let status = items[index2].toString;
-                    let date = i.changelog[index].date;
+                    let date = this.issue.changelog[index].date;
                     return [status, date];
                 }
             }
@@ -14,18 +26,42 @@ class IssueTool{
         return [undefined, undefined];
     }
     // 第一次出现某个状态的日期
-    static FirstStatusDate(i, status){
-        for (let index = 0; index < i.changelog.length; index++) {
-            const items = i.changelog[index].items;
+    firstStatusDate(status){
+        for (let index = 0; index < this.issue.changelog.length; index++) {
+            const items = this.issue.changelog[index].items;
             for (let index2 = 0; index2<items.length; index2++){
                 if (items[index2].field == "status" && items[index2].toString == status){
                     let status = items[index2].toString;
-                    let date = i.changelog[index].date;
+                    let date = this.issue.changelog[index].date;
                     return date;
                 }
             }
         }
         return undefined;
+    }
+}
+
+class Bug extends Issue{
+
+    constructor(i){
+        super(i);
+    }
+    // Bug经办人
+    assignee(){
+        return this.issue.assignee_in_bug;
+    }
+    // Bug的解决日期和解决人
+    resolveDatePerson(){
+        for (let i = this.issue.changelog.length  - 1; i >= 0; i--) {
+            for (let j = 0; j < this.issue.changelog[i].items.length; j++){
+                if (this.issue.changelog[i].items[j].field == "status" && this.issue.changelog[i].items[j].toString == "Resolved") {
+                    let name = this.issue.changelog[i].author;
+                    let date = this.issue.changelog[i].date;
+                    return [name, date];
+                }
+            }
+        }
+        return [undefined, undefined];
     }
 }
 
@@ -120,7 +156,7 @@ class RequirementVerifyLongTime extends Inconsistency{
     }
     static check(i){
         if (i.status==="需求验证" ) {
-            const  date = IssueTool.FirstStatusDate(i, "需求验证");
+            const date = new Issue(i).firstStatusDate("需求验证");
             if (ToolSet.diffDays(new Date(), date) > RequirementVerifyLongTime.overdays){
                 return new RequirementVerifyLongTime(i.recid, i.title, date, i.designer);
             } 
@@ -148,7 +184,7 @@ class TestLongTime extends Inconsistency{
     }
     static check(i){
         if (i.status==="测试中" ) {
-            const [status, date] = IssueTool.LastStatusDate(i);
+            const [status, date] = new Issue(i).lastStatusDate();
             if (status && date) {
                 if (ToolSet.diffDays(new Date(), date) > TestLongTime.overdays){
                     return new TestLongTime(i.recid, i.title, date, i.tester);
@@ -227,6 +263,8 @@ var theConfig = {
         TestLongTimeDays : "TestLongTimeDays",
         RequirementVerifyLongTime : "RequirementVerifyLongTime",
         RequirementVerifyLongTimeDays : "RequirementVerifyLongTimeDays",
+        BugResolveStatus : "BugResolveStatus",
+        BugBlockedStatus : "BugBlockedStatus",
     },
 }
 
@@ -278,6 +316,8 @@ var theApp = {
                 tabs: [
                     { id: theConfig.IDS.BugResolveDelay, text: 'Bug解决逾期' },
                     { id: theConfig.IDS.BugTitleNotFollowRule, text: 'Bug标题不符规定' },
+                    { id: theConfig.IDS.BugResolveStatus, text: 'Bug积压和解决情况' },
+                    { id: theConfig.IDS.BugBlockedStatus, text: 'Bug各模块Blocked情况' },
                 ],
                 onClick: function (event) {
                     $('#'+theConfig.IDS.toolbar).w2destroy(theConfig.IDS.toolbar);
@@ -290,13 +330,15 @@ var theApp = {
             
         }
     },
+    
+    //#region 产品迭代报告 
     // 显示研发逾期的工具条
     _ShowDeveloperDelayToolBar : function(){
         theApp._ShowDeveloperDelayReport();
     },
     // 显示研发逾期的报告
     _ShowDeveloperDelayReport : function(){
-        let show = new ULView();
+        let show = new ULViewQAInconsistency();
         show.show(DeveloperDelay.check, theConfig.IDS.report);
     },
     // 产品设计逾期
@@ -304,38 +346,7 @@ var theApp = {
         theApp._ShowDesignerDelayReport();
     },
     _ShowDesignerDelayReport : function(){
-        new ULView().show(DesignerDelay.check, theConfig.IDS.report);
-    },
-    // 测试中太长时间
-    _ShowTestLongTimeToolBar : function(){
-        $('#'+theConfig.IDS.toolbar).w2toolbar({
-            name: theConfig.IDS.toolbar,
-            items: [
-                { type: 'break' },
-                { type: 'html',
-                    html: function (item) {
-                        var html =`
-                            <div style="padding: 3px 10px;">
-                            逾期天数:<input id="${theConfig.IDS.TestLongTimeDays}" value=${TestLongTime.overdays} size="10" style="padding: 3px; border-radius: 2px; border: 1px solid silver"/>
-                            </div>
-                        `;
-                        return html;
-                    }
-                },
-                { type: 'break' },
-                { type: 'button', text: '应用', onClick : theApp._ShowTestLongTimeReport },
-                { type: 'break' },
-            ],
-            onRender: function(event) {
-                event.onComplete = theApp._ShowTestLongTimeReport();
-                
-            },
-        });        
-    },
-    _ShowTestLongTimeReport : function(){
-        let days = parseInt($("#"+theConfig.IDS.TestLongTimeDays).val());
-        if ($.isNumeric(days)) TestLongTime.overdays = days;
-        new ULView().show(TestLongTime.check, theConfig.IDS.report);
+        new ULViewQAInconsistency().show(DesignerDelay.check, theConfig.IDS.report);
     },
     // 需求验证太长时间
     _ShowRequirementVerifyLongTimeToolBar : function(){
@@ -366,8 +377,43 @@ var theApp = {
     _ShowRequirementVerifyLongTimeReport : function(){
         let days = parseInt($("#"+theConfig.IDS.RequirementVerifyLongTimeDays).val());
         if ($.isNumeric(days)) RequirementVerifyLongTime.overdays = days;
-        new ULView().show(RequirementVerifyLongTime.check, theConfig.IDS.report);
+        new ULViewQAInconsistency().show(RequirementVerifyLongTime.check, theConfig.IDS.report);
     },
+    // 测试中太长时间
+    _ShowTestLongTimeToolBar : function(){
+        $('#'+theConfig.IDS.toolbar).w2toolbar({
+            name: theConfig.IDS.toolbar,
+            items: [
+                { type: 'break' },
+                { type: 'html',
+                    html: function (item) {
+                        var html =`
+                            <div style="padding: 3px 10px;">
+                            逾期天数:<input id="${theConfig.IDS.TestLongTimeDays}" value=${TestLongTime.overdays} size="10" style="padding: 3px; border-radius: 2px; border: 1px solid silver"/>
+                            </div>
+                        `;
+                        return html;
+                    }
+                },
+                { type: 'break' },
+                { type: 'button', text: '应用', onClick : theApp._ShowTestLongTimeReport },
+                { type: 'break' },
+            ],
+            onRender: function(event) {
+                event.onComplete = theApp._ShowTestLongTimeReport();
+                
+            },
+        });        
+    },
+    _ShowTestLongTimeReport : function(){
+        let days = parseInt($("#"+theConfig.IDS.TestLongTimeDays).val());
+        if ($.isNumeric(days)) TestLongTime.overdays = days;
+        new ULViewQAInconsistency().show(TestLongTime.check, theConfig.IDS.report);
+    },
+    //#endregion 产品迭代报告 
+
+    
+    //#region 测试迭代报告
     // Bug解决逾期
     _ShowBugResolveDelayToolBar : function(){
         $('#'+theConfig.IDS.toolbar).w2toolbar({
@@ -397,19 +443,188 @@ var theApp = {
     _ShowBugResolveDelayReport : function(){
         let days = parseInt($("#"+theConfig.IDS.BugResolveDelayDays).val());
         if ($.isNumeric(days)) BugResolveDelay.overdays = days;
-        new ULView().show(BugResolveDelay.check, theConfig.IDS.report);
+        new ULViewQAInconsistency().show(BugResolveDelay.check, theConfig.IDS.report);
     },
     // Bug标题不符合规范
     _ShowBugTitleNotFollowRuleToolBar : function(){
         theApp._ShowBugTitleNotFollowRuleReport();
     },
     _ShowBugTitleNotFollowRuleReport : function(){
-        new ULView().show(BugTitleNotFollowRule.check, theConfig.IDS.report);
+        new ULViewQAInconsistency().show(BugTitleNotFollowRule.check, theConfig.IDS.report);
     },
+    // Bug积压和解决情况
+    _ShowBugResolveStatusToolBar : function(){
+        theApp._ShowBugResolveStatusReport();
+    },
+    _ShowBugResolveStatusReport : function(){
+        let bugResolvedStatus = {};
+        theModel.issues.forEach(i => {
+            let bug = new Bug(i);
+            try {
+                const [name, date] = bug.resolveDatePerson();
+                if (name && date) {
+                    // 只统计最近解决的Bug
+                    if (ToolSet.diffDays(new Date(), date) < 15){
+                        if (name in bugResolvedStatus) {
+                            bugResolvedStatus[name][0].push(bug.id());
+                        }else{
+                            bugResolvedStatus[name] = [[bug.id()], []];
+                        }
+                    }
+                }else if (bug.status() != "Blocked"){   // 忽略Blocked的Bug，Blocked的Bug另外展示
+                    const assignee = bug.assignee();
+                    if (assignee in bugResolvedStatus) {
+                        bugResolvedStatus[assignee][1].push(bug.id());
+                    }else{
+                        bugResolvedStatus[assignee] = [[], [bug.id()]];
+                    }
+                }
+            } catch (error) {
+                let s = "Bug" + bug.id() + "获取解决情况出错。";
+                console.error(s);
+            }
+        });
+        const label = Object.keys(bugResolvedStatus);
+        let bugUnResolved = [];
+        let bugUnResolvedId = [];
+        let bugResolved = [];
+        let bugResolvedId = [];
+        label.forEach(name =>{
+            bugResolved.push(bugResolvedStatus[name][0].length);
+            bugResolvedId.push(bugResolvedStatus[name][0]);
+            bugUnResolved.push(bugResolvedStatus[name][1].length);
+            bugUnResolvedId.push(bugResolvedStatus[name][1]);
+        });
+        
+        $("#"+theConfig.IDS.report).empty();
+        let canvas = document.createElement("canvas");
+        $("#"+theConfig.IDS.report).append(canvas);
+        new Chart(canvas, {
+            type: 'bar',
+            data: {
+                labels: label,
+                datasets: [{
+                        label: 'Bug积压情况',
+                        backgroundColor: "blue",
+                        data: bugUnResolved,
+                        issueId: bugUnResolvedId,
+                    },{
+                        label: '过去15天Bug解决情况',
+                        backgroundColor: "green",
+                        data: bugResolved,
+                        issueId: bugResolvedId,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                //maintainAspectRatio: true,
+                //showTooltips: true,
+                //tooltips: {
+                //    enabled: true,
+                //    mode: 'nearest',
+                //    callbacks: {
+                //        //title: function(tooltipItems, data) { 
+                //        //    return "helo";
+                //        //},
+                //        label: function(tooltipItem, data) {
+                //            return '<a href="www.baidu.com">hel</a>';
+                //        },
+                //    }
+                //},
+                onClick: function (e, data) {
+                    let bar = this.getElementAtEvent(e)[0];
+                    if (bar) {
+                        let index = bar._index;
+                        let datasetIndex = bar._datasetIndex;
+                        let issueIds = bar._chart.data.datasets[datasetIndex].issueId[index];
+                        let url = encodeURI("https://jira.pkpm.cn/issues/?jql=key in ("+issueIds.join(",")+") ORDER BY createdDate ASC");
+                        window.open(url, '_blank').focus();
+                    }
+                }
+            }
+        });
+    },
+    // Bug各模块Blocked的情况
+    _ShowBugBlockedStatusToolBar : function(){
+        theApp._ShowBugBlockedStatusReport();
+    },
+    _ShowBugBlockedStatusReport : function(){
+        let bugBlockedStatus = {};
+        theModel.issues.forEach(i => {
+            let bug = new Bug(i);
+            try {
+                if (bug.status() === "Blocked") {
+                    let category = bug.category();
+                    if (category in bugBlockedStatus) {
+                        bugBlockedStatus[category].push(bug.id());
+                    }else{
+                        bugBlockedStatus[category] = [bug.id()];
+                    }
+                }
+            } catch (error) {
+                let s = "Bug" + bug.id() + "获取Blocked情况出错。";
+                console.error(s);
+            }
+        });
+
+        const label = Object.keys(bugBlockedStatus);
+        let bugBlocked = [];
+        let bugBlockedId = [];
+        label.forEach(name =>{
+            bugBlocked.push(bugBlockedStatus[name].length);
+            bugBlockedId.push(bugBlockedStatus[name]);
+        });
+        
+        $("#"+theConfig.IDS.report).empty();
+        let canvas = document.createElement("canvas");
+        $("#"+theConfig.IDS.report).append(canvas);
+        new Chart(canvas, {
+            type: 'bar',
+            data: {
+                labels: label,
+                datasets: [{
+                        label: 'Bug各模块Blocked情况',
+                        backgroundColor: "blue",
+                        data: bugBlocked,
+                        issueId: bugBlockedId,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                //maintainAspectRatio: true,
+                //showTooltips: true,
+                //tooltips: {
+                //    enabled: true,
+                //    mode: 'nearest',
+                //    callbacks: {
+                //        //title: function(tooltipItems, data) { 
+                //        //    return "helo";
+                //        //},
+                //        label: function(tooltipItem, data) {
+                //            return '<a href="www.baidu.com">hel</a>';
+                //        },
+                //    }
+                //},
+                onClick: function (e, data) {
+                    let bar = this.getElementAtEvent(e)[0];
+                    if (bar) {
+                        let index = bar._index;
+                        let datasetIndex = bar._datasetIndex;
+                        let issueIds = bar._chart.data.datasets[datasetIndex].issueId[index];
+                        let url = encodeURI("https://jira.pkpm.cn/issues/?jql=key in ("+issueIds.join(",")+") ORDER BY createdDate ASC");
+                        window.open(url, '_blank').focus();
+                    }
+                }
+            }
+        });
+    },
+    //#endregion 测试迭代报告
 };
 
-
-class ULView{
+// 列表展示QA不一致项
+class ULViewQAInconsistency{
     show(checkFunc, reportId){
         let qaInconsistency = {};
         theModel.issues.forEach(i => {
