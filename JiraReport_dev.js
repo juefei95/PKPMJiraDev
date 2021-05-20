@@ -531,7 +531,14 @@ var theApp = {
                 //            return '<a href="www.baidu.com">hel</a>';
                 //        },
                 //    }
-                //},
+                //}, 
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            precision: 0
+                        }
+                    }]
+                },
                 onClick: function (e, data) {
                     let bar = this.getElementAtEvent(e)[0];
                     if (bar) {
@@ -606,7 +613,14 @@ var theApp = {
                 //            return '<a href="www.baidu.com">hel</a>';
                 //        },
                 //    }
-                //},
+                //},  
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            precision: 0
+                        }
+                    }]
+                },
                 onClick: function (e, data) {
                     let bar = this.getElementAtEvent(e)[0];
                     if (bar) {
