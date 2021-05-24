@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Jira Tracker Table
 // @namespace    http://jira.pkpm.cn/
-// @version      0.1.34
+// @version      0.1.36
 // @description  在Jira的搜索页面展示需求跟踪矩阵
 // @author       史建鑫
 // @match        http://jira.pkpm.cn/*
@@ -11,6 +11,7 @@
 // @grant        GM_getResourceText
 // @grant        GM_registerMenuCommand
 // @updateURL    https://gitlab.it.pkpm.cn/shijianxin/pkpmjiradev/-/raw/main/jiraTrackerTable.js
+// @downloadURL  https://gitlab.it.pkpm.cn/shijianxin/pkpmjiradev/-/raw/main/jiraTrackerTable.js
 // ==/UserScript==
 
 
