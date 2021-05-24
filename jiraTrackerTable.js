@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Jira Tracker Table
 // @namespace    http://jira.pkpm.cn/
-// @version      0.1.37
+// @version      0.1.38
 // @description  在Jira的搜索页面展示需求跟踪矩阵
 // @author       史建鑫
 // @match        http://jira.pkpm.cn/*
@@ -728,84 +728,84 @@ var theApp = {
     initRequirementFrame : async function(){
         let loadList = [
             // ------------------- 依赖jquery和jquery-ui
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/jquery-2.2.4.min.js",
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/jquery-ui.min.js",
+            "https://code.jquery.com/jquery-2.2.4.min.js",
+            "https://code.jquery.com/ui/1.12.1/jquery-ui.min.js",
             // ------------------- 依赖w2ui------------------
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/w2ui_v1.5_modify.min.js?q=1",
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/w2ui-1.5.min.css",
+            "https://eruditepig.github.io/PKPMJiraDev/w2ui_v1.5_modify.min.js?q=1",
+            "https://eruditepig.github.io/PKPMJiraDev/w2ui-1.5.min.css",
             //-------- chart.js，用于chart的绘制，目前必须用2.9版本的，因为chartlabel这个js还没适配V3以上的chart.js--
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/Chart.min.js",
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/chartjs-plugin-datalabels.min.js",
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/Chart.min.css",
+            "https://cdn.bootcdn.net/ajax/libs/Chart.js/2.9.4/Chart.min.js",
+            "https://cdn.bootcdn.net/ajax/libs/chartjs-plugin-datalabels/0.7.0/chartjs-plugin-datalabels.min.js",
+            "https://cdn.bootcdn.net/ajax/libs/Chart.js/2.9.4/Chart.min.css",
             // ------------------- 加载 Select2，用于筛选器 ------------------
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/select2.min.js",
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/select2.min.css",
+            "https://cdn.bootcdn.net/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js",
+            "https://cdn.bootcdn.net/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css",
             //-------- 加载 contextMenu，用于控件菜单--------------
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/contextMenu.min.js",
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/contextMenu.min.css",
+            "https://eruditepig.github.io/PKPMJiraDev/contextMenu.min.js",
+            "https://eruditepig.github.io/PKPMJiraDev/contextMenu.min.css",
             //-------- 加载 pinyin，用于拼音过滤 -------------
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/pinyin_dict_notone.js",
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/pinyinUtil.js",
+            "https://eruditepig.github.io/PKPMJiraDev/pinyin_dict_notone.js",
+            "https://eruditepig.github.io/PKPMJiraDev/pinyinUtil.js",
             //
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/JiraBI.js?q=7",
+            "https://eruditepig.github.io/PKPMJiraDev/JiraBI.js?q=7",
         ];
         await theApp.initFrame("Requirements", "需求跟踪矩阵", loadList);
     },
     initBugFrame : async function(){
         let loadList = [
             // ------------------- 依赖jquery和jquery-ui
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/jquery-2.2.4.min.js",
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/jquery-ui.min.js",
+            "https://code.jquery.com/jquery-2.2.4.min.js",
+            "https://code.jquery.com/ui/1.12.1/jquery-ui.min.js",
             // ------------------- 依赖w2ui------------------
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/w2ui_v1.5_modify.min.js?q=1",
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/w2ui-1.5.min.css",
+            "https://eruditepig.github.io/PKPMJiraDev/w2ui_v1.5_modify.min.js?q=1",
+            "https://eruditepig.github.io/PKPMJiraDev/w2ui-1.5.min.css",
             //-------- chart.js，用于chart的绘制，目前必须用2.9版本的，因为chartlabel这个js还没适配V3以上的chart.js--
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/Chart.min.js",
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/chartjs-plugin-datalabels.min.js",
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/Chart.min.css",
+            "https://cdn.bootcdn.net/ajax/libs/Chart.js/2.9.4/Chart.min.js",
+            "https://cdn.bootcdn.net/ajax/libs/chartjs-plugin-datalabels/0.7.0/chartjs-plugin-datalabels.min.js",
+            "https://cdn.bootcdn.net/ajax/libs/Chart.js/2.9.4/Chart.min.css",
             // ------------------- 加载 Select2，用于筛选器 ------------------
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/select2.min.js",
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/select2.min.css",
+            "https://cdn.bootcdn.net/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js",
+            "https://cdn.bootcdn.net/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css",
             //-------- 加载 contextMenu，用于控件菜单--------------
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/contextMenu.min.js",
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/contextMenu.min.css",
+            "https://eruditepig.github.io/PKPMJiraDev/contextMenu.min.js",
+            "https://eruditepig.github.io/PKPMJiraDev/contextMenu.min.css",
             //-------- 加载 pinyin，用于拼音过滤 -------------
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/pinyin_dict_notone.js",
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/pinyinUtil.js",
+            "https://eruditepig.github.io/PKPMJiraDev/pinyin_dict_notone.js",
+            "https://eruditepig.github.io/PKPMJiraDev/pinyinUtil.js",
             //
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/JiraBI.js?q=7",
+            "https://eruditepig.github.io/PKPMJiraDev/JiraBI.js?q=7",
         ];
         await theApp.initFrame("Bugs", "Bug大屏展示", loadList);
     },
     initRequirementReportFrame : async function(){
         let loadList = [
             // ------------------- 依赖jquery和jquery-ui
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/jquery-2.2.4.min.js",
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/jquery-ui.min.js",
+            "https://code.jquery.com/jquery-2.2.4.min.js",
+            "https://code.jquery.com/ui/1.12.1/jquery-ui.min.js",
             // ------------------- 依赖w2ui------------------
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/w2ui_v1.5_modify.min.js?q=1",
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/w2ui-1.5.min.css",
+            "https://eruditepig.github.io/PKPMJiraDev/w2ui_v1.5_modify.min.js?q=1",
+            "https://eruditepig.github.io/PKPMJiraDev/w2ui-1.5.min.css",
             //-------- chart.js，用于chart的绘制，目前必须用2.9版本的，因为chartlabel这个js还没适配V3以上的chart.js--
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/Chart.min.js",
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/Chart.min.css",
+            "https://cdn.bootcdn.net/ajax/libs/Chart.js/2.9.4/Chart.min.js",
+            "https://cdn.bootcdn.net/ajax/libs/Chart.js/2.9.4/Chart.min.css",
 
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/JiraReport.js?q=1",
+            "https://eruditepig.github.io/PKPMJiraDev/JiraReport.js?q=1",
         ];
         await theApp.initFrame("RequirementReport", "需求迭代报告", loadList);
     },
     initBugReportFrame : async function(){
         let loadList = [
             // ------------------- 依赖jquery和jquery-ui
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/jquery-2.2.4.min.js",
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/jquery-ui.min.js",
+            "https://code.jquery.com/jquery-2.2.4.min.js",
+            "https://code.jquery.com/ui/1.12.1/jquery-ui.min.js",
             // ------------------- 依赖w2ui------------------
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/w2ui_v1.5_modify.min.js?q=1",
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/w2ui-1.5.min.css",
+            "https://eruditepig.github.io/PKPMJiraDev/w2ui_v1.5_modify.min.js?q=1",
+            "https://eruditepig.github.io/PKPMJiraDev/w2ui-1.5.min.css",
             //-------- chart.js，用于chart的绘制，目前必须用2.9版本的，因为chartlabel这个js还没适配V3以上的chart.js--
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/Chart.min.js",
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/Chart.min.css",
+            "https://cdn.bootcdn.net/ajax/libs/Chart.js/2.9.4/Chart.min.js",
+            "https://cdn.bootcdn.net/ajax/libs/Chart.js/2.9.4/Chart.min.css",
 
-            "http://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/JiraReport.js?q=1",
+            "https://eruditepig.github.io/PKPMJiraDev/JiraReport.js?q=1",
         ];
         await theApp.initFrame("BugReport", "测试迭代报告", loadList);
     },
