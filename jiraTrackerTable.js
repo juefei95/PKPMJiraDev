@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Jira Tracker Table
 // @namespace    http://jira.pkpm.cn/
-// @version      0.1.40
+// @version      0.1.41
 // @description  在Jira的搜索页面展示需求跟踪矩阵
 // @author       史建鑫
 // @match        http://jira.pkpm.cn/*
@@ -792,7 +792,7 @@ var theApp = {
             "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/Chart.min.js",
             "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/Chart.min.css",
 
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/JiraReport.js?q=1",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/JiraReport.js?q=2",
         ];
         await theApp.initFrame("RequirementReport", "需求迭代报告", loadList);
     },
@@ -808,7 +808,7 @@ var theApp = {
             "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/Chart.min.js",
             "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/Chart.min.css",
 
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/JiraReport.js?q=1",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/JiraReport.js?q=2",
         ];
         await theApp.initFrame("BugReport", "测试迭代报告", loadList);
     },
