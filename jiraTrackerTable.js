@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Jira Tracker Table
 // @namespace    http://jira.pkpm.cn/
-// @version      0.1.39
+// @version      0.1.40
 // @description  在Jira的搜索页面展示需求跟踪矩阵
 // @author       史建鑫
 // @match        http://jira.pkpm.cn/*
@@ -23,7 +23,7 @@ var theToolSet = {
     getCurrentIssues : async function(fields){
         let jql = theToolSet.getCurrentJQL();
         let issues = await theToolSet._fetchJqlIssues(jql, fields, 1000);
-        return issues.issues;
+        return [jql, issues.issues];
     },
     // 统一的Date2String yyyy-mm-dd
     date2String : function(date){
@@ -514,6 +514,7 @@ var theView = {
             "developer",
             "tester",
             "confluence_link",
+            "create_date",
             "doc_plan_commit_date",
             "program_plan_commit_date",
             "changelog",
@@ -651,7 +652,8 @@ var theModel = {
                 fieldsNeedSearch.push(theModel.fields[f].nameInFields);
             }
         }
-        let searchedIssues = await theToolSet.getCurrentIssues(fieldsNeedSearch)
+        let [jql, searchedIssues] = await theToolSet.getCurrentIssues(fieldsNeedSearch)
+        model.jql = jql;
         // 更新所有field的数据
         for (const i of searchedIssues){
             let issue = {};
@@ -689,6 +691,7 @@ var theModel = {
 class JiraModel{
     constructor(mode){
         this.currentMode = mode;
+        this.jql = "";
         this.issues = [];
         this.filter = {};
         // 无效日期的定义
