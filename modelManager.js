@@ -65,6 +65,21 @@ export class Model{
         }
     }
 
+    clearFilterSelectedOptions(){
+        for (const key of Object.keys(this.config.getFiltersDict())){
+            // DropDown的选中项
+            if (this.filterSelectedOptions[key] instanceof Set){
+                this.filterSelectedOptions[key].clear();
+            // Text的选中项
+            }else if(typeof this.filterSelectedOptions[key] === 'string'){
+                this.filterSelectedOptions[key] = '';
+            // DateRange的选中项    
+            }else if(this.filterSelectedOptions[key] instanceof Array){
+                this.filterSelectedOptions[key] = [Model.initStartDate, Model.initEndDate];
+            }
+        }
+    }
+
     // 根据数据生成Filter字段的选项
     _genFilterOptions(){
 

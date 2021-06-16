@@ -59,18 +59,18 @@ export class EnhancedFilterFrame{
 
     // 所有panel都根据model数据更新一遍
     updateView(event){
+        this.gridPanel.updateView(event);
+        this.btnPanel.updateView(event);
         this.filterPanel.updateView(event);
         this.chartPanel.updateView(event);
-        this.btnPanel.updateView(event);
-        this.gridPanel.updateView(event);
     }
 
     // 所有panel都根据model数据更新一下控件的可见性
     updateFieldsVisibility(event){
+        this.gridPanel.updateFieldsVisibility(event);
+        this.btnPanel.updateFieldsVisibility(event);
         this.filterPanel.updateFieldsVisibility(event);
         this.chartPanel.updateFieldsVisibility(event);
-        this.btnPanel.updateFieldsVisibility(event);
-        this.gridPanel.updateFieldsVisibility(event);
 
         this._updateLayoutSize();
     }
@@ -314,11 +314,7 @@ class FilterPanel{
                         title : lm.btnName + '按钮',
                         fun : () => {
                             this.model.setFilterSelectedOptions(k, new Set(lm.selects));
-                            window.dispatchEvent(new CustomEvent("updateView", {
-                                detail: {
-                                    from : 'filter',
-                                }})
-                            );
+                            window.dispatchEvent(new CustomEvent("updateView"));
                         }
                     });
                 }
@@ -374,7 +370,10 @@ class BtnPanel {
         $('#' + this.ids.selectField).on( "click", this._selectField.bind(this) );
     }
 
-    _resetFilter(){}
+    _resetFilter(){
+        this.model.clearFilterSelectedOptions();
+        window.dispatchEvent(new CustomEvent("updateView"));
+    }
     
     // 弹出对话框，选择显示字段
     _selectField(){
