@@ -15,7 +15,7 @@ let config = getConfig(jql.getProject(), jql.getIssueType(), window.mode);
 
 // 获取数据
 console.log(" 获取数据");
-import {JiraIssueReader} from './JiraIssueReader.js'
+import {JiraIssueReader} from './jiraIssueReader.js'
 import { Model } from "./modelManager.js"
 let data = await new JiraIssueReader().read(jql.getRawJQL(), config.getFieldsDict())
 let model = new Model(data, config);
