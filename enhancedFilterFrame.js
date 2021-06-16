@@ -7,7 +7,7 @@ import { Config } from "./configManager.js"
 import { Model } from "./modelManager.js"
 import { CommonFilterView } from './filterView.js'
 import { GridView } from './gridView.js'
-import { ChartView } from './chartView.js'
+import { ChartView } from './chartView.js?q=1'
 
 export class EnhancedFilterFrame{
     constructor(config, model, isDebug=false){
