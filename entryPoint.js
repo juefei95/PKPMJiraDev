@@ -22,7 +22,7 @@ let model = new Model(data, config);
 
 // 展示框架
 console.log(" 展示框架");
-import { EnhancedFilterFrame } from "./enhancedFilterFrame.js";
+import { EnhancedFilterFrame } from "./enhancedFilterFrame.js?q=2";
 window.frame = await new EnhancedFilterFrame(config, model, false);
 console.log(" 框架正在准备...");
 await window.frame.prepare();
