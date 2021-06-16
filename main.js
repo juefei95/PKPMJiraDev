@@ -4,9 +4,9 @@ import {modifyTitle} from './titleModifier.js'
 import {getConfig}  from './configManager.js';
 import {JiraIssueReader} from './jiraIssueReader.js'
 import { Model } from "./modelManager.js"
-import { EnhancedFilterFrame } from "./enhancedFilterFrame.js?q=2";
+import { EnhancedFilterFrame } from "./enhancedFilterFrame.js?q=3";
 
-export function main(){
+export async function main(){
     // 解析JQL
     let jql = new JQL(window.jql);
     
