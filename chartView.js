@@ -24,6 +24,8 @@ export class ChartView{
 
         let canvas = $('#' + this.canvasId);
         if (this.chart) this.chart.destroy();
+
+        let _this = this;
         this.chart = new Chart(canvas, {
             type: 'pie',
             data: {
@@ -31,7 +33,7 @@ export class ChartView{
                 datasets: [{
                         //label: '状态',
                         data: Object.values(labelsData),
-                        backgroundColor: this._poolColors(Object.keys(labelsData).length),
+                        backgroundColor: _this._poolColors(Object.keys(labelsData).length),
                     }
                 ]
             },
@@ -48,11 +50,11 @@ export class ChartView{
                 onClick:  (c, i) => {
                     var e = i[0];
                     //console.log("index", e._index)
-                    var x_value = this.data.labels[e._index];
-                    var y_value = this.data.datasets[0].data[e._index];
+                    var x_value = _this.data.labels[e._index];
+                    var y_value = _this.data.datasets[0].data[e._index];
                     //console.log("x value", x_value);
                     //console.log("y value", y_value);
-                    this.model.setFilterSelectedOptions(field, new Set(x_value));
+                    _this.model.setFilterSelectedOptions(field, new Set(x_value));
                     window.dispatchEvent(new CustomEvent("updateView"));
                 },
                 plugins: {
