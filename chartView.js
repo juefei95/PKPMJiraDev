@@ -47,13 +47,10 @@ export class ChartView{
                 tooltips: {
                     enabled: false
                 },
-                onClick:  (c, i) => {
+                onClick:  function(c, i){
                     var e = i[0];
-                    //console.log("index", e._index)
-                    var x_value = _this.data.labels[e._index];
-                    var y_value = _this.data.datasets[0].data[e._index];
-                    //console.log("x value", x_value);
-                    //console.log("y value", y_value);
+                    var x_value = this.data.labels[e._index];
+                    //var y_value = this.data.datasets[0].data[e._index];
                     _this.model.setFilterSelectedOptions(field, new Set(x_value));
                     window.dispatchEvent(new CustomEvent("updateView"));
                 },
