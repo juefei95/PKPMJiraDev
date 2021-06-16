@@ -14,21 +14,29 @@ export async function main(){
     modifyTitle(jql.getProject(), jql.getIssueType(), window.mode);
     
     // 加载Config
-    console.log(" 加载Config");
+    printInfo(" 加载Config");
     let config = getConfig(jql.getProject(), jql.getIssueType(), window.mode);
     //console.log(config.issueType);
     
     // 获取数据
-    console.log(" 获取数据");
+    printInfo(" 获取数据");
     let data = await new JiraIssueReader().read(jql.getRawJQL(), config.getFieldsDict())
     let model = new Model(data, config);
     
     // 展示框架
-    console.log(" 展示框架");
+    printInfo(" 展示框架");
     window.frame = await new EnhancedFilterFrame(config, model, false);
-    console.log(" 框架正在准备...");
+    printInfo(" 框架正在准备...");
     await window.frame.prepare();
-    console.log(" 显示框架")
+    printInfo(" 显示框架")
     window.frame.show();
+
+}
+
+function printInfo(info){
+    let date = new Date().toLocaleString()
+    let p = document.createElement('p');
+    p.innerHTML = date + " " + info + '<br />';
+    document.body.appendChild(p);
 
 }
