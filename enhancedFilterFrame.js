@@ -281,7 +281,7 @@ class FilterPanel{
     }
     updateView(event){
         // 如果更新视图是由Filter发起，则Filter自己可以不更新
-        if (event && "detail" in event && event.detail.from === "filter") return;
+        if (event && "detail" in event && from in event.detail && event.detail.from === "filter") return;
         this.filters.forEach(f => {
             f.updateView();
         });
