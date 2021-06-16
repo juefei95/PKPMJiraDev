@@ -48,6 +48,14 @@ export class JiraIssueReader{
             'customfield_10102' : i => 'customfield_10102' in i.fields && i.fields.customfield_10102 !== null   ? i.fields.customfield_10102                    : JiraIssueReader.emptyText,
             // 变更集号
             'customfield_10703' : i => 'customfield_10703' in i.fields && i.fields.customfield_10703 !== null   ? i.fields.customfield_10703                    : JiraIssueReader.emptyText,
+            // PC流程的研发计划提测时间
+            'customfield_11308' : i => 'customfield_11308' in i.fields && i.fields.customfield_11308 !== null   ? new Date(i.fields.customfield_11308)          : JiraIssueReader.invalidDate,
+            // PC流程的研发实际提测时间
+            'customfield_11409' : i => 'customfield_11409' in i.fields && i.fields.customfield_11409 !== null   ? new Date(i.fields.customfield_11409)          : JiraIssueReader.invalidDate,
+            // PC流程的测试计划结束时间
+            'customfield_11312' : i => 'customfield_11312' in i.fields && i.fields.customfield_11312 !== null   ? new Date(i.fields.customfield_11312)          : JiraIssueReader.invalidDate,
+            // PC流程的测试备注
+            'customfield_11443' : i => 'customfield_11443' in i.fields && i.fields.customfield_11443 !== null   ? i.fields.customfield_11443                    : JiraIssueReader.emptyText,
         },
         'changelog' : i => {
             let cl = [];

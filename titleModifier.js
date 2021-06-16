@@ -8,5 +8,7 @@ export function modifyTitle(projectType, issueType, mode){
         window.document.title = "结构需求过滤器";
     }else if (projectType === 'PC' && issueType === '故障' && mode === 'filter') {
         window.document.title = "PC Bug过滤器";
+    }else if (projectType === 'PC' && issueType === 'EPIC' && mode === 'filter') {
+        window.document.title = "PC Epic过滤器";
     }
 }

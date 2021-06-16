@@ -10,7 +10,10 @@ export function getConfig(projectType, issueType, mode){
         return new StructStoryFilter(projectType, issueType, mode)
     }else if (projectType === 'PC' && issueType === '故障' && mode === 'filter') {
         return new PCBugFilter(projectType, issueType, mode);
+    }else if (projectType === 'PC' && issueType === 'EPIC' && mode === 'filter') {
+        return new PCEpicFilter(projectType, issueType, mode);
     }
+    throw "error: projectType=" + projectType + " issueType=" + issueType + " mode=" + mode
     return new Config(projectType, issueType, mode);
 }
 
@@ -274,11 +277,11 @@ export class Config{
                 "filter" : {
                     type : 'DateRange',
                     id : 'programPlanCommitDateFilter',
-                    label : '研发计划日期',
+                    label : '研发计划提测',
                     width : '80px',
                 },
                 "grid" : {
-                    caption: '研发计划日期',
+                    caption: '研发计划提测',
                     sortable: true,
                     size: '100px',
                     render: function (record) {
@@ -286,6 +289,50 @@ export class Config{
                             return '<div><i style="color:#A9A9A9">Empty Field</i></div>';
                         } else {
                             return '<div>' + date2String(record.programPlanCommitDate) + '</div>';
+                        }
+                    },
+                },
+
+            },
+            "programActualCommitDate" : {
+                "visible" : true,
+                "filter" : {
+                    type : 'DateRange',
+                    id : 'programActualCommitDateFilter',
+                    label : '研发实际提测',
+                    width : '80px',
+                },
+                "grid" : {
+                    caption: '研发实际提测',
+                    sortable: true,
+                    size: '100px',
+                    render: function (record) {
+                        if (record.programActualCommitDate == JiraIssueReader.invalidDate) {
+                            return '<div><i style="color:#A9A9A9">Empty Field</i></div>';
+                        } else {
+                            return '<div>' + date2String(record.programActualCommitDate) + '</div>';
+                        }
+                    },
+                },
+
+            },
+            "testPlanEndDate" : {
+                "visible" : true,
+                "filter" : {
+                    type : 'DateRange',
+                    id : 'testPlanEndDateFilter',
+                    label : '测试计划结束',
+                    width : '80px',
+                },
+                "grid" : {
+                    caption: '测试计划结束',
+                    sortable: true,
+                    size: '100px',
+                    render: function (record) {
+                        if (record.testPlanEndDate == JiraIssueReader.invalidDate) {
+                            return '<div><i style="color:#A9A9A9">Empty Field</i></div>';
+                        } else {
+                            return '<div>' + date2String(record.testPlanEndDate) + '</div>';
                         }
                     },
                 },
@@ -361,6 +408,21 @@ export class Config{
                     },
                 },
                 
+            },
+            "testComment" :{
+                "visible" : true,
+                "grid" : {
+                    caption: '测试备注',
+                    sortable: true,
+                    size: '200px',
+                    render: function (record) {
+                        if (record.testComment == JiraIssueReader.emptyText) {
+                            return '<div><i style="color:#A9A9A9">' + record.testComment + '</i></div>';
+                        } else {
+                            return '<div>' + record.testComment + '</div>';
+                        }
+                    },
+                },
             },
         };
 
@@ -507,5 +569,23 @@ class PCBugFilter extends Config{
         this.config.epicId["path"]     = ["fields", "customfield_10102"];
         this.config.epicId["visible"]  = false;
         this.config.fixedChangeset["path"]     = ["fields", "customfield_10703"];
+    }
+}
+
+class PCEpicFilter extends Config{
+    constructor(projectType, issueType, mode){
+        super(projectType, issueType, mode);
+    }
+
+    // 给配置补充字段的路径，有路径的字段才是需要获取jira数据的字段
+    _modifyConfig(){
+        this.config.recid["path"]                       = ["key"];
+        this.config.category["path"]                    = ["fields", "components"];
+        this.config.title["path"]                       = ["fields", "summary"];
+        this.config.status["path"]                      = ["fields", "status"];
+        this.config.programPlanCommitDate["path"]       = ["fields", "customfield_11308"];
+        this.config.programActualCommitDate["path"]     = ["fields", "customfield_11409"];
+        this.config.testPlanEndDate["path"]             = ["fields", "customfield_11312"];
+        this.config.testComment["path"]                 = ["fields", "customfield_11443"];
     }
 }
