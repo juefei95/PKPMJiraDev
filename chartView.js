@@ -45,7 +45,7 @@ export class ChartView{
                 tooltips: {
                     enabled: false
                 },
-                onClick: function (c, i) {
+                onClick:  (c, i) => {
                     var e = i[0];
                     //console.log("index", e._index)
                     var x_value = this.data.labels[e._index];
