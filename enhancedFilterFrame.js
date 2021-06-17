@@ -407,7 +407,7 @@ class BtnPanel {
 
         let _this = this;
         w2popup.open({
-            title: 'Popup Title',
+            title: '请选择显示的字段',
             body: newDiv.outerHTML,
             buttons: `
                 <button class="w2ui-btn" onclick="w2popup['save'] = false;w2popup.close();">Close</button>
