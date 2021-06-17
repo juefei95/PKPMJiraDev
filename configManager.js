@@ -14,6 +14,10 @@ export function getConfig(projectType, issueType, mode){
         return new PCBugFilter(projectType, issueType, mode);
     }else if (projectType === 'PC' && issueType === 'EPIC' && mode === 'filter') {
         return new PCEpicFilter(projectType, issueType, mode);
+    }else if (projectType === 'BIMMEP' && issueType === '故事' && mode === 'filter') {
+        return new MEPStoryFilter(projectType, issueType, mode);
+    }else if (projectType === 'BIMMEP' && issueType === '故障' && mode === 'filter') {
+        return new MEPBugFilter(projectType, issueType, mode);
     }
     throw "error: JQL中projectType、issueType、mode有问题"
 }
@@ -60,6 +64,31 @@ export class Config{
                             return '<div><i style="color:#A9A9A9">' + record.category + '</i></div>';
                         } else {
                             return '<div>' + record.category + '</div>';
+                        }
+                    },
+                },
+            },
+            "MEPCategory" : {
+                "visible" : true,
+                "chart" : {
+                    "visible" : false,
+                },
+                "filter" : {
+                    type : 'DropDown',
+                    id : 'MEPCategoryFilter',
+                    label : 'MEP专业',
+                    width : '200px',
+                    placeholder : "请选择MEP专业",
+                },
+                "grid" : {
+                    caption: 'MEP专业',
+                    sortable: true,
+                    size: '100px',
+                    render: function (record) {
+                        if (record.MEPCategory == JiraIssueReader.emptyText) {
+                            return '<div><i style="color:#A9A9A9">' + record.MEPCategory + '</i></div>';
+                        } else {
+                            return '<div>' + record.MEPCategory + '</div>';
                         }
                     },
                 },
@@ -308,11 +337,11 @@ export class Config{
                 "filter" : {
                     type : 'DateRange',
                     id : 'programPlanCommitDateFilter',
-                    label : '研发计划提测',
+                    label : '研发计划提验',
                     width : '80px',
                 },
                 "grid" : {
-                    caption: '研发计划提测',
+                    caption: '研发计划提验',
                     sortable: true,
                     size: '100px',
                     render: function (record) {
@@ -325,23 +354,23 @@ export class Config{
                 },
 
             },
-            "programActualCommitDate" : {
+            "designerActualCommitTestDate" : {
                 "visible" : true,
                 "filter" : {
                     type : 'DateRange',
-                    id : 'programActualCommitDateFilter',
-                    label : '研发实际提测',
+                    id : 'designerActualCommitTestDateFilter',
+                    label : '产品实际提测',
                     width : '80px',
                 },
                 "grid" : {
-                    caption: '研发实际提测',
+                    caption: '产品实际提测',
                     sortable: true,
                     size: '100px',
                     render: function (record) {
-                        if (record.programActualCommitDate == JiraIssueReader.invalidDate) {
+                        if (record.designerActualCommitTestDate == JiraIssueReader.invalidDate) {
                             return '<div><i style="color:#A9A9A9">Empty Field</i></div>';
                         } else {
-                            return '<div>' + date2String(record.programActualCommitDate) + '</div>';
+                            return '<div>' + date2String(record.designerActualCommitTestDate) + '</div>';
                         }
                     },
                 },
@@ -390,6 +419,31 @@ export class Config{
                             return '<div><i style="color:#A9A9A9">' + record.bugPriority + '</i></div>';
                         } else {
                             return '<div>' + record.bugPriority + '</div>';
+                        }
+                    },
+                },
+            },
+            "bugPhase" : {
+                "visible" : true,
+                "chart" : {
+                    "visible" : false,
+                },
+                "filter" : {
+                    type : 'DropDown',
+                    id : 'bugPhaseFilter',
+                    label : '发现阶段',
+                    width : '200px',
+                    placeholder : "请选择Bug发现阶段",
+                },
+                "grid" : {
+                    caption: '发现阶段',
+                    sortable: true,
+                    size: '100px',
+                    render: function (record) {
+                        if (record.bugPhase == JiraIssueReader.emptyText) {
+                            return '<div><i style="color:#A9A9A9">' + record.bugPhase + '</i></div>';
+                        } else {
+                            return '<div>' + record.bugPhase + '</div>';
                         }
                     },
                 },
@@ -781,8 +835,57 @@ class PCEpicFilter extends Config{
         this.config.developer["path"]                   = ["fields", "assignee"];
         this.config.tester["path"]                      = ["fields", "customfield_10901"];
         this.config.programPlanCommitDate["path"]       = ["fields", "customfield_11308"];
-        this.config.programActualCommitDate["path"]     = ["fields", "customfield_11409"];
+        this.config.designerActualCommitTestDate["path"]     = ["fields", "customfield_11409"];
         this.config.testPlanEndDate["path"]             = ["fields", "customfield_11312"];
         this.config.testComment["path"]                 = ["fields", "customfield_11443"];
+    }
+}
+
+class MEPStoryFilter extends Config{
+    constructor(projectType, issueType, mode){
+        super(projectType, issueType, mode);
+    }
+
+    // 给配置补充字段的路径，有路径的字段才是需要获取jira数据的字段
+    _modifyConfig(){
+        this.config.recid["path"]                               = ["key"];
+        this.config.category["path"]                            = ["fields", "components"];
+        this.config.MEPCategory["path"]                         = ["fields", "customfield_10701"];
+        this.config.title["path"]                               = ["fields", "summary"];
+        this.config.status["path"]                              = ["fields", "status"];
+        this.config.status["JQLValue"]                          = {"处理中" : "In Progress", "完成" : "Done"};
+        this.config.fixVersions["path"]                         = ["fields", "fixVersions"];
+        this.config.designer["path"]                            = ["fields", "reporter"];
+        this.config.developer["path"]                           = ["fields", "assignee"];
+        this.config.tester["path"]                              = ["fields", "customfield_10539"];
+        this.config.programPlanCommitDate["path"]               = ["fields", "customfield_11308"];
+        this.config.designerActualCommitTestDate["path"]        = ["fields", "customfield_11409"];
+        this.config.testPlanEndDate["path"]                     = ["fields", "customfield_11312"];
+    }
+}
+
+
+class MEPBugFilter extends Config{
+    constructor(projectType, issueType, mode){
+        super(projectType, issueType, mode);
+    }
+
+    // 给配置补充字段的路径，有路径的字段才是需要获取jira数据的字段
+    _modifyConfig(){
+        this.config.recid["path"]                       = ["key"];
+        this.config.category["path"]                    = ["fields", "components"];
+        this.config.category["chart"]["visible"]        = false;
+        this.config.MEPCategory["path"]                 = ["fields", "customfield_10701"];
+        this.config.title["path"]                       = ["fields", "summary"];
+        this.config.status["path"]                      = ["fields", "status"];
+        this.config.status["JQLValue"]                  = {"开放" : "Open", "重新打开" : "Reopened", "已解决" : "Resolved", "已关闭" : "Closed"};
+        this.config.bugPriority["path"]                 = ["fields", "priority"];
+        this.config.bugPriority["chart"]["visible"]     = true;
+        this.config.bugPhase["path"]                    = ["fields", "customfield_10408"];
+        this.config.affectVersions["path"]              = ["fields", "versions"];
+        this.config.fixVersions["path"]                 = ["fields", "fixVersions"];
+        this.config.epicId["path"]                      = ["fields", "customfield_10102"];
+        this.config.epicId["visible"]                   = false;
+        this.config.fixedChangeset["path"]              = ["fields", "customfield_10703"];
     }
 }

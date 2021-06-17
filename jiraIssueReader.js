@@ -140,6 +140,21 @@ export class JiraIssueReader{
                 'f' : i => 'customfield_10901' in i.fields && i.fields.customfield_10901 !== null && i.fields.customfield_10901.length > 0   ? i.fields.customfield_10901[0].displayName : JiraIssueReader.emptyText,
                 'jqlName' : '测试人员（多人）',
             },
+            // 机电流程的故事的测试人员
+            'customfield_10539' : {
+                'f' : i => 'customfield_10539' in i.fields && i.fields.customfield_10539 !== null   ? i.fields.customfield_10539.displayName        : JiraIssueReader.emptyText,
+                'jqlName' : '测试人员',
+            },
+            // 机电流程的故事的专业选择
+            'customfield_10701' : {
+                'f' : i => 'customfield_10701' in i.fields && i.fields.customfield_10701 !== null   ? i.fields.customfield_10701.value              : JiraIssueReader.emptyText,
+                'jqlName' : 'MEP专业选择',
+            },
+            // Bug发现阶段
+            'customfield_10408' : {
+                'f' : i => 'customfield_10408' in i.fields && i.fields.customfield_10408 !== null   ? i.fields.customfield_10408.value              : JiraIssueReader.emptyText,
+                'jqlName' : 'bug发现阶段',
+            },
         },
         'changelog' : i => {
             let cl = [];

@@ -12,5 +12,9 @@ export function modifyTitle(projectType, issueType, mode){
         window.document.title = "PC Bug过滤器";
     }else if (projectType === 'PC' && issueType === 'EPIC' && mode === 'filter') {
         window.document.title = "PC Epic过滤器";
+    }else if (projectType === 'BIMMEP' && issueType === '故事' && mode === 'filter') {
+        window.document.title = "MEP 需求过滤器";
+    }else if (projectType === 'BIMMEP' && issueType === '故障' && mode === 'filter') {
+        window.document.title = "MEP Bug过滤器";
     }
 }
