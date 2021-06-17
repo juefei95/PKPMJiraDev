@@ -2,7 +2,7 @@
 // 打开新的标签页，展示更好用的筛选器或者报告
 // mode(string) - 模式 filter或report
 // scriptUrl - 新标签页的入口URL
-async function showEnhanceTab(mode, scriptUrl){
+async function showEnhanceTab(mode, scriptUrl, isDebug = false){
     try{
         let jql = getJQL();
         let w = window.open();
@@ -12,6 +12,7 @@ async function showEnhanceTab(mode, scriptUrl){
         }
         w.jql = jql;
         w.mode = mode;
+        w.isDebug = isDebug;
         // 修改新打开页面的title
         let tt = document.createElement("title");
         tt.innerHTML = '~~';

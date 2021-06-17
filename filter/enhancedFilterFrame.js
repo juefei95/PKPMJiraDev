@@ -10,10 +10,9 @@ import { GridView } from './gridView.js'
 import { ChartView } from './chartView.js?q=1'
 
 export class EnhancedFilterFrame{
-    constructor(config, model, isDebug=false){
+    constructor(config, model){
         this.config = config;
         this.model = model;
-        this.isDebug = isDebug;
         this.ids = {
             outmostDiv                      : 'outmostDiv',                     // 最外层的Div
             outmostLayoutName               : 'outmostLayoutName',                    // 最外层级的w2ui的布局名，用来后续引用用
@@ -133,7 +132,7 @@ export class EnhancedFilterFrame{
 
     async _loadExternalResource(){
         
-        let host = this.isDebug ? "http://127.0.0.1:8887/" : "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/";
+        let host = window.isDebug ? "http://127.0.0.1:8887/resource/" : "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/";
         let loadList = [
             // ------------------- 依赖jquery和jquery-ui
             host + "jquery-2.2.4.min.js",
@@ -154,8 +153,6 @@ export class EnhancedFilterFrame{
             //-------- 加载 pinyin，用于拼音过滤 -------------
             host + "pinyin_dict_notone.js",
             host + "pinyinUtil.js",
-            //
-            host + "JiraBI.js?q=1",
         ];
 
         for (const s of loadList) {
