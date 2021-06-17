@@ -520,9 +520,9 @@ class ChartPanel {
                         <canvas id="${k}Canvas"></canvas>
                     </div>
                 </li>
-                </ul>
             `;
         }
+        chartH5 += '</ul>';
         return chartH5;
     }
 
