@@ -5,8 +5,13 @@ import {getConfig}  from './configManager.js';
 import {JiraIssueReader} from './jiraIssueReader.js'
 import { Model } from "./modelManager.js"
 import { EnhancedFilterFrame } from "./enhancedFilterFrame.js?q=3";
+import { hello } from "./report/main.js";
 
 export async function main(){
+    if (window.mode === 'report') {
+        hello();
+        return;
+    }
     try {
         // 解析JQL
         let jql = new JQL(window.jql);
