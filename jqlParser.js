@@ -6,6 +6,8 @@ export class JQL{
     constructor(jql){
         this.rawJql = jql.toUpperCase();
         this.jql = {};
+        this.orderPart = "";
+        this.jqlWithoutOrderPart = "";
         this._parse();
     }
 
@@ -24,12 +26,35 @@ export class JQL{
         return this.jql["ISSUETYPE"];
     }
 
+    // 生成新的JQL
+    genNewJQL(newCondition){
+        let s = this.jqlWithoutOrderPart;
+        for (const [k,v] of Object.entries(newCondition)) {
+            // DropDown的选中项
+            if (v instanceof Set){
+                s += " AND " + k + " in (" + Array.from(v).map(x => '"'+x+'"').join(',') + ")";
+            // Text的选中项
+            }else if( typeof v === 'string'){
+                s += " AND " + k + " ~ '" + v + "'";
+            // DateRange的选中项    
+            }else if(v instanceof Array){
+                let d1 = `${v[0].getFullYear()}-${v[0].getMonth() + 1}-${v[0].getDate()}`
+                let d2 = `${v[1].getFullYear()}-${v[1].getMonth() + 1}-${v[1].getDate()}`
+                s += " AND " + k + " >= " + d1 + " AND " + k + " <= " + d2;
+            }
+        }
+        return s;
+    }
+
     // 解析JQL
     _parse(){
         // 先找排序字段
         let startIndexOfOrder = this.rawJql.indexOf('ORDER');
         if (startIndexOfOrder !== -1) {
             this.orderPart = ' ' + this.rawJql.slice(startIndexOfOrder);
+            this.jqlWithoutOrderPart = this.rawJql.slice(0, startIndexOfOrder);
+        }else{
+            this.jqlWithoutOrderPart = this.rawJql;
         }
 
         // 再分解其他搜索条件

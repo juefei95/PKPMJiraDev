@@ -21,7 +21,7 @@ export async function main(){
     // 获取数据
     printInfo(" 获取数据");
     let data = await new JiraIssueReader().read(jql.getRawJQL(), config.getFieldsDict())
-    let model = new Model(data, config);
+    let model = new Model(data, config, jql);
     
     // 展示框架
     printInfo(" 展示框架");

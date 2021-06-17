@@ -344,6 +344,7 @@ class BtnPanel {
         this.ids = {
             resetFilter : 'resetFilter',
             selectField : 'selectField',
+            openJQL : 'openJQL',
         };
     }
     createHtml(){
@@ -352,6 +353,7 @@ class BtnPanel {
             <div style="float:left;margin:4px">
                 <button class="w2ui-btn" id="${this.ids.resetFilter}">重置筛选 </button>
                 <button class="w2ui-btn" id="${this.ids.selectField}">字段选择 </button>
+                <button class="w2ui-btn" id="${this.ids.openJQL}">导出JQL </button>
             </div>
         `;
         return html;
@@ -368,6 +370,9 @@ class BtnPanel {
 
         // 字段开关回调函数
         $('#' + this.ids.selectField).on( "click", this._selectField.bind(this) );
+
+        // 导出JQL回调函数
+        $('#' + this.ids.openJQL).on( "click", this._openJQL.bind(this) );
     }
 
     _resetFilter(){
@@ -440,6 +445,12 @@ class BtnPanel {
                 }
            },
         });
+    }
+
+    // 导出JQL
+    _openJQL(){
+        let newJQL = this.model.genJQLWithSelection();
+        window.open("https://jira.pkpm.cn/issues/?jql=" + encodeURIComponent(newJQL));
     }
 }
 

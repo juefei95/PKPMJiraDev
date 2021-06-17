@@ -130,7 +130,11 @@ export class Config{
                         if (record.confluenceLink == JiraIssueReader.emptyText) {
                             return '<div><i style="color:#A9A9A9">' + record.title + '</i></div>';
                         } else {
-                            return '<div><a target="_blank" href="' + record.confluenceLink + '">' + record.title + '</a></div>';
+                            if (record.confluenceLink) {
+                                return '<div><a target="_blank" href="' + record.confluenceLink + '">' + record.title + '</a></div>';
+                            }else{
+                                return '<div>' + record.title + '</div>';
+                            }
                         }
                     },
                 },
@@ -518,6 +522,20 @@ export class Config{
     }
 
 
+    // 获得字段的path
+    getFieldPath(field){
+        return this.config[field]["path"];
+    }
+
+    // 将字段的Value换成JQL搜索时的Value
+    getFieldJQLValue(field, value){
+        if ("JQLValue" in this.config[field] && value in this.config[field]["JQLValue"]) {
+            return this.config[field]["JQLValue"][value];
+        }else{
+            return value;
+        }
+    }
+
     // 清理不需要的字段
     _purge(){
         for (const [k,v] of Object.entries(this.config)){
@@ -542,6 +560,7 @@ class StructStoryFilter extends Config{
         this.config.category["path"]        = ["fields", "components"];
         this.config.title["path"]           = ["fields", "summary"];
         this.config.status["path"]          = ["fields", "status"];
+        this.config.status["JQLValue"]          = {"完成" : "Done"};
         this.config.designer["path"]        = ["fields", "customfield_10537"];
         this.config.developer["path"]       = ["fields", "customfield_10538"];
         this.config.tester["path"]          = ["fields", "customfield_10539"];
@@ -563,6 +582,7 @@ class PCBugFilter extends Config{
         this.config.category["path"]        = ["fields", "components"];
         this.config.title["path"]           = ["fields", "summary"];
         this.config.status["path"]          = ["fields", "status"];
+        this.config.status["JQLValue"]          = {"开放" : "Open", "重新打开" : "Reopened", "已解决" : "Resolved", "已关闭" : "Closed"};
         this.config.bugPriority["path"]     = ["fields", "priority"];
         this.config.affectVersions["path"]     = ["fields", "versions"];
         this.config.fixVersions["path"]     = ["fields", "fixVersions"];
@@ -583,6 +603,7 @@ class PCEpicFilter extends Config{
         this.config.category["path"]                    = ["fields", "components"];
         this.config.title["path"]                       = ["fields", "summary"];
         this.config.status["path"]                      = ["fields", "status"];
+        this.config.status["JQLValue"]                  = {"处理中" : "In Progress", "完成" : "Done"};
         this.config.programPlanCommitDate["path"]       = ["fields", "customfield_11308"];
         this.config.programActualCommitDate["path"]     = ["fields", "customfield_11409"];
         this.config.testPlanEndDate["path"]             = ["fields", "customfield_11312"];

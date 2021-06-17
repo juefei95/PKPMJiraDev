@@ -3,7 +3,9 @@
 */
 
 import {Config}  from './configManager.js';
+import {JQL}  from './jqlParser.js';
 import {date2String} from './toolSet.js'
+import {JiraIssueReader} from './jiraIssueReader.js'
 
 export class Model{
 
@@ -12,9 +14,10 @@ export class Model{
     static initEndDate = new Date('2999-01-01');
 
 
-    constructor(issues, config){
+    constructor(issues, config, jql){
         this.issues = issues;
         this.config = config;
+        this.jql = jql;
         this.filterOptions = {};
         this.filterSelectedOptions = {};
         
@@ -78,6 +81,32 @@ export class Model{
                 this.filterSelectedOptions[key] = [Model.initStartDate, Model.initEndDate];
             }
         }
+    }
+
+    // 根据筛选条件生成新的JQL
+    genJQLWithSelection(){
+        let validSelection = {};
+        let reader = new JiraIssueReader();
+        for (const key of Object.keys(this.config.getFiltersDict())){
+            // DropDown的选中项
+            if (this.filterSelectedOptions[key] instanceof Set && this.filterSelectedOptions[key].size !== 0){
+                let jqlName = reader.getJQLName(this.config.getFieldPath(key));
+                let jqlValues = new Set();
+                for (const v of this.filterSelectedOptions[key]) {
+                    jqlValues.add(this.config.getFieldJQLValue(key, v));
+                }
+                validSelection[jqlName] = jqlValues;
+            // Text的选中项
+            }else if(typeof this.filterSelectedOptions[key] === 'string' && this.filterSelectedOptions[key] !== ""){
+                let jqlName = reader.getJQLName(this.config.getFieldPath(key));
+                validSelection[jqlName] = this.filterSelectedOptions[key];
+            // DateRange的选中项    
+            }else if(this.filterSelectedOptions[key] instanceof Array && this.filterSelectedOptions[key][0]!==Model.initStartDate &&  this.filterSelectedOptions[key][0]!==Model.initEndDate){
+                let jqlName = reader.getJQLName(this.config.getFieldPath(key));
+                validSelection[jqlName] = this.filterSelectedOptions[key];
+            }
+        }
+        return this.jql.genNewJQL(validSelection);
     }
 
     // 根据数据生成Filter字段的选项
