@@ -68,7 +68,7 @@ export class JQL{
             indexOfAnd = this.rawJql.indexOf('AND', lastIndex);
         }
 
-        let s = this.rawJql.slice(lastIndex, startIndexOfOrder);
+        let s = this.rawJql.slice(lastIndex, startIndexOfOrder===-1 ? this.rawJql.length : startIndexOfOrder);
         const [key, value] = this._parseKeyValue(s);
         this.jql[key] = value;
     }
