@@ -731,24 +731,24 @@ var theApp = {
     initRequirementFrame : async function(){
         let loadList = [
             // ------------------- 依赖jquery和jquery-ui
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/jquery-2.2.4.min.js",
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/jquery-ui.min.js",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/jquery-2.2.4.min.js",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/jquery-ui.min.js",
             // ------------------- 依赖w2ui------------------
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/w2ui_v1.5_modify.min.js",
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/w2ui-1.5.min.css",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/w2ui_v1.5_modify.min.js",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/w2ui-1.5.min.css",
             //-------- chart.js，用于chart的绘制，目前必须用2.9版本的，因为chartlabel这个js还没适配V3以上的chart.js--
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/Chart.min.js",
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/chartjs-plugin-datalabels.min.js",
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/Chart.min.css",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/Chart.min.js",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/chartjs-plugin-datalabels.min.js",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/Chart.min.css",
             // ------------------- 加载 Select2，用于筛选器 ------------------
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/select2.min.js",
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/select2.min.css",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/select2.min.js",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/select2.min.css",
             //-------- 加载 contextMenu，用于控件菜单--------------
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/contextMenu.min.js",
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/contextMenu.min.css",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/contextMenu.min.js",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/contextMenu.min.css",
             //-------- 加载 pinyin，用于拼音过滤 -------------
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/pinyin_dict_notone.js",
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/pinyinUtil.js",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/pinyin_dict_notone.js",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/pinyinUtil.js",
             //
             "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/JiraBI.js?q=1",
         ];
@@ -757,24 +757,24 @@ var theApp = {
     initBugFrame : async function(){
         let loadList = [
             // ------------------- 依赖jquery和jquery-ui
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/jquery-2.2.4.min.js",
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/jquery-ui.min.js",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/jquery-2.2.4.min.js",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/jquery-ui.min.js",
             // ------------------- 依赖w2ui------------------
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/w2ui_v1.5_modify.min.js",
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/w2ui-1.5.min.css",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/w2ui_v1.5_modify.min.js",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/w2ui-1.5.min.css",
             //-------- chart.js，用于chart的绘制，目前必须用2.9版本的，因为chartlabel这个js还没适配V3以上的chart.js--
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/Chart.min.js",
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/chartjs-plugin-datalabels.min.js",
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/Chart.min.css",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/Chart.min.js",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/chartjs-plugin-datalabels.min.js",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/Chart.min.css",
             // ------------------- 加载 Select2，用于筛选器 ------------------
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/select2.min.js",
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/select2.min.css",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/select2.min.js",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/select2.min.css",
             //-------- 加载 contextMenu，用于控件菜单--------------
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/contextMenu.min.js",
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/contextMenu.min.css",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/contextMenu.min.js",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/contextMenu.min.css",
             //-------- 加载 pinyin，用于拼音过滤 -------------
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/pinyin_dict_notone.js",
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/pinyinUtil.js",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/pinyin_dict_notone.js",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/pinyinUtil.js",
             //
             "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/JiraBI.js?q=1",
         ];
@@ -783,14 +783,14 @@ var theApp = {
     initRequirementReportFrame : async function(){
         let loadList = [
             // ------------------- 依赖jquery和jquery-ui
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/jquery-2.2.4.min.js",
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/jquery-ui.min.js",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/jquery-2.2.4.min.js",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/jquery-ui.min.js",
             // ------------------- 依赖w2ui------------------
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/w2ui_v1.5_modify.min.js?q=1",
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/w2ui-1.5.min.css",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/w2ui_v1.5_modify.min.js?q=1",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/w2ui-1.5.min.css",
             //-------- chart.js，用于chart的绘制，目前必须用2.9版本的，因为chartlabel这个js还没适配V3以上的chart.js--
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/Chart.min.js",
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/Chart.min.css",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/Chart.min.js",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/Chart.min.css",
 
             "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/JiraReport.js?q=2",
         ];
@@ -799,14 +799,14 @@ var theApp = {
     initBugReportFrame : async function(){
         let loadList = [
             // ------------------- 依赖jquery和jquery-ui
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/jquery-2.2.4.min.js",
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/jquery-ui.min.js",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/jquery-2.2.4.min.js",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/jquery-ui.min.js",
             // ------------------- 依赖w2ui------------------
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/w2ui_v1.5_modify.min.js?q=1",
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/w2ui-1.5.min.css",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/w2ui_v1.5_modify.min.js?q=1",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/w2ui-1.5.min.css",
             //-------- chart.js，用于chart的绘制，目前必须用2.9版本的，因为chartlabel这个js还没适配V3以上的chart.js--
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/Chart.min.js",
-            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/Chart.min.css",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/Chart.min.js",
+            "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/Chart.min.css",
 
             "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/JiraReport.js?q=2",
         ];
