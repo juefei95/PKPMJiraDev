@@ -1,4 +1,7 @@
 
 import {main} from './main.js';
 
-await main();
+setTimeout(function(){
+    main(); 
+}, 0);
+

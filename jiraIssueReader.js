@@ -164,11 +164,18 @@ export class JiraIssueReader{
                 fields.push(v[v.length - 1]);
             }
         });
-        let issues = await this._fetchJqlIssues(jql, fields, 1000);
+        // 先获取jql的总数目
+        let eachTimeFetchNum = 1000;        // 每次从Jira服务器获取issue的数目为1000，这个是服务器规定的
+        let jqlResultNum = await this._fetchJqlResultNum(jql);
+        let issues = [];
+        for (let i=0; i<Math.ceil(jqlResultNum.total/eachTimeFetchNum); ++i){
+            let eachIssues = await this._fetchJqlIssues(jql, fields, eachTimeFetchNum, i*eachTimeFetchNum);
+            issues = issues.concat(eachIssues.issues);
+        }
 
         // 从issues中提取值
         let data = [];
-        for (const i of issues.issues){
+        for (const i of issues){
             let o = {};
             // 循环每个待提取的字段
             for (const [k, v] of Object.entries(fieldsDict)){
@@ -187,14 +194,35 @@ export class JiraIssueReader{
         return this._getDictValue(JiraIssueReader.fieldReadConfig, path)['jqlName']
     }
     
+    // 获取JQL的总数目
+    async _fetchJqlResultNum(){
+        return fetch('https://jira.pkpm.cn/rest/api/2/search/', {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            body: JSON.stringify({jql: jql,
+                                maxResults : 0,
+                                }), // must match 'Content-Type' header
+            headers: {
+                'user-agent': 'Mozilla/4.0 MDN Example',
+                'content-type': 'application/json'
+            },
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, same-origin, *omit
+            mode: 'cors', // no-cors, cors, *same-origin
+            redirect: 'follow', // manual, *follow, error
+            //referrer: 'no-referrer', // *client, no-referrer
+        }).then(response => response.json());
+    }
+
+
     // 获取Issues
     // 参考 https://docs.atlassian.com/software/jira/docs/api/REST/7.6.1/#api/2/search-search
-    async _fetchJqlIssues(jql, fields, maxResults){
+    async _fetchJqlIssues(jql, fields, maxResults, startAt){
         let fields2 = fields.filter(f => f != "changelog");
         let expand = fields.includes("changelog") ? ["changelog"] : [];
         return fetch('https://jira.pkpm.cn/rest/api/2/search/', {
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             body: JSON.stringify({jql: jql,
+                                startAt : startAt,
                                 maxResults : maxResults,
                                 fields: fields2,
                                 expand : expand,
