@@ -15,8 +15,7 @@ export function getConfig(projectType, issueType, mode){
     }else if (projectType === 'PC' && issueType === 'EPIC' && mode === 'filter') {
         return new PCEpicFilter(projectType, issueType, mode);
     }
-    throw "error: projectType=" + projectType + " issueType=" + issueType + " mode=" + mode
-    return new Config(projectType, issueType, mode);
+    throw "error: JQL中projectType、issueType、mode有问题"
 }
 
 export class Config{
