@@ -8,6 +8,8 @@ import {date2String} from './toolSet.js'
 export function getConfig(projectType, issueType, mode){
     if (projectType === 'JGVIRUS' && issueType === '故事' && mode === 'filter') {
         return new StructStoryFilter(projectType, issueType, mode)
+    }else if (projectType === 'JGVIRUS' && issueType === '故障' && mode === 'filter') {
+        return new StructBugFilter(projectType, issueType, mode)
     }else if (projectType === 'PC' && issueType === '故障' && mode === 'filter') {
         return new PCBugFilter(projectType, issueType, mode);
     }else if (projectType === 'PC' && issueType === 'EPIC' && mode === 'filter') {
@@ -174,6 +176,32 @@ export class Config{
                         }
                     },
                 },
+            },
+            "assignee" :{
+                "visible" : true,
+                "chart" : {
+                    "visible" : false,
+                },
+                "filter" : {
+                    type : 'DropDown',
+                    id : 'assigneeFilter',
+                    label : '指派给',
+                    width : '200px',
+                    placeholder : "请选择指派给谁",
+                },
+                "grid" : {
+                    caption: '指派给',
+                    sortable: true,
+                    size: '60px',
+                    render: function (record) {
+                        if (record.assignee == JiraIssueReader.emptyText) {
+                            return '<div><i style="color:#A9A9A9">' + record.assignee + '</i></div>';
+                        } else {
+                            return '<div>' + record.assignee + '</div>';
+                        }
+                    },
+                },
+
             },
             "designer" : {
                 "visible" : true,
@@ -428,6 +456,127 @@ export class Config{
                     },
                 },
             },
+            "tester" : {
+                "visible" : true,
+                "chart" : {
+                    "visible" : false,
+                },
+                "filter" : {
+                    type : 'DropDown',
+                    id : 'testerFilter',
+                    label : '测试',
+                    width : '200px',
+                    placeholder : "请选择测试人员",
+                },
+                "grid" : {
+                    caption: '测试',
+                    sortable: true,
+                    size: '60px',
+                    render: function (record) {
+                        if (record.tester == JiraIssueReader.emptyText) {
+                            return '<div><i style="color:#A9A9A9">' + record.tester + '</i></div>';
+                        } else {
+                            return '<div>' + record.tester + '</div>';
+                        }
+                    },
+                },
+
+            },
+            "resolution" :{
+                "visible" : true,
+                "chart" : {
+                    "visible" : false,
+                },
+                "filter" : {
+                    type : 'DropDown',
+                    id : 'resolutionFilter',
+                    label : '解决结果',
+                    width : '200px',
+                    placeholder : "请选择解决结果",
+                },
+                "grid" : {
+                    caption: '解决结果',
+                    sortable: true,
+                    size: '100px',
+                    render: function (record) {
+                        if (record.resolution == JiraIssueReader.emptyText) {
+                            return '<div><i style="color:#A9A9A9">' + record.resolution + '</i></div>';
+                        } else {
+                            return '<div>' + record.resolution + '</div>';
+                        }
+                    },
+                },
+
+            },
+            "resolvePerson" :{
+                "visible" : true,
+                "chart" : {
+                    "visible" : false,
+                },
+                "filter" : {
+                    type : 'DropDown',
+                    id : 'resolvePersonFilter',
+                    label : '解决人',
+                    width : '200px',
+                    placeholder : "请选择解决人",
+                },
+                "grid" : {
+                    caption: '解决人',
+                    sortable: true,
+                    size: '60px',
+                    render: function (record) {
+                        if (record.resolvePerson == "Empty Field") {
+                            return '<div><i style="color:#A9A9A9">' + record.resolvePerson + '</i></div>';
+                        } else {
+                            return '<div>' + record.resolvePerson + '</div>';
+                        }
+                    },
+                },
+
+            },
+            "createDate" :{
+                "visible" : true,
+                "filter" : {
+                    type : 'DateRange',
+                    id : 'createDateFilter',
+                    label : '创建日期',
+                    width : '80px',
+                },
+                "grid" : {
+                    caption: '创建日期',
+                    sortable: true,
+                    size: '100px',
+                    render: function (record) {
+                        if (record.createDate == JiraIssueReader.invalidDate) {
+                            return '<div><i style="color:#A9A9A9">Empty Field</i></div>';
+                        } else {
+                            return '<div>' + date2String(record.createDate) + '</div>';
+                        }
+                    },
+                },
+            },
+            "resolutionDate" :{
+                "visible" : true,
+                "filter" : {
+                    type : 'DateRange',
+                    id : 'resolutionDateFilter',
+                    label : '解决日期',
+                    width : '80px',
+                },
+                "grid" : {
+                    caption: '解决日期',
+                    sortable: true,
+                    size: '100px',
+                    render: function (record) {
+                        if (record.resolutionDate == JiraIssueReader.invalidDate) {
+                            return '<div><i style="color:#A9A9A9">Empty Field</i></div>';
+                        } else {
+                            return '<div>' + date2String(record.resolutionDate) + '</div>';
+                        }
+                    },
+                },
+
+            },
         };
 
         this._modifyConfig();     // 给配置补充字段的路径，这个函数由子类实现
@@ -567,6 +716,31 @@ class StructStoryFilter extends Config{
         this.config.confluenceLink["path"]  = ["fields", "customfield_10713"];
         this.config.docPlanCommitDate["path"]  = ["fields", "customfield_11415"];
         this.config.programPlanCommitDate["path"]  = ["fields", "customfield_11408"];
+    }
+
+}
+
+class StructBugFilter extends Config{
+    constructor(projectType, issueType, mode){
+        super(projectType, issueType, mode);
+    }
+
+
+
+    // 给配置补充字段的路径，有路径的字段才是需要获取jira数据的字段
+    _modifyConfig(){
+        this.config.recid["path"]           = ["key"];
+        this.config.category["path"]        = ["fields", "components"];
+        this.config.title["path"]           = ["fields", "summary"];
+        this.config.status["path"]          = ["fields", "status"];
+        this.config.status["JQLValue"]          = {"开放" : "Open", "重新打开" : "Reopened", "已解决" : "Resolved", "已关闭" : "Closed"};
+        this.config.tester["path"]          = ["fields", "reporter"];
+        this.config.assignee["path"]          = ["fields", "assignee"];
+        this.config.resolution["path"]          = ["fields", "resolution"];
+        this.config.resolvePerson["path"]          = ["fields", "customfield_10716"];
+        this.config.createDate["path"]          = ["fields", "created"];
+        this.config.resolutionDate["path"]          = ["fields", "resolutiondate"];
+        this.config.bugPriority["path"]          = ["fields", "customfield_10510"];
     }
 
 }

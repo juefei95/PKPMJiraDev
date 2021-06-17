@@ -29,6 +29,7 @@ export class JiraIssueReader{
                 'f' : i => 'status' in i.fields && 'name' in i.fields.status                        ? i.fields.status.name                          : JiraIssueReader.emptyText,
                 'jqlName' : 'status',
             },
+            // 同时也作为结构流程中Bug的测试人员
             'reporter'          : {
                 'f' : i => 'reporter' in i.fields && i.fields.reporter !== null                     ? i.fields.reporter.displayName                 : JiraIssueReader.emptyText,
                 'jqlName' : 'reporter',
@@ -134,6 +135,7 @@ export class JiraIssueReader{
                 'f' : i => 'customfield_11443' in i.fields && i.fields.customfield_11443 !== null   ? i.fields.customfield_11443                    : JiraIssueReader.emptyText,
                 'jqlName' : '测试备注',
             },
+
         },
         'changelog' : i => {
             let cl = [];
