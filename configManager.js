@@ -777,6 +777,9 @@ class PCEpicFilter extends Config{
         this.config.title["path"]                       = ["fields", "summary"];
         this.config.status["path"]                      = ["fields", "status"];
         this.config.status["JQLValue"]                  = {"处理中" : "In Progress", "完成" : "Done"};
+        this.config.designer["path"]                    = ["fields", "reporter"];
+        this.config.developer["path"]                   = ["fields", "assignee"];
+        this.config.tester["path"]                      = ["fields", "customfield_10901"];
         this.config.programPlanCommitDate["path"]       = ["fields", "customfield_11308"];
         this.config.programActualCommitDate["path"]     = ["fields", "customfield_11409"];
         this.config.testPlanEndDate["path"]             = ["fields", "customfield_11312"];

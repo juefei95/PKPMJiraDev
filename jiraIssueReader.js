@@ -135,7 +135,11 @@ export class JiraIssueReader{
                 'f' : i => 'customfield_11443' in i.fields && i.fields.customfield_11443 !== null   ? i.fields.customfield_11443                    : JiraIssueReader.emptyText,
                 'jqlName' : '测试备注',
             },
-
+            // PC流程的Epic的测试人员
+            'customfield_10901' : {
+                'f' : i => 'customfield_10901' in i.fields && i.fields.customfield_10901 !== null && i.fields.customfield_10901.length > 0   ? i.fields.customfield_10901[0].displayName : JiraIssueReader.emptyText,
+                'jqlName' : '测试人员（多人）',
+            },
         },
         'changelog' : i => {
             let cl = [];
