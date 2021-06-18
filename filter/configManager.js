@@ -157,10 +157,10 @@ export class Config{
                     sortable: true,
                     size: '200px',
                     render: function (record) {
-                        if (record.confluenceLink == JiraIssueReader.emptyText) {
+                        if (record.title === JiraIssueReader.emptyText) {
                             return '<div><i style="color:#A9A9A9">' + record.title + '</i></div>';
                         } else {
-                            if (record.confluenceLink) {
+                            if (record.confluenceLink && record.confluenceLink  !== JiraIssueReader.emptyText) {
                                 return '<div><a target="_blank" href="' + record.confluenceLink + '">' + record.title + '</a></div>';
                             }else{
                                 return '<div>' + record.title + '</div>';
