@@ -35,8 +35,11 @@ export async function loadCss(dom, cssUrl) {
     });
 }
 
+export function getDateFormat(){
+    return "yyyy-mm-dd";
+}
 
-// 统一的Date2String yyyy-mm-dd
+// 统一的Date2String yyyy-mm-dd，ISOString的格式的前10位就是yyyy-mm-dd
 export function date2String(date){
     return date.toISOString().substring(0, 10);
 }

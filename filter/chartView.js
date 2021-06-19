@@ -51,7 +51,7 @@ export class ChartView{
                     var e = i[0];
                     var x_value = this.data.labels[e._index];
                     //var y_value = this.data.datasets[0].data[e._index];
-                    console.log(x_value);
+                    //console.log(x_value);
                     _this.model.setFilterSelectedOptions(field, new Set([x_value]));
                     window.dispatchEvent(new CustomEvent("updateView"));
                 },

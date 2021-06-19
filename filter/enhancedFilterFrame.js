@@ -136,10 +136,13 @@ export class EnhancedFilterFrame{
         let loadList = [
             // ------------------- 依赖jquery和jquery-ui
             host + "jquery-2.2.4.min.js",
+            //host + "jquery-3.6.js",
             host + "jquery-ui.min.js",
             // ------------------- 依赖w2ui------------------
-            host + "w2ui_v1.5_modify.min.js",
-            host + "w2ui-1.5.min.css",
+            //host + "w2ui_v1.5_modify.min.js",
+            //host + "w2ui-1.5.min.css",
+            host + "w2ui-1.4.2_modified.js",        // 在文件里搜索modify by sjx 就可以知道我相比源代码改了什么
+            host + "w2ui-1.4.2.css",
             //-------- chart.js，用于chart的绘制，目前必须用2.9版本的，因为chartlabel这个js还没适配V3以上的chart.js--
             host + "Chart.min.js",
             host + "chartjs-plugin-datalabels.min.js",

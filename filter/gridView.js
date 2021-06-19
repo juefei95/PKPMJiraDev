@@ -1,4 +1,5 @@
 
+import { date2String, getDateFormat } from "./toolSet.js";
 
 export class GridView{
 
@@ -7,6 +8,7 @@ export class GridView{
         this.model = model;
         this.gridId = gridId;
         this.gridName = gridName;
+        w2utils.settings.date_format = getDateFormat();      // 该变量存在的目的就是设置w2ui的date_format
         this._init();
     }
 
@@ -41,7 +43,7 @@ export class GridView{
                 if (selected && selected.length != 0){
                     sd.push({
                         field:  k, // search field name
-                        value: selected, // field value (array of two values for operators: between, in)
+                        value: selected.map(d => date2String(d)), // field value (array of two values for operators: between, in)
                         type: 'date', // type of the field, if not defined search.type for the field will be used
                         operator: 'between' // search operator, can be 'is', 'between', 'begins with', 'contains', 'ends with'
                         // if not defined it will be selected based on the type
@@ -49,7 +51,9 @@ export class GridView{
                 }
             }
         }
-        w2ui[this.gridName].search(sd, 'AND');
+        w2ui[this.gridName].last.logic = "AND";         //由于我是直接指定searchData，所以logic得自己设置，否则w2ui就用OR，而不是AND
+        //w2ui[this.gridName].search(sd, 'AND');        //这里不再用search而用localSearch,search内部有一些自动判断的逻辑生成w2ui的searchData不是我想要的，
+        w2ui[this.gridName].localSearch();              //所以我自己指定searchDate，然后用localSearch直接调用
     }
 
     // 设置列的可见性
@@ -105,7 +109,7 @@ export class GridView{
                 searches.push({
                     field : k,
                     label :  v.label,
-                    type : 'date',
+                    type : 'datetime',
                     operator: 'between',
                 });
             }
@@ -117,7 +121,7 @@ export class GridView{
         for (const [k, v] of Object.entries(this.config.getGridsDict())){
             columns.push({
                 field : k,
-                text : v.caption,
+                caption : v.caption,
                 sortable : v.sortable,
                 size : v.size,
                 render : v.render,
@@ -131,8 +135,9 @@ export class GridView{
                 footer: true
             },
             records: this.model.getIssues(),
-            searches: searches,
+            //searches: searches,
             columns: columns,
+            reorderColumns: true,       // 设置表格的列可以拖动
             textSearch:'contains',
             onSearch: function (event) {
             //    event.done(function () {
