@@ -284,6 +284,24 @@ export class JiraIssueReader{
         }).then(response => response.json());
     }
 
+    // 给某一个Issue添加评论
+    async addComment(issueKey, comment){
+        return fetch('https://jira.pkpm.cn/rest/api/2/issue/' + issueKey + '/comment', {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            body: JSON.stringify({
+                "body": comment}), // must match 'Content-Type' header
+            headers: {
+                'user-agent': 'Mozilla/4.0 MDN Example',
+                'content-type': 'application/json'
+            },
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, same-origin, *omit
+            mode: 'cors', // no-cors, cors, *same-origin
+            redirect: 'follow', // manual, *follow, error
+            //referrer: 'no-referrer', // *client, no-referrer
+        }).then(response => response.json());
+    }
+    
     // 用字符串数组方式表示Dict的下标
     // 比如var hh = {"a" : 1, "b" : {"c" : 2}};
     // 则_getDictValue(hh, ["b","c"])返回2
