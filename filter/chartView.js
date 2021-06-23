@@ -1,105 +1,91 @@
-/*
-Chart控件
-*/
 
-export class ChartView{
+import {View} from './../common/view.js'
+import { ChartControl } from './chartControl.js'
 
-    constructor(config, model, canvasId){
-        this.config = config;
-        this.model = model;
-        this.canvasId = canvasId;
-        this.chart = undefined;
+export class ChartPanel extends View {
+    
+    constructor(id, vm){
+        super(vm);
+        this.panelId = id;
+        this.ids = {
+            chartContainer                  : 'chartContainer',                 // chart外围的容器，目前是ul，为了可以拖拽
+            chartClass                      : 'chartClass',                     // chart被统一选择的class
+            
+        };
+        this.charts = {};
+        this.regVMEvent("SelectedIssues", this.updateView.bind(this));
+        this.regVMEvent("FieldsVisibility", this.updateView.bind(this));
+        this.regVMEvent("ChartsVisibility", this.updateView.bind(this));
     }
 
-    // 绘制状态Chart
-    updateView(issues, field) {
-        let labelsData = {};
-        for (const issue of issues) {
-            if (issue[field] in labelsData) {
-                labelsData[issue[field]] += 1;
-            } else {
-                labelsData[issue[field]] = 1;
+    updateView(){
+        let fieldsVis = this.vm.getFieldsVisibility();
+        for (const [k,v] of Object.entries(this.vm.getCharts())){
+            if (fieldsVis[k].visible && v.visible) {
+                $("#" + k +"CanvasDiv").css("display", "inline-block");
+                this.charts[k].updateView(k);
+            }else{
+                $("#" + k +"CanvasDiv").css("display", "none");
             }
         }
+    }
 
-        let canvas = $('#' + this.canvasId);
-        if (this.chart) this.chart.destroy();
-
-        let _this = this;
-        this.chart = new Chart(canvas, {
-            type: 'pie',
-            data: {
-                labels: Object.keys(labelsData),
-                datasets: [{
-                        //label: '状态',
-                        data: Object.values(labelsData),
-                        backgroundColor: _this._poolColors(Object.keys(labelsData).length),
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                aspectRatio: 1,
-                legend: {
-                    display: false
-                },
-                tooltips: {
-                    enabled: false
-                },
-                onClick:  function(c, i){
-                    var e = i[0];
-                    var x_value = this.data.labels[e._index];
-                    //var y_value = this.data.datasets[0].data[e._index];
-                    //console.log(x_value);
-                    _this.model.setFilterSelectedOptions(field, new Set([x_value]));
-                    window.dispatchEvent(new CustomEvent("updateView"));
-                },
-                plugins: {
-                    datalabels: {
-                        align: 'start',
-                        anchor: 'end',
-                        color: 'black',
-                        font: function (context) {
-                            return {
-                                size: 12,
-                                weight: 'bold',
-                            };
-                        },
-                        formatter: function (value, context) {
-                            return context.chart.data.labels[context.dataIndex] + context.dataset.data[context.dataIndex];
-                        }
-                    }
+    updateFieldsVisibility(){
+        this.updateView();
+    }
+    
+    // 插入Chart控件到left layout
+    createHtml(){
+        // 左侧Chart区
+        var chartH5 = `
+            <style>
+                #${this.ids.chartContainer} {
+                    list-style-type:none;
+                    justify-content: center;
+                    padding: 0px;
                 }
-            }
-        });
-    }
-
-    /**
-     *
-     * Description. 返回一个随机颜色的字符串
-     *
-     * @return string
-     */
-    _dynamicColors() {
-        var r = Math.floor(Math.random() * 255);
-        var g = Math.floor(Math.random() * 255);
-        var b = Math.floor(Math.random() * 255);
-        return "rgba(" + r + "," + g + "," + b + ", 0.5)";
-    }
-
-    /**
-     *
-     * Description. 返回n个随机颜色字符串
-     *
-     * @param {int} n     数目
-     * @return array of string
-     */
-    _poolColors (n) {
-        var pool = [];
-        for (var i = 0; i < n; i++) {
-            pool.push(this._dynamicColors());
+                #${this.ids.chartContainer} li{
+                    display: list-item;
+                    padding: 5px 5px;
+                    margin: 0px;
+                }
+                #${this.ids.chartContainer} li p{
+                    text-align: center;
+                }
+                #${this.ids.chartContainer} li div canvas{
+                    margin-right: auto;
+                    margin-left: auto;
+                    display: block;
+                }
+            </style>
+            <ul id="${this.ids.chartContainer}">
+                <li style="list-style-type:none">
+                    <p style="font-size: large;font-weight: bold;">以下图片可以拖拽改变排序</p>
+                </li>
+        `;
+        for (const [k,v] of Object.entries(this.vm.getCharts())){
+            chartH5 +=  `
+                <li style="list-style-type:none">
+                    <div class="${this.ids.chartClass}" id="${k}CanvasDiv" style="width: 100%;">
+                        <canvas id="${k}Canvas"></canvas>
+                    </div>
+                </li>
+            `;
         }
-        return pool;
+        chartH5 += '</ul>';
+        return chartH5;
+    }
+
+    // config控件
+    configControls(){
+        
+        // chart可拖拽
+        $( "#" + this.ids.chartContainer ).sortable();
+        $( "#" + this.ids.chartContainer ).disableSelection();
+
+        // 创建charts
+        for (const [k,v] of Object.entries(this.vm.getCharts())){
+            this.charts[k] = new ChartControl(this.vm, k + "Canvas");
+        }
     }
 }

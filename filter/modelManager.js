@@ -3,11 +3,12 @@
 */
 
 import {Config}  from './configManager.js';
-import {JQL}  from './jqlParser.js';
-import {date2String} from './toolSet.js'
-import {JiraIssueReader} from './jiraIssueReader.js'
+import {JQL}  from '../model/jqlParser.js';
+import {JiraIssueReader} from '../model/jiraIssueReader.js'
+import {Issue} from './../model/issue.js'
+import {AbstractModel} from './../common/model.js'
 
-export class Model{
+export class Model extends AbstractModel{
 
     // 无效日期的定义
     static initStartDate = new Date('1999-01-01');
@@ -15,19 +16,57 @@ export class Model{
 
 
     constructor(issues, config, jql){
+        super("FilterModel");
         this.issues = issues;
         this.config = config;
         this.jql = jql;
         this.filterOptions = {};
         this.filterSelectedOptions = {};
-        
+        this.chartVis = {};
+        this.selectedIssueId = new Set();
         this._genFilterOptions();
     }
 
+
     // 获取issues数组
-    getIssues(){
-        return this.issues;
+    getRawIssues(){
+        let issues = [];
+        for (const iss of this.issues) {
+            issues.push(iss.getRawIssue());
+        }
+        return issues;
     }
+
+    /**
+     * 获取某个issue属性的所有可能值
+     * @property {string} propName
+     * @returns {Set<string>} options
+     */
+    getIssuesPropSet(propName){
+        let options = new Set();
+        for (const issue of this.issues) {
+            let v = issue.getAttr(propName);
+            if (v) options.add(v);
+        }
+        return options;
+    }
+
+    /**
+     * 获取所有选中的issue的某个属性的所有值的统计情况
+     * @property {string} propName
+     * @returns {json} {field的值 : 该值出现的次数}
+     */
+    getSelectedIssuesPropCount(propName){
+        let propCount = {};
+        for (const issue of this.issues) {
+            if (this.selectedIssueId.has(issue.getJiraId())) {
+                let v = issue.getAttr(propName);
+                if (v) propCount[v] ? propCount[v]+=1 : propCount[v]=1;
+            }
+        }
+        return propCount;
+    }
+
 
     // 获取某Filter的Option选项
     getFilterOptions(key){
@@ -43,6 +82,10 @@ export class Model{
             return this.filterSelectedOptions[key];
         }
         return undefined;
+    }
+
+    getAllFilterSelectedOptions(){
+        return this.filterOptions;
     }
 
     // 更新DropDown类型的Filter的当前被选中项
@@ -66,6 +109,9 @@ export class Model{
         }else if(selected instanceof Array && this.filterSelectedOptions[key] instanceof Array){
             this.filterSelectedOptions[key] = selected;
         }
+
+        // 发送消息，选中项变了
+        this.trigModelChangeEvent("SelectedOptions");
     }
 
     clearFilterSelectedOptions(){
@@ -81,7 +127,11 @@ export class Model{
                 this.filterSelectedOptions[key] = [Model.initStartDate, Model.initEndDate];
             }
         }
+        // 发送消息，选中项变了
+        this.trigModelChangeEvent("SelectedOptions");
     }
+
+
 
     // 根据筛选条件生成新的JQL
     genJQLWithSelection(){
@@ -108,7 +158,7 @@ export class Model{
         }
         return this.jql.genNewJQL(validSelection);
     }
-
+    
     // 根据数据生成Filter字段的选项
     _genFilterOptions(){
 
@@ -126,11 +176,44 @@ export class Model{
 
         for (const issue of this.issues) {
             for (const [k,v] of Object.entries(this.config.getFiltersDict())){
-                if (issue[k] && v.type == 'DropDown'){
-                    this.filterOptions[k].add(issue[k]);
+                let attr = issue.getAttr(k);
+                if (attr && v.type == 'DropDown'){
+                    this.filterOptions[k].add(attr);
                 }
             }
         }
 
     }
+
+    /**
+     * 设置被筛选出的条目
+     * @param {Array<string>} ids   筛选出的条目的jiraId
+     */
+    setSelectedRecords(ids){
+
+        // 定义个辅助函数，检查Set是不是内容一样
+        let eqSet = (as, bs) => {
+            if (as.size !== bs.size) return false;
+            for (let a of as) if (!bs.has(a)) return false;
+            return true;
+        }
+        if (eqSet(new Set(ids), this.selectedIssueId) === false) {
+            this.selectedIssueId = new Set(ids);
+            // 发送消息，选中项变了
+            this.trigModelChangeEvent("SelectedIssues");
+        }
+    }
+
+    setFieldsVisibility(fieldsVis){
+        this.config.setFieldsVisibility(fieldsVis);
+        // 发送消息，选中项变了
+        this.trigModelChangeEvent("FieldsVisibility");
+    }
+
+    setChartVisibility(key, visible){
+        this.config.setChartVisibility(key, visible);
+        // 发送消息，选中项变了
+        this.trigModelChangeEvent("ChartsVisibility");
+    }
+
 }

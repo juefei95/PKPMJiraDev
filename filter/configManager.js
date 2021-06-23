@@ -1,634 +1,548 @@
 /// 本JS是根据外部JQL来做对应的配置选择
 
 
-import { JiraIssueReader } from "./jiraIssueReader.js";
-import {date2String} from './toolSet.js'
+import { date2String }      from './../model/toolSet.js'
+import { Issue }            from './../model/issue.js'
 
 // Config 工厂
-export function getConfig(projectType, issueType, mode){
-    if (projectType === 'JGVIRUS' && issueType === '故事' && mode === 'filter') {
-        return new StructStoryFilter(projectType, issueType, mode)
-    }else if (projectType === 'JGVIRUS' && issueType === '故障' && mode === 'filter') {
-        return new StructBugFilter(projectType, issueType, mode)
-    }else if (projectType === 'PC' && issueType === '故障' && mode === 'filter') {
-        return new PCBugFilter(projectType, issueType, mode);
-    }else if (projectType === 'PC' && issueType === 'EPIC' && mode === 'filter') {
-        return new PCEpicFilter(projectType, issueType, mode);
-    }else if (projectType === 'BIMMEP' && issueType === '故事' && mode === 'filter') {
-        return new MEPStoryFilter(projectType, issueType, mode);
-    }else if (projectType === 'BIMMEP' && issueType === '故障' && mode === 'filter') {
-        return new MEPBugFilter(projectType, issueType, mode);
+export function getConfig(projectType, issueType){
+    if (projectType === 'JGVIRUS' && issueType === '故事') {
+        return new StructStoryFilter(projectType, issueType)
+    }else if (projectType === 'JGVIRUS' && issueType === '故障') {
+        return new StructBugFilter(projectType, issueType)
+    }else if (projectType === 'PC' && issueType === '故障') {
+        return new PCBugFilter(projectType, issueType);
+    }else if (projectType === 'PC' && issueType === 'EPIC') {
+        return new PCEpicFilter(projectType, issueType);
+    }else if (projectType === 'BIMMEP' && issueType === '故事') {
+        return new MEPStoryFilter(projectType, issueType);
+    }else if (projectType === 'BIMMEP' && issueType === '故障') {
+        return new MEPBugFilter(projectType, issueType);
     }
     throw "error: JQL中projectType、issueType、mode有问题"
 }
 
 export class Config{
 
-    constructor(projectType, issueType, mode){
+    constructor(projectType, issueType){
         this.projectType = projectType
         this.issueType = issueType;
-        this.mode = mode;
 
         // 作为一个统一的过滤器展示，不同的项目虽然字段定义不同，但表现是一样的（比如都会有研发提测时间）
         // 所以这里从整体上定义了待展示字段的全集，各个项目根据自己定义的Jira工作流，选择其子集作为展示
-        this.config = {
-            "recid" : {
-                "visible" : true,
-                "grid" : {
-                    caption: 'ID',
-                    sortable: true,
-                    size: '100px',
-                    render: function (record) {
-                        return '<div><a target="_blank" href="https://jira.pkpm.cn/browse/' + record.recid + '">' + record.recid + '</a></div>';
+        this.config = Issue.getConfig();
+
+        this.config.jiraId["visible"] = true;
+        this.config.jiraId["grid"] = {
+            caption: 'ID',
+            sortable: true,
+            size: '100px',
+            render: function (record) {
+                return '<div><a target="_blank" href="https://jira.pkpm.cn/browse/' + record.jiraId + '">' + record.jiraId + '</a></div>';
+            }
+        };
+
+        this.config.category["visible"] = true;
+        this.config.category["chart"] = {
+            "visible" : true,
+        };
+        this.config.category["filter"] = {
+            type : 'DropDown',
+            label : '模块',
+            width : '200px',
+            placeholder : "请选择模块",
+        };
+        this.config.category["grid"] = {
+            caption: '模块',
+            sortable: true,
+            size: '100px',
+            render: function (record) {
+                if (record.category == Issue.emptyText) {
+                    return '<div><i style="color:#A9A9A9">' + record.category + '</i></div>';
+                } else {
+                    return '<div>' + record.category + '</div>';
+                }
+            },
+        };
+                
+        this.config.MEPCategory["visible"] = true;
+        this.config.MEPCategory["chart"] = {
+            "visible" : false,
+        };
+        this.config.MEPCategory["filter"] = {
+            type : 'DropDown',
+            label : 'MEP专业',
+            width : '200px',
+            placeholder : "请选择MEP专业",
+        };
+        this.config.MEPCategory["grid"] = {
+            caption: 'MEP专业',
+            sortable: true,
+            size: '100px',
+            render: function (record) {
+                if (record.MEPCategory == Issue.emptyText) {
+                    return '<div><i style="color:#A9A9A9">' + record.MEPCategory + '</i></div>';
+                } else {
+                    return '<div>' + record.MEPCategory + '</div>';
+                }
+            },
+        };
+
+        this.config.affectVersions["visible"] = true;
+        this.config.affectVersions["chart"] = {
+            "visible" : false,
+        };
+        this.config.affectVersions["filter"] = {
+            type : 'DropDown',
+            label : '影响版本',
+            width : '200px',
+            placeholder : "请选择影响版本",
+        };
+        this.config.affectVersions["grid"] = {
+            caption: '影响版本',
+            sortable: true,
+            size: '100px',
+            render: function (record) {
+                if (record.affectVersions == Issue.emptyText) {
+                    return '<div><i style="color:#A9A9A9">' + record.affectVersions + '</i></div>';
+                } else {
+                    return '<div>' + record.affectVersions + '</div>';
+                }
+            },
+        };
+
+
+        this.config.fixVersions["visible"] = true;
+        this.config.fixVersions["chart"] = {
+            "visible" : false,
+        };
+        this.config.fixVersions["filter"] =  {
+            type : 'DropDown',
+            label : '修复版本',
+            width : '200px',
+            placeholder : "请选择修复版本",
+        };
+        this.config.fixVersions["grid"] =  {
+            caption: '修复版本',
+            sortable: true,
+            size: '100px',
+            render: function (record) {
+                if (record.fixVersions == Issue.emptyText) {
+                    return '<div><i style="color:#A9A9A9">' + record.fixVersions + '</i></div>';
+                } else {
+                    return '<div>' + record.fixVersions + '</div>';
+                }
+            },
+        };
+                
+        this.config.title["visible"] = true;
+        this.config.title["filter"] = {
+            type : 'Text',
+            label : '标题',
+            width : '400px',
+            placeholder : "请输入标题，回车后过滤",
+        };
+        this.config.title["grid"] = {
+            caption: '标题',
+            sortable: true,
+            size: '200px',
+            render: function (record) {
+                if (record.title === Issue.emptyText) {
+                    return '<div><i style="color:#A9A9A9">' + record.title + '</i></div>';
+                } else {
+                    if (record.confluenceLink && record.confluenceLink  !== Issue.emptyText) {
+                        return '<div><a target="_blank" href="' + record.confluenceLink + '">' + record.title + '</a></div>';
+                    }else{
+                        return '<div>' + record.title + '</div>';
                     }
                 }
             },
-            "category" : {
-                "visible" : true,
-                "chart" : {
-                    "visible" : true,
-                },
-                "filter" : {
-                    type : 'DropDown',
-                    id : 'categoryFilter',
-                    label : '模块',
-                    width : '200px',
-                    placeholder : "请选择模块",
-                },
-                "grid" : {
-                    caption: '模块',
-                    sortable: true,
-                    size: '100px',
-                    render: function (record) {
-                        if (record.category == JiraIssueReader.emptyText) {
-                            return '<div><i style="color:#A9A9A9">' + record.category + '</i></div>';
-                        } else {
-                            return '<div>' + record.category + '</div>';
-                        }
-                    },
-                },
+        };
+          
+        this.config.status["visible"] = true;
+        this.config.status["chart"] = {
+            "visible" : true,
+        };
+        this.config.status["filter"] = {
+            type : 'DropDown',
+            label : '状态',
+            width : '300px',
+            placeholder : "请选择状态",
+            labelMenu : [{
+                btnName : "选中产品相关状态",
+                selects : ["Backlog", "需求待评审", "需求待设计", "需求设计中", "需求验证"],     
+            },{
+                btnName : "选中测试相关状态",
+                selects : ["测试完成", "测试中", "已提测"],     
+            },{    
+                btnName : "选中研发相关状态",
+                selects : ["待研发", "研发中"],        
+            }]
+        };
+        this.config.status["grid"] = {
+            caption: '状态',
+            sortable: true,
+            size: '100px',
+            render: function (record) {
+                if (record.status == Issue.emptyText) {
+                    return '<div><i style="color:#A9A9A9">' + record.status + '</i></div>';
+                } else {
+                    return '<div>' + record.status + '</div>';
+                }
             },
-            "MEPCategory" : {
-                "visible" : true,
-                "chart" : {
-                    "visible" : false,
-                },
-                "filter" : {
-                    type : 'DropDown',
-                    id : 'MEPCategoryFilter',
-                    label : 'MEP专业',
-                    width : '200px',
-                    placeholder : "请选择MEP专业",
-                },
-                "grid" : {
-                    caption: 'MEP专业',
-                    sortable: true,
-                    size: '100px',
-                    render: function (record) {
-                        if (record.MEPCategory == JiraIssueReader.emptyText) {
-                            return '<div><i style="color:#A9A9A9">' + record.MEPCategory + '</i></div>';
-                        } else {
-                            return '<div>' + record.MEPCategory + '</div>';
-                        }
-                    },
-                },
+        };
+            
+        this.config.assignee["visible"] = true;
+        this.config.assignee["chart"] = {
+            "visible" : false,
+        };
+        this.config.assignee["filter"] = {
+            type : 'DropDown',
+            label : '指派给',
+            width : '200px',
+            placeholder : "请选择指派给谁",
+        };
+        this.config.assignee["grid"] = {
+            caption: '指派给',
+            sortable: true,
+            size: '60px',
+            render: function (record) {
+                if (record.assignee == Issue.emptyText) {
+                    return '<div><i style="color:#A9A9A9">' + record.assignee + '</i></div>';
+                } else {
+                    return '<div>' + record.assignee + '</div>';
+                }
             },
-            "affectVersions" : {
-                "visible" : true,
-                "chart" : {
-                    "visible" : false,
-                },
-                "filter" : {
-                    type : 'DropDown',
-                    id : 'affectVersionsFilter',
-                    label : '影响版本',
-                    width : '200px',
-                    placeholder : "请选择影响版本",
-                },
-                "grid" : {
-                    caption: '影响版本',
-                    sortable: true,
-                    size: '100px',
-                    render: function (record) {
-                        if (record.affectVersions == JiraIssueReader.emptyText) {
-                            return '<div><i style="color:#A9A9A9">' + record.affectVersions + '</i></div>';
-                        } else {
-                            return '<div>' + record.affectVersions + '</div>';
-                        }
-                    },
-                },
+        };
+        
+        this.config.designer["visible"] = true;
+        this.config.designer["chart"] = {
+            "visible" : false,
+        };
+        this.config.designer["filter"] = {
+            type : 'DropDown',
+            label : '产品',
+            width : '200px',
+            placeholder : '请选择产品设计人员',
+        };
+        this.config.designer["grid"] = {
+            caption: '产品设计负责人',
+            sortable: true,
+            size: '100px',
+            render: function (record) {
+                if (record.designer == Issue.emptyText) {
+                    return '<div><i style="color:#A9A9A9">' + record.designer + '</i></div>';
+                } else {
+                    return '<div>' + record.designer + '</div>';
+                }
             },
-            "fixVersions" : {
-                "visible" : true,
-                "chart" : {
-                    "visible" : false,
-                },
-                "filter" : {
-                    type : 'DropDown',
-                    id : 'fixVersionsFilter',
-                    label : '修复版本',
-                    width : '200px',
-                    placeholder : "请选择修复版本",
-                },
-                "grid" : {
-                    caption: '修复版本',
-                    sortable: true,
-                    size: '100px',
-                    render: function (record) {
-                        if (record.fixVersions == JiraIssueReader.emptyText) {
-                            return '<div><i style="color:#A9A9A9">' + record.fixVersions + '</i></div>';
-                        } else {
-                            return '<div>' + record.fixVersions + '</div>';
-                        }
-                    },
-                },
+        };
+          
+        this.config.developer["visible"] = true;
+        this.config.developer["chart"] = {
+            "visible" : false,
+        };
+        this.config.developer["filter"] = {
+            type : 'DropDown',
+            label : '研发',
+            width : '200px',
+            placeholder : '请选择研发人员',
+        };
+        this.config.developer["grid"] = {
+            caption: '研发负责人',
+            sortable: true,
+            size: '100px',
+            render: function (record) {
+                if (record.developer == "Empty Field") {
+                    return '<div><i style="color:#A9A9A9">' + record.developer + '</i></div>';
+                } else {
+                    return '<div>' + record.developer + '</div>';
+                }
             },
-            "title" : {
-                "visible" : true,
-                "filter" : {
-                    type : 'Text',
-                    id : 'titleFilter',
-                    label : '标题',
-                    width : '400px',
-                    placeholder : "请输入标题，回车后过滤",
-                },
-                "grid" : {
-                    caption: '标题',
-                    sortable: true,
-                    size: '200px',
-                    render: function (record) {
-                        if (record.title === JiraIssueReader.emptyText) {
-                            return '<div><i style="color:#A9A9A9">' + record.title + '</i></div>';
-                        } else {
-                            if (record.confluenceLink && record.confluenceLink  !== JiraIssueReader.emptyText) {
-                                return '<div><a target="_blank" href="' + record.confluenceLink + '">' + record.title + '</a></div>';
-                            }else{
-                                return '<div>' + record.title + '</div>';
-                            }
-                        }
-                    },
-                },
+        };
+          
+        this.config.tester["visible"] = true;
+        this.config.tester["chart"] = {
+            "visible" : false,
+        };
+        this.config.tester["filter"] = {
+            type : 'DropDown',
+            label : '测试',
+            width : '200px',
+            placeholder : '请选择测试人员',
+        };
+        this.config.tester["grid"] = {
+            caption: '测试负责人',
+            sortable: true,
+            size: '100px',
+            render: function (record) {
+                if (record.tester == "Empty Field") {
+                    return '<div><i style="color:#A9A9A9">' + record.tester + '</i></div>';
+                } else {
+                    return '<div>' + record.tester + '</div>';
+                }
             },
-            "status" : {
-                "visible" : true,
-                "chart" : {
-                    "visible" : true,
-                },
-                "filter" : {
-                    type : 'DropDown',
-                    id : 'statusFilter',
-                    label : '状态',
-                    width : '300px',
-                    placeholder : "请选择状态",
-                    labelMenu : [{
-                        btnName : "选中产品相关状态",
-                        selects : ["Backlog", "需求待评审", "需求待设计", "需求设计中", "需求验证"],     
-                    },{
-                        btnName : "选中测试相关状态",
-                        selects : ["测试完成", "测试中", "已提测"],     
-                    },{    
-                        btnName : "选中研发相关状态",
-                        selects : ["待研发", "研发中"],        
-                    }]
+        };
+            
+        this.config.confluenceLink["visible"] = false;
 
-                },
-                "grid" : {
-                    caption: '状态',
-                    sortable: true,
-                    size: '100px',
-                    render: function (record) {
-                        if (record.status == JiraIssueReader.emptyText) {
-                            return '<div><i style="color:#A9A9A9">' + record.status + '</i></div>';
-                        } else {
-                            return '<div>' + record.status + '</div>';
-                        }
-                    },
-                },
+        this.config.docPlanCommitDate["visible"] = true;
+        this.config.docPlanCommitDate["filter"] = {
+            type : 'DateRange',
+            label : '产品计划日期',
+            width : '80px',
+        };
+        this.config.docPlanCommitDate["grid"] = {
+            caption: '产品计划日期',
+            sortable: true,
+            size: '100px',
+            render: function (record) {
+                if (record.docPlanCommitDate == Issue.invalidDate) {
+                    return '<div><i style="color:#A9A9A9">Empty Field</i></div>';
+                } else {
+                    return '<div>' + date2String(record.docPlanCommitDate) + '</div>';
+                }
             },
-            "assignee" :{
-                "visible" : true,
-                "chart" : {
-                    "visible" : false,
-                },
-                "filter" : {
-                    type : 'DropDown',
-                    id : 'assigneeFilter',
-                    label : '指派给',
-                    width : '200px',
-                    placeholder : "请选择指派给谁",
-                },
-                "grid" : {
-                    caption: '指派给',
-                    sortable: true,
-                    size: '60px',
-                    render: function (record) {
-                        if (record.assignee == JiraIssueReader.emptyText) {
-                            return '<div><i style="color:#A9A9A9">' + record.assignee + '</i></div>';
-                        } else {
-                            return '<div>' + record.assignee + '</div>';
-                        }
-                    },
-                },
+        };
 
+        this.config.programPlanCommitDate["visible"] = true,
+        this.config.programPlanCommitDate["filter"] = {
+            type : 'DateRange',
+            label : '研发计划提验',
+            width : '80px',
+        };
+        this.config.programPlanCommitDate["grid"] = {
+            caption: '研发计划提验',
+            sortable: true,
+            size: '100px',
+            render: function (record) {
+                if (record.programPlanCommitDate == Issue.invalidDate) {
+                    return '<div><i style="color:#A9A9A9">Empty Field</i></div>';
+                } else {
+                    return '<div>' + date2String(record.programPlanCommitDate) + '</div>';
+                }
             },
-            "designer" : {
-                "visible" : true,
-                "chart" : {
-                    "visible" : false,
-                },
-                "filter" : {
-                    type : 'DropDown',
-                    id : 'designerFilter',
-                    label : '产品',
-                    width : '200px',
-                    placeholder : '请选择产品设计人员',
-                },
-                "grid" : {
-                    caption: '产品设计负责人',
-                    sortable: true,
-                    size: '100px',
-                    render: function (record) {
-                        if (record.designer == JiraIssueReader.emptyText) {
-                            return '<div><i style="color:#A9A9A9">' + record.designer + '</i></div>';
-                        } else {
-                            return '<div>' + record.designer + '</div>';
-                        }
-                    },
-                },
-            },
-            "developer" : {
-                "visible" : true,
-                "chart" : {
-                    "visible" : false,
-                },
-                "filter" : {
-                    type : 'DropDown',
-                    id : 'developerFilter',
-                    label : '研发',
-                    width : '200px',
-                    placeholder : '请选择研发人员',
-                },
-                "grid" : {
-                    caption: '研发负责人',
-                    sortable: true,
-                    size: '100px',
-                    render: function (record) {
-                        if (record.developer == "Empty Field") {
-                            return '<div><i style="color:#A9A9A9">' + record.developer + '</i></div>';
-                        } else {
-                            return '<div>' + record.developer + '</div>';
-                        }
-                    },
-                },
-            },
-            "tester" : {
-                "visible" : true,
-                "chart" : {
-                    "visible" : false,
-                },
-                "filter" : {
-                    type : 'DropDown',
-                    id : 'testerFilter',
-                    label : '测试',
-                    width : '200px',
-                    placeholder : '请选择测试人员',
-                },
-                "grid" : {
-                    caption: '测试负责人',
-                    sortable: true,
-                    size: '100px',
-                    render: function (record) {
-                        if (record.tester == "Empty Field") {
-                            return '<div><i style="color:#A9A9A9">' + record.tester + '</i></div>';
-                        } else {
-                            return '<div>' + record.tester + '</div>';
-                        }
-                    },
-                },
-            },
-            "confluenceLink" : {
-                "visible" : false,
+        };
 
+        this.config.designerActualCommitTestDate["visible"] = true;
+        this.config.designerActualCommitTestDate["filter"] = {
+            type : 'DateRange',
+            label : '产品实际提测',
+            width : '80px',
+        };
+        this.config.designerActualCommitTestDate["grid"] = {
+            caption: '产品实际提测',
+            sortable: true,
+            size: '100px',
+            render: function (record) {
+                if (record.designerActualCommitTestDate == Issue.invalidDate) {
+                    return '<div><i style="color:#A9A9A9">Empty Field</i></div>';
+                } else {
+                    return '<div>' + date2String(record.designerActualCommitTestDate) + '</div>';
+                }
             },
-            "docPlanCommitDate" : {
-                "visible" : true,
-                "filter" : {
-                    type : 'DateRange',
-                    id : 'docPlanCommitDateFilter',
-                    label : '产品计划日期',
-                    width : '80px',
-                },
-                "grid" : {
-                    caption: '产品计划日期',
-                    sortable: true,
-                    size: '100px',
-                    render: function (record) {
-                        if (record.docPlanCommitDate == JiraIssueReader.invalidDate) {
-                            return '<div><i style="color:#A9A9A9">Empty Field</i></div>';
-                        } else {
-                            return '<div>' + date2String(record.docPlanCommitDate) + '</div>';
-                        }
-                    },
-                },
+        };
 
+        this.config.testPlanEndDate["visible"] = true;
+        this.config.testPlanEndDate["filter"] = {
+            type : 'DateRange',
+            label : '测试计划结束',
+            width : '80px',
+        };
+        this.config.testPlanEndDate["grid"] = {
+            caption: '测试计划结束',
+            sortable: true,
+            size: '100px',
+            render: function (record) {
+                if (record.testPlanEndDate == Issue.invalidDate) {
+                    return '<div><i style="color:#A9A9A9">Empty Field</i></div>';
+                } else {
+                    return '<div>' + date2String(record.testPlanEndDate) + '</div>';
+                }
             },
-            "programPlanCommitDate" : {
-                "visible" : true,
-                "filter" : {
-                    type : 'DateRange',
-                    id : 'programPlanCommitDateFilter',
-                    label : '研发计划提验',
-                    width : '80px',
-                },
-                "grid" : {
-                    caption: '研发计划提验',
-                    sortable: true,
-                    size: '100px',
-                    render: function (record) {
-                        if (record.programPlanCommitDate == JiraIssueReader.invalidDate) {
-                            return '<div><i style="color:#A9A9A9">Empty Field</i></div>';
-                        } else {
-                            return '<div>' + date2String(record.programPlanCommitDate) + '</div>';
-                        }
-                    },
-                },
+        };
 
+        this.config.bugPriority["visible"] = true;
+        this.config.bugPriority["chart"] = {
+            "visible" : false,
+        };
+        this.config.bugPriority["filter"] = {
+            type : 'DropDown',
+            label : '优先级',
+            width : '200px',
+            placeholder : "请选择Bug优先级",
+        };
+        this.config.bugPriority["grid"] = {
+            caption: '优先级',
+            sortable: true,
+            size: '100px',
+            render: function (record) {
+                if (record.bugPriority == Issue.emptyText) {
+                    return '<div><i style="color:#A9A9A9">' + record.bugPriority + '</i></div>';
+                } else {
+                    return '<div>' + record.bugPriority + '</div>';
+                }
             },
-            "designerActualCommitTestDate" : {
-                "visible" : true,
-                "filter" : {
-                    type : 'DateRange',
-                    id : 'designerActualCommitTestDateFilter',
-                    label : '产品实际提测',
-                    width : '80px',
-                },
-                "grid" : {
-                    caption: '产品实际提测',
-                    sortable: true,
-                    size: '100px',
-                    render: function (record) {
-                        if (record.designerActualCommitTestDate == JiraIssueReader.invalidDate) {
-                            return '<div><i style="color:#A9A9A9">Empty Field</i></div>';
-                        } else {
-                            return '<div>' + date2String(record.designerActualCommitTestDate) + '</div>';
-                        }
-                    },
-                },
-
+        };
+          
+        this.config.bugPhase["visible"] = true;
+        this.config.bugPhase["chart"] = {
+            "visible" : false,
+        };
+        this.config.bugPhase["filter"] = {
+            type : 'DropDown',
+            label : '发现阶段',
+            width : '200px',
+            placeholder : "请选择Bug发现阶段",
+        };
+        this.config.bugPhase["grid"] = {
+            caption: '发现阶段',
+            sortable: true,
+            size: '100px',
+            render: function (record) {
+                if (record.bugPhase == Issue.emptyText) {
+                    return '<div><i style="color:#A9A9A9">' + record.bugPhase + '</i></div>';
+                } else {
+                    return '<div>' + record.bugPhase + '</div>';
+                }
             },
-            "testPlanEndDate" : {
-                "visible" : true,
-                "filter" : {
-                    type : 'DateRange',
-                    id : 'testPlanEndDateFilter',
-                    label : '测试计划结束',
-                    width : '80px',
-                },
-                "grid" : {
-                    caption: '测试计划结束',
-                    sortable: true,
-                    size: '100px',
-                    render: function (record) {
-                        if (record.testPlanEndDate == JiraIssueReader.invalidDate) {
-                            return '<div><i style="color:#A9A9A9">Empty Field</i></div>';
-                        } else {
-                            return '<div>' + date2String(record.testPlanEndDate) + '</div>';
-                        }
-                    },
-                },
-
+        };
+            
+        this.config.epicId["visible"] = true;
+        this.config.epicId["filter"] = {
+            type : 'Text',
+            label : '史诗',
+            width : '200px',
+            placeholder : "请输入史诗的ID",
+        };
+        this.config.epicId["grid"] = {
+            caption: '史诗',
+            sortable: true,
+            size: '100px',
+            render: function (record) {
+                if (record.epicId == Issue.emptyText) {
+                    return '<div><i style="color:#A9A9A9">' + record.epicId + '</i></div>';
+                } else {
+                    return '<div><a target="_blank" href="https://jira.pkpm.cn/browse/' + record.epicId + '">' + record.epicId + '</a></div>';
+                }
             },
-            "bugPriority" : {
-                "visible" : true,
-                "chart" : {
-                    "visible" : false,
-                },
-                "filter" : {
-                    type : 'DropDown',
-                    id : 'bugPriorityFilter',
-                    label : '优先级',
-                    width : '200px',
-                    placeholder : "请选择Bug优先级",
-                },
-                "grid" : {
-                    caption: '优先级',
-                    sortable: true,
-                    size: '100px',
-                    render: function (record) {
-                        if (record.bugPriority == JiraIssueReader.emptyText) {
-                            return '<div><i style="color:#A9A9A9">' + record.bugPriority + '</i></div>';
-                        } else {
-                            return '<div>' + record.bugPriority + '</div>';
-                        }
-                    },
-                },
-            },
-            "bugPhase" : {
-                "visible" : true,
-                "chart" : {
-                    "visible" : false,
-                },
-                "filter" : {
-                    type : 'DropDown',
-                    id : 'bugPhaseFilter',
-                    label : '发现阶段',
-                    width : '200px',
-                    placeholder : "请选择Bug发现阶段",
-                },
-                "grid" : {
-                    caption: '发现阶段',
-                    sortable: true,
-                    size: '100px',
-                    render: function (record) {
-                        if (record.bugPhase == JiraIssueReader.emptyText) {
-                            return '<div><i style="color:#A9A9A9">' + record.bugPhase + '</i></div>';
-                        } else {
-                            return '<div>' + record.bugPhase + '</div>';
-                        }
-                    },
-                },
-            },
-            "epicId": {
-                "visible" : true,
-                "filter" : {
-                    type : 'Text',
-                    id : 'epicIdFilter',
-                    label : '史诗',
-                    width : '200px',
-                    placeholder : "请输入史诗的ID",
-                },
-                "grid" : {
-                    caption: '史诗',
-                    sortable: true,
-                    size: '100px',
-                    render: function (record) {
-                        if (record.epicId == JiraIssueReader.emptyText) {
-                            return '<div><i style="color:#A9A9A9">' + record.epicId + '</i></div>';
-                        } else {
-                            return '<div><a target="_blank" href="https://jira.pkpm.cn/browse/' + record.epicId + '">' + record.epicId + '</a></div>';
-                        }
-                    },
-                },
+        };
                 
+        this.config.fixedChangeset["visible"] = true;
+        this.config.fixedChangeset["filter"] = {
+            type : 'Text',
+            label : '变更集',
+            width : '150px',
+            placeholder : "请输入变更集",
+        };
+        this.config.fixedChangeset["grid"] = {
+            caption: '变更集',
+            sortable: true,
+            size: '200px',
+            render: function (record) {
+                if (record.fixedChangeset == Issue.emptyText) {
+                    return '<div><i style="color:#A9A9A9">' + record.fixedChangeset + '</i></div>';
+                } else {
+                    return '<div>' + record.fixedChangeset + '</div>';
+                }
             },
-            "fixedChangeset": {
-                "visible" : true,
-                "filter" : {
-                    type : 'Text',
-                    id : 'fixedChangesetFilter',
-                    label : '变更集',
-                    width : '150px',
-                    placeholder : "请输入变更集",
-                },
-                "grid" : {
-                    caption: '变更集',
-                    sortable: true,
-                    size: '200px',
-                    render: function (record) {
-                        if (record.fixedChangeset == JiraIssueReader.emptyText) {
-                            return '<div><i style="color:#A9A9A9">' + record.fixedChangeset + '</i></div>';
-                        } else {
-                            return '<div>' + record.fixedChangeset + '</div>';
-                        }
-                    },
-                },
+        };
                 
+        this.config.testComment["visible"] = true;
+        this.config.testComment["grid"] = {
+            caption: '测试备注',
+            sortable: true,
+            size: '200px',
+            render: function (record) {
+                if (record.testComment == Issue.emptyText) {
+                    return '<div><i style="color:#A9A9A9">' + record.testComment + '</i></div>';
+                } else {
+                    return '<div>' + record.testComment + '</div>';
+                }
             },
-            "testComment" :{
-                "visible" : true,
-                "grid" : {
-                    caption: '测试备注',
-                    sortable: true,
-                    size: '200px',
-                    render: function (record) {
-                        if (record.testComment == JiraIssueReader.emptyText) {
-                            return '<div><i style="color:#A9A9A9">' + record.testComment + '</i></div>';
-                        } else {
-                            return '<div>' + record.testComment + '</div>';
-                        }
-                    },
-                },
-            },
-            "tester" : {
-                "visible" : true,
-                "chart" : {
-                    "visible" : false,
-                },
-                "filter" : {
-                    type : 'DropDown',
-                    id : 'testerFilter',
-                    label : '测试',
-                    width : '200px',
-                    placeholder : "请选择测试人员",
-                },
-                "grid" : {
-                    caption: '测试',
-                    sortable: true,
-                    size: '60px',
-                    render: function (record) {
-                        if (record.tester == JiraIssueReader.emptyText) {
-                            return '<div><i style="color:#A9A9A9">' + record.tester + '</i></div>';
-                        } else {
-                            return '<div>' + record.tester + '</div>';
-                        }
-                    },
-                },
+        };
 
+        this.config.resolution["visible"] = true;
+        this.config.resolution["chart"] = {
+            "visible" : false,
+        };
+        this.config.resolution["filter"] = {
+            type : 'DropDown',
+            label : '解决结果',
+            width : '200px',
+            placeholder : "请选择解决结果",
+        };
+        this.config.resolution["grid"] = {
+            caption: '解决结果',
+            sortable: true,
+            size: '100px',
+            render: function (record) {
+                if (record.resolution == Issue.emptyText) {
+                    return '<div><i style="color:#A9A9A9">' + record.resolution + '</i></div>';
+                } else {
+                    return '<div>' + record.resolution + '</div>';
+                }
             },
-            "resolution" :{
-                "visible" : true,
-                "chart" : {
-                    "visible" : false,
-                },
-                "filter" : {
-                    type : 'DropDown',
-                    id : 'resolutionFilter',
-                    label : '解决结果',
-                    width : '200px',
-                    placeholder : "请选择解决结果",
-                },
-                "grid" : {
-                    caption: '解决结果',
-                    sortable: true,
-                    size: '100px',
-                    render: function (record) {
-                        if (record.resolution == JiraIssueReader.emptyText) {
-                            return '<div><i style="color:#A9A9A9">' + record.resolution + '</i></div>';
-                        } else {
-                            return '<div>' + record.resolution + '</div>';
-                        }
-                    },
-                },
+        };
 
+        this.config.resolvePerson["visible"] = true;
+        this.config.resolvePerson["chart"] = {
+            "visible" : false,
+        };
+        this.config.resolvePerson["filter"] = {
+            type : 'DropDown',
+            label : '解决人',
+            width : '200px',
+            placeholder : "请选择解决人",
+        };
+        this.config.resolvePerson["grid"] = {
+            caption: '解决人',
+            sortable: true,
+            size: '60px',
+            render: function (record) {
+                if (record.resolvePerson == "Empty Field") {
+                    return '<div><i style="color:#A9A9A9">' + record.resolvePerson + '</i></div>';
+                } else {
+                    return '<div>' + record.resolvePerson + '</div>';
+                }
             },
-            "resolvePerson" :{
-                "visible" : true,
-                "chart" : {
-                    "visible" : false,
-                },
-                "filter" : {
-                    type : 'DropDown',
-                    id : 'resolvePersonFilter',
-                    label : '解决人',
-                    width : '200px',
-                    placeholder : "请选择解决人",
-                },
-                "grid" : {
-                    caption: '解决人',
-                    sortable: true,
-                    size: '60px',
-                    render: function (record) {
-                        if (record.resolvePerson == "Empty Field") {
-                            return '<div><i style="color:#A9A9A9">' + record.resolvePerson + '</i></div>';
-                        } else {
-                            return '<div>' + record.resolvePerson + '</div>';
-                        }
-                    },
-                },
+        };
 
+        this.config.createDate["visible"] = true;
+        this.config.createDate["filter"] = {
+            type : 'DateRange',
+            label : '创建日期',
+            width : '80px',
+        };
+        this.config.createDate["grid"] = {
+            caption: '创建日期',
+            sortable: true,
+            size: '100px',
+            render: function (record) {
+                if (record.createDate == Issue.invalidDate) {
+                    return '<div><i style="color:#A9A9A9">Empty Field</i></div>';
+                } else {
+                    return '<div>' + date2String(record.createDate) + '</div>';
+                }
             },
-            "createDate" :{
-                "visible" : true,
-                "filter" : {
-                    type : 'DateRange',
-                    id : 'createDateFilter',
-                    label : '创建日期',
-                    width : '80px',
-                },
-                "grid" : {
-                    caption: '创建日期',
-                    sortable: true,
-                    size: '100px',
-                    render: function (record) {
-                        if (record.createDate == JiraIssueReader.invalidDate) {
-                            return '<div><i style="color:#A9A9A9">Empty Field</i></div>';
-                        } else {
-                            return '<div>' + date2String(record.createDate) + '</div>';
-                        }
-                    },
-                },
-            },
-            "resolutionDate" :{
-                "visible" : true,
-                "filter" : {
-                    type : 'DateRange',
-                    id : 'resolutionDateFilter',
-                    label : '解决日期',
-                    width : '80px',
-                },
-                "grid" : {
-                    caption: '解决日期',
-                    sortable: true,
-                    size: '100px',
-                    render: function (record) {
-                        if (record.resolutionDate == JiraIssueReader.invalidDate) {
-                            return '<div><i style="color:#A9A9A9">Empty Field</i></div>';
-                        } else {
-                            return '<div>' + date2String(record.resolutionDate) + '</div>';
-                        }
-                    },
-                },
-
+        };
+          
+        this.config.resolutionDate["visible"] = true;
+        this.config.resolutionDate["filter"] = {
+            type : 'DateRange',
+            label : '解决日期',
+            width : '80px',
+        };
+        this.config.resolutionDate["grid"] = {
+            caption: '解决日期',
+            sortable: true,
+            size: '100px',
+            render: function (record) {
+                if (record.resolutionDate == Issue.invalidDate) {
+                    return '<div><i style="color:#A9A9A9">Empty Field</i></div>';
+                } else {
+                    return '<div>' + date2String(record.resolutionDate) + '</div>';
+                }
             },
         };
 
@@ -648,7 +562,7 @@ export class Config{
     }
 
     // 获取当前配置的所有包含grid的key的标题，包括显示的和隐藏的
-    getGridFieldsVisibility(){
+    getFieldsVisibility(){
         let keys = {};
         for (const [k,v] of Object.entries(this.config)) {
             if ("grid" in v) {
@@ -661,8 +575,8 @@ export class Config{
     }
 
     // 设置当前配置的Key的Visibility
-    setGridFieldsVisibility(keys){
-        for (const [k,v] of Object.entries(keys)) {
+    setFieldsVisibility(fieldsVis){
+        for (const [k,v] of Object.entries(fieldsVis)) {
             if (k in this.config && "visible" in v) {
                 this.config[k]["visible"] = v["visible"];
             }
@@ -716,13 +630,17 @@ export class Config{
         return charts;
     }
     
-    // 设置Chart的Visible属性
-    setChartVisible(key, visible){
+    /**
+    * 设置chart的可见性
+    * @param {string} key chart的key
+    * @param {bool} visible chart的可见性
+    */
+     setChartVisibility(key, visible){
         if (typeof visible == "boolean" && key in this.config && "chart" in this.config[key]) {
             this.config[key]["chart"]["visible"] = visible;
         }
     }
-
+    
 
     // 获得字段的path
     getFieldPath(field){
@@ -750,15 +668,15 @@ export class Config{
 }
 
 class StructStoryFilter extends Config{
-    constructor(projectType, issueType, mode){
-        super(projectType, issueType, mode);
+    constructor(projectType, issueType){
+        super(projectType, issueType);
     }
 
 
 
     // 给配置补充字段的路径，有路径的字段才是需要获取jira数据的字段
     _modifyConfig(){
-        this.config.recid["path"]           = ["key"];
+        this.config.jiraId["path"]           = ["key"];
         this.config.category["path"]        = ["fields", "components"];
         this.config.title["path"]           = ["fields", "summary"];
         this.config.status["path"]          = ["fields", "status"];
@@ -774,15 +692,15 @@ class StructStoryFilter extends Config{
 }
 
 class StructBugFilter extends Config{
-    constructor(projectType, issueType, mode){
-        super(projectType, issueType, mode);
+    constructor(projectType, issueType){
+        super(projectType, issueType);
     }
 
 
 
     // 给配置补充字段的路径，有路径的字段才是需要获取jira数据的字段
     _modifyConfig(){
-        this.config.recid["path"]           = ["key"];
+        this.config.jiraId["path"]           = ["key"];
         this.config.category["path"]        = ["fields", "components"];
         this.config.title["path"]           = ["fields", "summary"];
         this.config.status["path"]          = ["fields", "status"];
@@ -799,13 +717,13 @@ class StructBugFilter extends Config{
 }
 
 class PCBugFilter extends Config{
-    constructor(projectType, issueType, mode){
-        super(projectType, issueType, mode);
+    constructor(projectType, issueType){
+        super(projectType, issueType);
     }
 
     // 给配置补充字段的路径，有路径的字段才是需要获取jira数据的字段
     _modifyConfig(){
-        this.config.recid["path"]           = ["key"];
+        this.config.jiraId["path"]           = ["key"];
         this.config.category["path"]        = ["fields", "components"];
         this.config.title["path"]           = ["fields", "summary"];
         this.config.status["path"]          = ["fields", "status"];
@@ -820,13 +738,13 @@ class PCBugFilter extends Config{
 }
 
 class PCEpicFilter extends Config{
-    constructor(projectType, issueType, mode){
-        super(projectType, issueType, mode);
+    constructor(projectType, issueType){
+        super(projectType, issueType);
     }
 
     // 给配置补充字段的路径，有路径的字段才是需要获取jira数据的字段
     _modifyConfig(){
-        this.config.recid["path"]                       = ["key"];
+        this.config.jiraId["path"]                       = ["key"];
         this.config.category["path"]                    = ["fields", "components"];
         this.config.title["path"]                       = ["fields", "summary"];
         this.config.status["path"]                      = ["fields", "status"];
@@ -842,13 +760,13 @@ class PCEpicFilter extends Config{
 }
 
 class MEPStoryFilter extends Config{
-    constructor(projectType, issueType, mode){
-        super(projectType, issueType, mode);
+    constructor(projectType, issueType){
+        super(projectType, issueType);
     }
 
     // 给配置补充字段的路径，有路径的字段才是需要获取jira数据的字段
     _modifyConfig(){
-        this.config.recid["path"]                               = ["key"];
+        this.config.jiraId["path"]                               = ["key"];
         this.config.category["path"]                            = ["fields", "components"];
         this.config.MEPCategory["path"]                         = ["fields", "customfield_10701"];
         this.config.title["path"]                               = ["fields", "summary"];
@@ -866,13 +784,13 @@ class MEPStoryFilter extends Config{
 
 
 class MEPBugFilter extends Config{
-    constructor(projectType, issueType, mode){
-        super(projectType, issueType, mode);
+    constructor(projectType, issueType){
+        super(projectType, issueType);
     }
 
     // 给配置补充字段的路径，有路径的字段才是需要获取jira数据的字段
     _modifyConfig(){
-        this.config.recid["path"]                       = ["key"];
+        this.config.jiraId["path"]                       = ["key"];
         this.config.category["path"]                    = ["fields", "components"];
         this.config.category["chart"]["visible"]        = false;
         this.config.MEPCategory["path"]                 = ["fields", "customfield_10701"];

@@ -43,3 +43,19 @@ export function getDateFormat(){
 export function date2String(date){
     return date.toISOString().substring(0, 10);
 }
+
+// 直接在页面下端输出
+export function printInfo(info){
+    let date = new Date().toLocaleString()
+    let p = document.createElement('p');
+    p.innerHTML = date + " " + info + '<br />';
+    document.body.appendChild(p);
+
+}
+
+
+// date1-date2的天数
+export function diffDays(date1, date2){
+    return Math.ceil((date1.getTime() - date2.getTime()) / (1000 * 3600 * 24));
+
+}
