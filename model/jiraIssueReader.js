@@ -211,6 +211,16 @@ export class JiraIssueReader{
         return this._getDictValue(JiraIssueReader.fieldReadConfig, path)['jqlName']
     }
     
+    // 获取当前登录的用户名
+    async getUserName(){
+        let username = await this._fetchCurrentUserName();
+        if (username && "displayName" in username && username.displayName) {
+            return username.displayName;
+        }else{
+            return undefined;
+        }
+    }
+
     // 获取JQL的总数目
     async _fetchJqlResultNum(){
         return fetch('https://jira.pkpm.cn/rest/api/2/search/', {
@@ -244,6 +254,24 @@ export class JiraIssueReader{
                                 fields: fields2,
                                 expand : expand,
                                 }), // must match 'Content-Type' header
+            headers: {
+                'user-agent': 'Mozilla/4.0 MDN Example',
+                'content-type': 'application/json'
+            },
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, same-origin, *omit
+            mode: 'cors', // no-cors, cors, *same-origin
+            redirect: 'follow', // manual, *follow, error
+            //referrer: 'no-referrer', // *client, no-referrer
+        }).then(response => response.json());
+    }
+
+    async _fetchCurrentUserName(){
+        return fetch('https://jira.pkpm.cn/rest/api/2/myself/', {
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            //body: JSON.stringify({jql: "key=BIMMEP-4773",
+            //                    //maxResults : 0,
+            //                    }), // must match 'Content-Type' header
             headers: {
                 'user-agent': 'Mozilla/4.0 MDN Example',
                 'content-type': 'application/json'
