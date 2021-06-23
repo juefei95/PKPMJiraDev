@@ -3,7 +3,8 @@
 */
 
 export class ToolBarView{
-    constructor(id, config){
+    constructor(reportName, id, config){
+        this.reportName = reportName;
         this.id = id;
         this.config = config;
         this.values = {};
@@ -41,7 +42,7 @@ export class ToolBarView{
             let vp = v.parseFunc($("#"+k).val());
             values[k] = vp;
         }
-        window.dispatchEvent(new CustomEvent("updateContent", {
+        window.dispatchEvent(new CustomEvent("updateContent"+this.reportName, {
             detail: {
                 toolbarValues : values,
         }}));

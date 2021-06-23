@@ -1,9 +1,10 @@
-
+import { ToolBarView } from './toolBarView.js'
 
 
 export class AbstractReport{
-    constructor(id, config, model){
+    constructor(reportName, id, config, model){
 
+        this.reportName = reportName;
         this.id = id;
         this.config = config;
         this.model = model;
@@ -17,7 +18,7 @@ export class AbstractReport{
             "toolbar" : id + "ToolBar",
             "content" : id + "Content",
         };
-        window.addEventListener("updateContent", this._updateContent.bind(this));
+        window.addEventListener("updateContent"+this.reportName, this._updateContent.bind(this));
     }
 
     updateView(){
@@ -29,10 +30,10 @@ export class AbstractReport{
 
         // 根据config决定是否加载toolbar
         if (this.config.toolbar) {
-            this.toolbar= new ToolBarView(this.ids.toolbar, this.config.toolbar);
+            this.toolbar= new ToolBarView(this.reportName, this.ids.toolbar, this.config.toolbar);
             this.toolbar.updateView();
         }
-        window.dispatchEvent(new CustomEvent("updateContent"));
+        window.dispatchEvent(new CustomEvent("updateContent"+this.reportName));
     }
 
     _updateContent(){

@@ -26,9 +26,9 @@ export class EnhancedReportFrame{
     show(){
 
         this._createLayout();
-        let reports = this.config.getReports();
+        let reportsConfig = this.config.getReports();
         let tabs = []
-        for (const [k,v] of Object.entries(reports)) {
+        for (const [k,v] of Object.entries(reportsConfig)) {
             tabs.push(
                 {
                     id : k,
@@ -41,11 +41,15 @@ export class EnhancedReportFrame{
         $('#'+this.ids.tabs).w2tabs({
             name: 'tabs',
             tabs: tabs,
+            active: Object.keys(reportsConfig)[0],
             onClick: event => {
                 let tabId = event.target;
                 this.reports[tabId].updateView();
             },
         });
+
+        // 默认显示第一个
+        this.reports[Object.keys(reportsConfig)[0]].updateView();
     }
     
     _createLayout(){

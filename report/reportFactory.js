@@ -9,5 +9,5 @@ const classes = { DeveloperCommitDelayReport, DocCommitDelayReport };
 
 export function getReport(classname, id, config, model){
     let rp = undefined;
-    return new classes[classname](id, config, model);
+    return new classes[classname](classname, id, config, model);
 }

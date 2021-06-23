@@ -8,8 +8,8 @@ import { diffDays, date2String }        from "./../model/toolSet.js"
 import { Issue }                  from "./../model/issue.js";
 
 export class DeveloperCommitDelayReport extends AbstractReport{
-    constructor(id, config, model){
-        super(id, config, model);
+    constructor(reportName, id, config, model){
+        super(reportName, id, config, model);
     }
 
 
@@ -20,8 +20,8 @@ export class DeveloperCommitDelayReport extends AbstractReport{
         let items = {};
         for (const issue of this.model.getIssues()) {
             let programPlanCommitDate = issue.getProgramPlanCommitDate();
-            if (programPlanCommitDate !== IssueConfig.invalidDate && diffDays(new Date(), programPlanCommitDate) > tbValues.delayDays) {
-                let designer = issue.getDesigner();
+            let designer = issue.getDesigner();
+            if (programPlanCommitDate !== Issue.invalidDate && designer !== Issue.emptyText && diffDays(new Date(), programPlanCommitDate) > tbValues.delayDays) {
                 let developer = issue.getDeveloper();
                 let jiraId = issue.getJiraId();
                 let title = issue.getTitle();
@@ -50,7 +50,7 @@ export class DeveloperCommitDelayReport extends AbstractReport{
         for (const [k,v] of Object.entries(items)) {
             for (const ii of v) {
                 (itemsOutput[k] ||= []).push(`
-                <b>研发逾期：</b><a href="https://jira.pkpm.cn/browse/${ii.jiraId}"  target="_blank">${ii.jiraId}</a> 研发 ${ii.developer}，计划提测日期${date2String(ii.planDate)}，标题为${ii.title}
+                <a href="https://jira.pkpm.cn/browse/${ii.jiraId}"  target="_blank">${ii.jiraId}</a> 研发 ${ii.developer}，计划提测日期${date2String(ii.planDate)}，标题为${ii.title}
                 `);
             }
         }
