@@ -104,7 +104,23 @@ export class Config{
                 },
             };
         }else if(this.issueType === '故障'){
-
+            return {
+                "bugResolveDelay" : {
+                    "tab" : {
+                        "name" : "Bug解决逾期",
+                    },
+                    "report" : {
+                        "viewClass" : "BugResolveDelayReport",
+                        "toolbar"     : {
+                            "delayDays" : {
+                                "name" : "逾期天数",
+                                "defaultValue" : 15,
+                                "parseFunc" : parseInt,
+                            },
+                        },
+                    },
+                },
+            }
         }
     }
 
@@ -181,6 +197,8 @@ class PCBugReport extends Config{
         this.config.category["path"]            = ["fields", "components"];
         this.config.title["path"]               = ["fields", "summary"];
         this.config.status["path"]              = ["fields", "status"];
+        this.config.assignee["path"]            = ["fields", "assignee"];
+        this.config.createDate["path"]          = ["fields", "created"];
         this.config.bugPriority["path"]         = ["fields", "priority"];
         this.config.affectVersions["path"]      = ["fields", "versions"];
         this.config.fixVersions["path"]         = ["fields", "fixVersions"];
@@ -244,6 +262,8 @@ class MEPBugReport extends Config{
     _modifyConfig(){
         this.config.jiraId["path"]                       = ["key"];
         this.config.category["path"]                    = ["fields", "components"];
+        this.config.assignee["path"]                    = ["fields", "assignee"];
+        this.config.createDate["path"]                  = ["fields", "created"];
         this.config.MEPCategory["path"]                 = ["fields", "customfield_10701"];
         this.config.title["path"]                       = ["fields", "summary"];
         this.config.status["path"]                      = ["fields", "status"];
