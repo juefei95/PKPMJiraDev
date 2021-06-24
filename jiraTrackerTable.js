@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Jira Tracker Table
 // @namespace    http://jira.pkpm.cn/
-// @version      0.1.41
-// @description  在Jira的搜索页面展示需求跟踪矩阵
+// @version      0.1.42
+// @description  功能已经全面签入Jira，这个脚本完成了自己的历史使命
 // @author       史建鑫
 // @match        http://jira.pkpm.cn/*
 // @match        https://jira.pkpm.cn/*
@@ -895,7 +895,7 @@ var theApp = {
 
 $(document).ready(function() { //When document has loaded
 
-    theApp.modifyWeb();
+    //theApp.modifyWeb();
 
 });
 
