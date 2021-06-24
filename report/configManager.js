@@ -120,6 +120,14 @@ export class Config{
                         },
                     },
                 },
+                "bugTitleNotFollowRule" : {
+                    "tab" : {
+                        "name" : "Bug标题不符合规定",
+                    },
+                    "report" : {
+                        "viewClass" : "BugTitleNotFollowRuleReport",
+                    },
+                },
             }
         }
     }

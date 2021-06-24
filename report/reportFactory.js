@@ -8,9 +8,10 @@ import { TestLongTimeReport }                   from "./testLongTimeReport.js";
 import { RequirementVerifyLongTimeReport }      from "./requirementVerifyLongTimeReport.js";
 import { StoryTimelineReport }                  from "./storyTimelineReport.js";
 import { BugResolveDelayReport }                from "./bugResolveDelayReport.js";
+import { BugTitleNotFollowRuleReport }          from "./bugTitleNotFollowRuleReport.js";
 
 const classes = { DeveloperCommitDelayReport, DocCommitDelayReport, TestLongTimeReport, RequirementVerifyLongTimeReport, StoryTimelineReport,
-    BugResolveDelayReport };
+    BugResolveDelayReport, BugTitleNotFollowRuleReport };
 
 export function getReport(classname, id, config, model){
     let rp = undefined;

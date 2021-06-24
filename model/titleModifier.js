@@ -22,6 +22,16 @@ export function modifyTitle(projectType, issueType, mode){
     // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓这些是report的标题↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
     }else if (projectType === 'JGVIRUS' && issueType === '故事' && mode === 'report') {
         window.document.title = "结构需求报告";
+    }else if (projectType === 'JGVIRUS' && issueType === '故障' && mode === 'report') {
+        window.document.title = "结构Bug报告";
+    }else if (projectType === 'PC' && issueType === '故障' && mode === 'report') {
+        window.document.title = "PC Bug报告";
+    }else if (projectType === 'PC' && issueType === 'EPIC' && mode === 'report') {
+        window.document.title = "PC EPIC报告";
+    }else if (projectType === 'BIMMEP' && issueType === '故事' && mode === 'report') {
+        window.document.title = "MEP需求报告";
+    }else if (projectType === 'BIMMEP' && issueType === '故障' && mode === 'report') {
+        window.document.title = "MEP Bug报告";
     // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑这些是report的标题↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
     }
 }
