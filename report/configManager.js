@@ -94,6 +94,14 @@ export class Config{
                         },
                     },
                 },
+                "storyTimeline" : {
+                    "tab" : {
+                        "name" : "项目进展报告",
+                    },
+                    "report" : {
+                        "viewClass" : "StoryTimelineReport",
+                    },
+                },
             };
         }else if(this.issueType === '故障'){
 
@@ -125,6 +133,7 @@ class StructStoryReport extends Config{
     _modifyConfig(){
         this.config.jiraId["path"]                   = ["key"];
         this.config.category["path"]                = ["fields", "components"];
+        this.config.createDate["path"]              = ["fields", "created"];
         this.config.title["path"]                   = ["fields", "summary"];
         this.config.status["path"]                  = ["fields", "status"];
         this.config.designer["path"]                = ["fields", "customfield_10537"];
@@ -189,6 +198,7 @@ class PCEpicReport extends Config{
     _modifyConfig(){
         this.config.jiraId["path"]                           = ["key"];
         this.config.category["path"]                        = ["fields", "components"];
+        this.config.createDate["path"]                      = ["fields", "created"];
         this.config.title["path"]                           = ["fields", "summary"];
         this.config.status["path"]                          = ["fields", "status"];
         this.config.designer["path"]                        = ["fields", "reporter"];
@@ -210,6 +220,7 @@ class MEPStoryReport extends Config{
     _modifyConfig(){
         this.config.jiraId["path"]                               = ["key"];
         this.config.category["path"]                            = ["fields", "components"];
+        this.config.createDate["path"]                          = ["fields", "created"];
         this.config.MEPCategory["path"]                         = ["fields", "customfield_10701"];
         this.config.title["path"]                               = ["fields", "summary"];
         this.config.status["path"]                              = ["fields", "status"];

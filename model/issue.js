@@ -195,4 +195,22 @@ export class Issue{
         }
         return undefined;
     }
+
+    
+    // 产品设计结束时间
+    getDesignEndDate(){
+        let toDesign = this.getLastStatusDate("待研发");
+        let designing = this.getLastStatusDate("研发中");
+        return toDesign ? toDesign : designing;
+    }
+
+    // 研发结束时间
+    getDevelopEndDate(){
+        return this.getLastStatusDate('已提测');
+    }
+
+    // 测试结束时间
+    getTestEndDate(){
+        return this.getLastStatusDate('测试完成');
+    }
 }

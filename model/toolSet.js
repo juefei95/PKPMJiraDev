@@ -59,3 +59,18 @@ export function diffDays(date1, date2){
     return Math.ceil((date1.getTime() - date2.getTime()) / (1000 * 3600 * 24));
 
 }
+
+
+// 生成日期数组，左开右闭
+export function dateRange(startDate, endDate, steps = 1) {
+    const dateArray = [];
+    let currentDate = startDate;
+    
+    while (currentDate < endDate) {
+        dateArray.push(date2String(new Date(currentDate)));
+        // Use UTC date to prevent problems with time zones and DST
+        currentDate.setUTCDate(currentDate.getUTCDate() + steps);
+    }
+    
+    return dateArray;
+}
