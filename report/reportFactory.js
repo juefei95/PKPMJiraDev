@@ -5,8 +5,9 @@
 import { DeveloperCommitDelayReport }   from "./developerCommitDelayReport.js";
 import { DocCommitDelayReport }         from "./docCommitDelayReport.js";
 import { TestLongTimeReport }         from "./testLongTimeReport.js";
+import { RequirementVerifyLongTimeReport } from "./requirementVerifyLongTimeReport.js";
 
-const classes = { DeveloperCommitDelayReport, DocCommitDelayReport, TestLongTimeReport };
+const classes = { DeveloperCommitDelayReport, DocCommitDelayReport, TestLongTimeReport, RequirementVerifyLongTimeReport };
 
 export function getReport(classname, id, config, model){
     let rp = undefined;

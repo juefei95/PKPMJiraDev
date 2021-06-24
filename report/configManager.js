@@ -79,6 +79,21 @@ export class Config{
                         },
                     },
                 },
+                "requirementVerifyLongTime" : {
+                    "tab" : {
+                        "name" : "需求验证时间过长",
+                    },
+                    "report" : {
+                        "viewClass" : "RequirementVerifyLongTimeReport",
+                        "toolbar"     : {
+                            "usedDays" : {
+                                "name" : "已验证天数",
+                                "defaultValue" : 15,
+                                "parseFunc" : parseInt,
+                            },
+                        },
+                    },
+                },
             };
         }else if(this.issueType === '故障'){
 

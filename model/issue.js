@@ -177,4 +177,22 @@ export class Issue{
         }
         return undefined;
     }
+
+    
+    // 第一次出现某个状态的日期
+    getFirstStatusDate(status){
+        if ("changelog" in this.issue) {
+            for (let index = 0; index < this.issue.changelog.length; index++) {
+                const items = this.issue.changelog[index].items;
+                for (let index2 = 0; index2<items.length; index2++){
+                    if (items[index2].field === "status" && items[index2].toString === status){
+                        let status = items[index2].toString;
+                        let date = this.issue.changelog[index].date;
+                        return date;
+                    }
+                }
+            }
+        }
+        return undefined;
+    }
 }
