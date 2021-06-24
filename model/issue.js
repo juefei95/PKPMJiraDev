@@ -213,4 +213,24 @@ export class Issue{
     getTestEndDate(){
         return this.getLastStatusDate('测试完成');
     }
+
+    // Bug是否解决
+    isBugResolved(){
+        return ["已解决", "已关闭", "Blocked"].includes(this.getStatus())
+    }
+
+    getBugResolveDateAndPerson(){
+        if (!this.isBugResolved()) return [undefined, undefined];
+            
+        for (let i = this.issue.changelog.length  - 1; i >= 0; i--) {
+            for (let j = 0; j < this.issue.changelog[i].items.length; j++){
+                if (this.issue.changelog[i].items[j].field === "status" && ["Resolved","Blocked"].includes(this.issue.changelog[i].items[j].toString)) {
+                    let name = this.issue.changelog[i].author;
+                    let date = this.issue.changelog[i].date;
+                    return [name, date];
+                }
+            }
+        }
+        return [undefined, undefined];
+    }
 }

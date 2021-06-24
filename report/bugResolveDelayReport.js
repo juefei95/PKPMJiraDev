@@ -20,7 +20,7 @@ export class BugResolveDelayReport extends AbstractReport{
         let tbValues = this._getToolBarValues(event);
         let items = {};
         for (const issue of this.model.getIssues()) {
-            let isResolved = ["已解决", "已关闭", "Blocked"].includes(issue.getStatus());
+            let isResolved = issue.isBugResolved();
             let createdDate = issue.getCreateDate();
 
             if (!isResolved && diffDays(new Date(), createdDate) > tbValues.delayDays) {

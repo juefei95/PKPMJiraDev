@@ -128,6 +128,21 @@ export class Config{
                         "viewClass" : "BugTitleNotFollowRuleReport",
                     },
                 },
+                "bugResolveStatus" : {
+                    "tab" : {
+                        "name" : "Bug积压和解决情况",
+                    },
+                    "report" : {
+                        "viewClass" : "BugResolveStatusReport",
+                        "toolbar"     : {
+                            "nearDays" : {
+                                "name" : "统计最近多少天解决的Bug",
+                                "defaultValue" : 15,
+                                "parseFunc" : parseInt,
+                            },
+                        },
+                    },
+                },
             }
         }
     }

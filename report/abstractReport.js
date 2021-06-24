@@ -14,10 +14,6 @@ export class AbstractReport{
             "toolbar" : id + "ToolBar",
             "content" : id + "Content",
         };
-        this.ids = {
-            "toolbar" : id + "ToolBar",
-            "content" : id + "Content",
-        };
         window.addEventListener("updateContent"+this.reportName, this._updateContent.bind(this));
     }
 
