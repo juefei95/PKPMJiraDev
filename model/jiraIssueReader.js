@@ -186,7 +186,7 @@ export class JiraIssueReader{
         let jqlResultNum = await this._fetchJqlResultNum(jql);
         let issues = [];
         for (let i=0; i<Math.ceil(jqlResultNum.total/eachTimeFetchNum); ++i){
-            let eachIssues = await this._fetchJqlIssues(jql, fields, eachTimeFetchNum, i*eachTimeFetchNum);
+            let eachIssues = await this._fetchJqlIssues(jql, fields, eachTimeFetchNum, i*eachTimeFetchNum, hasChangeLog);
             issues = issues.concat(eachIssues.issues);
         }
 
@@ -198,6 +198,18 @@ export class JiraIssueReader{
             for (const [k, v] of Object.entries(fieldsDict)){
                 let f = this._getDictValue(JiraIssueReader.fieldReadConfig, v)['f'];
                 o[k] = f(i);
+            }
+            // 如果有changelog，则加入
+            if (hasChangeLog) {
+                let cl = [];
+                i["changelog"]["histories"].forEach(h => {
+                    cl.push({
+                        "author" :  h["author"]["displayName"],
+                        "date" :  new Date(h["created"]),
+                        "items" :  h["items"],
+                    });
+                });
+                o["changelog"] = cl;
             }
             data.push(new Issue(o));
         }

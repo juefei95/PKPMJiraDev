@@ -157,4 +157,24 @@ export class Issue{
     getResolutionDate(){
         return this.issue.resolutionDate;
     }
+
+    /**
+     * 返回issue的changelog里最后一次出现某个状态的日期
+     * @param {string} status 状态名
+     * @returns Date or undefined
+     */
+    getLastStatusDate(status){
+        if ("changelog" in this.issue) {
+            for (let index = this.issue.changelog.length  - 1; index >= 0; index--) {
+                const items = this.issue.changelog[index].items;
+                for (let index2 = 0; index2<items.length; index2++){
+                    if (items[index2].field === "status" && items[index2].toString === status){
+                        let date = this.issue.changelog[index].date;
+                        return date;
+                    }
+                }
+            }
+        }
+        return undefined;
+    }
 }

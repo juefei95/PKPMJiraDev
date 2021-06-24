@@ -64,6 +64,21 @@ export class Config{
                         },
                     },
                 },
+                "testLongTime" : {
+                    "tab" : {
+                        "name" : "测试时间过长",
+                    },
+                    "report" : {
+                        "viewClass" : "TestLongTimeReport",
+                        "toolbar"     : {
+                            "usedDays" : {
+                                "name" : "已测试天数",
+                                "defaultValue" : 15,
+                                "parseFunc" : parseInt,
+                            },
+                        },
+                    },
+                },
             };
         }else if(this.issueType === '故障'){
 
