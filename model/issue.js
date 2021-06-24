@@ -233,4 +233,35 @@ export class Issue{
         }
         return [undefined, undefined];
     }
+
+    
+    // Bug的最后一次复测失败情况
+    getBugLastRetestFailInfo(){
+        let mark = false;
+        let date = undefined;
+        let developer = undefined;
+        let tester = undefined;
+        for (let i=this.issue.changelog.length - 1; i >= 0; i--){
+            for (let j=0; j<this.issue.changelog[i].items.length; j++){
+                if (!mark) {
+                    if (this.issue.changelog[i].items[j].field === "status" &&
+                        this.issue.changelog[i].items[j].fromString === "Resolved" &&
+                        this.issue.changelog[i].items[j].toString !== "Closed"
+                    ){
+                        mark = true;
+                        date = this.issue.changelog[i].date;
+                        tester = this.issue.changelog[i].author;
+                    }
+                }else{
+                    if (this.issue.changelog[i].items[j].field === "status" &&
+                        this.issue.changelog[i].items[j].toString === "Resolved"
+                    ){
+                        developer = this.issue.changelog[i].author;
+                        return [developer, tester, date];
+                    }
+                }
+            }
+        }
+        return [undefined, undefined, undefined];
+    }
 }

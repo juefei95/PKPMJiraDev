@@ -174,6 +174,21 @@ export class Config{
                         },
                     },
                 },
+                "bugUnresolvedAndRetestFail" : {
+                    "tab" : {
+                        "name" : "未解决且复测失败的Bug",
+                    },
+                    "report" : {
+                        "viewClass" : "BugUnresolvedAndRetestFailReport",
+                        "toolbar"     : {
+                            "nearDays" : {
+                                "name" : "统计最近多少天未解决的Bug",
+                                "defaultValue" : 15,
+                                "parseFunc" : parseInt,
+                            },
+                        },
+                    },
+                },
             }
         }
     }
