@@ -159,6 +159,21 @@ export class Config{
                         "viewClass" : "BugRetestStatusReport",
                     },
                 },
+                "bugUnresolvedByCategory" : {
+                    "tab" : {
+                        "name" : "各模块未解决Bug情况",
+                    },
+                    "report" : {
+                        "viewClass" : "BugUnresolvedByCategoryReport",
+                        "toolbar"     : {
+                            "nearDays" : {
+                                "name" : "统计最近多少天未解决的Bug",
+                                "defaultValue" : 15,
+                                "parseFunc" : parseInt,
+                            },
+                        },
+                    },
+                },
             }
         }
     }
