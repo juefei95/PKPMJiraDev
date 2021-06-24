@@ -6,9 +6,9 @@ import { Issue } from "./../model/issue.js";
 
 // Config 工厂
 export function getConfig(projectType, issueType){
-    if (projectType === 'JGVIRUS' && issueType === '故事') {
+    if (['JGVIRUS','STS'].includes(projectType) && issueType === '故事') {
         return new StructStoryReport(projectType, issueType)
-    }else if (projectType === 'JGVIRUS' && issueType === '故障') {
+    }else if (['JGVIRUS','STS'].includes(projectType) && issueType === '故障') {
         return new StructBugReport(projectType, issueType)
     }else if (projectType === 'PC' && issueType === '故障') {
         return new PCBugReport(projectType, issueType,);
