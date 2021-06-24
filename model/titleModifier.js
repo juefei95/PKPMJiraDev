@@ -4,7 +4,7 @@
 
 export function modifyTitle(projectType, issueType, mode){
     
-    let proj = "";
+    let proj = projectType;
     if (projectType === 'JGVIRUS'){
         proj = "结构";
     }

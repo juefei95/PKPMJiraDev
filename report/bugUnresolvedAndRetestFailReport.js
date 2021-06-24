@@ -50,10 +50,10 @@ export class BugUnresolvedAndRetestFailReport extends AbstractReport{
         // 排序
         for (const [k,v] of Object.entries(items)) {
             v.sort(((a,b) => {
-                if (a.retestFailDate < b.retestFailDate) {
+                if (a.retestFailDate.value < b.retestFailDate.value) {
                     return -1;
                 }
-                if (a.retestFailDate > b.retestFailDate) {
+                if (a.retestFailDate.value > b.retestFailDate.value) {
                     return 1;
                 }
                 return 0;

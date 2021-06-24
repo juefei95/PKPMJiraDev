@@ -45,10 +45,10 @@ export class DocCommitDelayReport extends AbstractReport{
         // 按计划提验日期排序
         for (const [k,v] of Object.entries(items)) {
             v.sort(((a,b) => {
-                if (a.planDate < b.planDate) {
+                if (a.planDate.value < b.planDate.value) {
                     return -1;
                 }
-                if (a.planDate > b.planDate) {
+                if (a.planDate.value > b.planDate.value) {
                     return 1;
                 }
                 return 0;

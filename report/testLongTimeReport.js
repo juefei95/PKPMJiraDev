@@ -48,10 +48,10 @@ export class TestLongTimeReport extends AbstractReport{
         // 按计划提验日期排序
         for (const [k,v] of Object.entries(items)) {
             v.sort(((a,b) => {
-                if (a.testDate < b.testDate) {
+                if (a.testDate.value < b.testDate.value) {
                     return -1;
                 }
-                if (a.testDate > b.testDate) {
+                if (a.testDate.value > b.testDate.value) {
                     return 1;
                 }
                 return 0;

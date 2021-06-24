@@ -32,7 +32,7 @@ export class Config{
 
     // 获取当前report的展示类集合
     getReports(){
-        if (this.issueType === '故事') {
+        if (this.issueType === '故事' || this.issueType === 'EPIC') {
             return {
                 "developerCommitDelay" : {
                     "tab" : {

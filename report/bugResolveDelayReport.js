@@ -51,10 +51,10 @@ export class BugResolveDelayReport extends AbstractReport{
         // 排序
         for (const [k,v] of Object.entries(items)) {
             v.sort(((a,b) => {
-                if (a.createdDate < b.createdDate) {
+                if (a.createdDate.value < b.createdDate.value) {
                     return -1;
                 }
-                if (a.createdDate > b.createdDate) {
+                if (a.createdDate.value > b.createdDate.value) {
                     return 1;
                 }
                 return 0;
