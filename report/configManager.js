@@ -151,6 +151,14 @@ export class Config{
                         "viewClass" : "BugBlockedStatusReport",
                     },
                 },
+                "bugRetestStatus" : {
+                    "tab" : {
+                        "name" : "需要复测的Bug",
+                    },
+                    "report" : {
+                        "viewClass" : "BugRetestStatusReport",
+                    },
+                },
             }
         }
     }

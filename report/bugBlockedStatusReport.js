@@ -4,7 +4,6 @@
 
 import { AbstractReport }               from "./abstractReport.js"
 import { MultiBarView }                from "./multiBarView.js"
-import { diffDays, arrayMultisort }          from "../model/toolSet.js"
 import { Issue }                        from "../model/issue.js";
 
 
@@ -41,7 +40,7 @@ export class BugBlockedStatusReport extends AbstractReport{
                 issueId: bugBlockedId,
             }
         ]
-        
+
         this.content = new MultiBarView(this.ids.content, label, datasets);
         this.content.updateView();
     }
