@@ -143,6 +143,14 @@ export class Config{
                         },
                     },
                 },
+                "bugBlockedStatus" : {
+                    "tab" : {
+                        "name" : "Bug各模块Blocked情况",
+                    },
+                    "report" : {
+                        "viewClass" : "BugBlockedStatusReport",
+                    },
+                },
             }
         }
     }

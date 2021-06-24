@@ -1,5 +1,5 @@
 /**
- * 项目故事进展报告
+ * Bug解决情况
  */
 
 import { AbstractReport }               from "./abstractReport.js"

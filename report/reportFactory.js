@@ -10,9 +10,10 @@ import { StoryTimelineReport }                  from "./storyTimelineReport.js";
 import { BugResolveDelayReport }                from "./bugResolveDelayReport.js";
 import { BugTitleNotFollowRuleReport }          from "./bugTitleNotFollowRuleReport.js";
 import { BugResolveStatusReport }               from "./bugResolveStatusReport.js";
+import { BugBlockedStatusReport }               from "./bugBlockedStatusReport.js";
 
 const classes = { DeveloperCommitDelayReport, DocCommitDelayReport, TestLongTimeReport, RequirementVerifyLongTimeReport, StoryTimelineReport,
-    BugResolveDelayReport, BugTitleNotFollowRuleReport, BugResolveStatusReport, };
+    BugResolveDelayReport, BugTitleNotFollowRuleReport, BugResolveStatusReport, BugBlockedStatusReport,};
 
 export function getReport(classname, id, config, model){
     let rp = undefined;
