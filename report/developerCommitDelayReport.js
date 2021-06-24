@@ -26,10 +26,22 @@ export class DeveloperCommitDelayReport extends AbstractReport{
                 let jiraId = issue.getJiraId();
                 let title = issue.getTitle();
                 (items[designer] ||= []).push({
-                    "jiraId" : jiraId,
-                    "developer" : developer,
-                    "planDate" : programPlanCommitDate,
-                    "title" : title,
+                    "jiraId" : {
+                        "link" : "https://jira.pkpm.cn/browse/",
+                        "value" : jiraId,
+                    },
+                    "developer" : {
+                        "text" : "研发",
+                        "value" : developer,
+                    },
+                    "planDate" : {
+                        "text" : "计划提测日期",
+                        "value" : date2String(programPlanCommitDate),
+                    },
+                    "title" : {
+                        "text" : "标题为",
+                        "value" : title,
+                    }
                 });
             }
         }
@@ -45,18 +57,8 @@ export class DeveloperCommitDelayReport extends AbstractReport{
                 return 0;
             }));
         }
-        // 输出
-        let itemsOutput = {};
-        for (const [k,v] of Object.entries(items)) {
-            for (const ii of v) {
-                (itemsOutput[k] ||= []).push(`
-                <a href="https://jira.pkpm.cn/browse/${ii.jiraId}"  target="_blank">${ii.jiraId}</a> 研发 ${ii.developer}，计划提测日期${date2String(ii.planDate)}，标题为${ii.title}
-                `);
-            }
-        }
 
-
-        this.content = new ULView(this.ids.content, itemsOutput);
+        this.content = new ULView(this.ids.content, items);
         this.content.updateView();
     }
 }

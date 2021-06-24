@@ -14,12 +14,12 @@ export class ULView{
         let ul = document.createElement("ul");
         for (const [k, v] of Object.entries(this.content)){
             let li = document.createElement("li");
-            li.innerText = k;
+            li.innerText = `${k} (${v.length})` ;
             {
                 let li_ui = document.createElement("ul");
-                v.forEach(function(x){
+                v.forEach(x =>{
                     let li_ui_li = document.createElement("li");
-                    li_ui_li.innerHTML = x;
+                    li_ui_li.innerHTML = this._genHtml(x);
                     li_ui.appendChild(li_ui_li);
                 });
                 li.appendChild(li_ui)
@@ -27,5 +27,17 @@ export class ULView{
             ul.appendChild(li)
         }
         $("#"+this.id).append(ul);
+    }
+
+    _genHtml(obj){
+        let html = '';
+        for (const [k,v] of Object.entries(obj)) {
+            if ("link" in v) {
+                html += `<a href="${v.link}${v.value}"  target="_blank">${v.value}</a>`
+            }else if ("text" in v) {
+                html += `<span style="color:#A9A9A9">  ${v.text} </span> ${v.value} `
+            }
+        }
+        return html;
     }
 }
