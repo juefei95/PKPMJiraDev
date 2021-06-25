@@ -19,30 +19,32 @@ export class DeveloperCommitDelayReport extends AbstractReport{
         let tbValues = this._getToolBarValues(event);
         let items = {};
         for (const issue of this.model.getIssues()) {
-            let programPlanCommitDate = issue.getProgramPlanCommitDate();
-            let designer = issue.getDesigner();
-            if (programPlanCommitDate !== Issue.invalidDate && designer !== Issue.emptyText && diffDays(new Date(), programPlanCommitDate) > tbValues.delayDays) {
-                let developer = issue.getDeveloper();
-                let jiraId = issue.getJiraId();
-                let title = issue.getTitle();
-                (items[designer] ||= []).push({
-                    "jiraId" : {
-                        "link" : "https://jira.pkpm.cn/browse/",
-                        "value" : jiraId,
-                    },
-                    "developer" : {
-                        "text" : "研发",
-                        "value" : developer,
-                    },
-                    "planDate" : {
-                        "text" : "计划提测日期",
-                        "value" : date2String(programPlanCommitDate),
-                    },
-                    "title" : {
-                        "text" : "标题为",
-                        "value" : title,
-                    }
-                });
+            if (issue.getStatus() === "研发中"){
+                let programPlanCommitDate = issue.getProgramPlanCommitDate();
+                let designer = issue.getDesigner();
+                if (programPlanCommitDate !== Issue.invalidDate && designer !== Issue.emptyText && diffDays(new Date(), programPlanCommitDate) > tbValues.delayDays) {
+                    let developer = issue.getDeveloper();
+                    let jiraId = issue.getJiraId();
+                    let title = issue.getTitle();
+                    (items[designer] ||= []).push({
+                        "jiraId" : {
+                            "link" : "https://jira.pkpm.cn/browse/",
+                            "value" : jiraId,
+                        },
+                        "developer" : {
+                            "text" : "研发",
+                            "value" : developer,
+                        },
+                        "planDate" : {
+                            "text" : "计划提测日期",
+                            "value" : date2String(programPlanCommitDate),
+                        },
+                        "title" : {
+                            "text" : "标题为",
+                            "value" : title,
+                        }
+                    });
+                }
             }
         }
         // 按计划提验日期排序
