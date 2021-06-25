@@ -267,6 +267,7 @@ class PCBugReport extends Config{
         this.config.title["path"]               = ["fields", "summary"];
         this.config.status["path"]              = ["fields", "status"];
         this.config.assignee["path"]            = ["fields", "assignee"];
+        this.config.tester["path"]              = ["fields", "reporter"];
         this.config.createDate["path"]          = ["fields", "created"];
         this.config.bugPriority["path"]         = ["fields", "priority"];
         this.config.affectVersions["path"]      = ["fields", "versions"];
@@ -332,6 +333,7 @@ class MEPBugReport extends Config{
         this.config.jiraId["path"]                       = ["key"];
         this.config.category["path"]                    = ["fields", "components"];
         this.config.assignee["path"]                    = ["fields", "assignee"];
+        this.config.tester["path"]                      = ["fields", "reporter"];
         this.config.createDate["path"]                  = ["fields", "created"];
         this.config.MEPCategory["path"]                 = ["fields", "customfield_10701"];
         this.config.title["path"]                       = ["fields", "summary"];

@@ -20,7 +20,6 @@ export class Issue{
             "assignee" :{},
             "designer" : {},
             "developer" : {},
-            "tester" : {},
             "confluenceLink" : {},
             "docPlanCommitDate" : {},
             "programPlanCommitDate" : {},
