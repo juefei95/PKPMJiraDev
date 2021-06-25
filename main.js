@@ -4,22 +4,22 @@ import { JiraIssueReader } from "./model/jiraIssueReader.js"
 
 export async function main(){
 
-    try {
-        let jira = new JiraIssueReader();
-        let username = await jira.getUserName();
-        if (!username) {
-            alert("您是不是没有登录到Jira，请尝试重新登录。")
-            return;
-        }else{
-            if (!window.isDebug) {
-                let msg = username + "于" + new Date(new Date().getTime()+ 8 * 3600 * 1000).toISOString() + "使用了" + window.mode;
-                jira.addComment("EPGEE-6", msg);
-            }
-        }
-    } catch (error) {
-        alert("您是不是没有登录到Jira，请尝试重新登录。")
-        return;
-    }
+    //try {
+    //    let jira = new JiraIssueReader();
+    //    let username = await jira.getUserName();
+    //    if (!username) {
+    //        alert("您是不是没有登录到Jira，请尝试重新登录。")
+    //        return;
+    //    }else{
+    //        if (!window.isDebug) {
+    //            let msg = username + "于" + new Date(new Date().getTime()+ 8 * 3600 * 1000).toISOString() + "使用了" + window.mode;
+    //            jira.addComment("EPGEE-6", msg);
+    //        }
+    //    }
+    //} catch (error) {
+    //    alert("您是不是没有登录到Jira，请尝试重新登录。")
+    //    return;
+    //}
 
     
     if (window.mode === "report") {
