@@ -18,8 +18,9 @@ export function getConfig(projectType, issueType){
         return new MEPStoryReport(projectType, issueType);
     }else if (projectType === 'BIMMEP' && issueType === '故障') {
         return new MEPBugReport(projectType, issueType);
+    }else{
+        return undefined;
     }
-    throw "error: JQL中projectType、issueType有问题"
 }
 
 export class Config{

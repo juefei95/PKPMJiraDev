@@ -18,8 +18,9 @@ export function getConfig(projectType, issueType){
         return new MEPStoryFilter(projectType, issueType);
     }else if (projectType === 'BIMMEP' && issueType === '故障') {
         return new MEPBugFilter(projectType, issueType);
+    }else{
+        return undefined;
     }
-    throw "error: JQL中projectType、issueType、mode有问题"
 }
 
 export class Config{

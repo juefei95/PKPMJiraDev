@@ -20,6 +20,10 @@ export async function helloReport(){
         // 加载Config
         printInfo(" 加载Config");
         let config = getConfig(jql.getProject(), jql.getIssueType());
+        if (!config) { 
+            alert("您使用的项目类型或issue类型目前还未配置，请联系史建鑫进行配置。");
+            return;
+        }
 
         // 获取数据
         printInfo(" 获取数据");
