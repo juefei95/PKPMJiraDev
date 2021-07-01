@@ -15,6 +15,10 @@ export class JiraIssueReader{
             'jqlName' : 'key',
         },
         'fields' : {
+            'issuetype'         : {
+                'f' : i => 'issuetype' in i.fields && i.fields.issuetype && i.fields.issuetype.name ? i.fields.issuetype.name                       : Issue.emptyText,
+                'jqlName' : 'issuetype',
+            },
             'components'        : {
                 'f' : i => 'components' in i.fields && i.fields.components.length > 0               ? i.fields.components[0].name                   : Issue.emptyText,
                 'jqlName' : 'component',
@@ -175,11 +179,12 @@ export class JiraIssueReader{
     //     [data(Array<json>),notReadIssueKey(Array<string>)] - 读取的数据,未读取的JiraId
     async read(jql, hasChangeLog = false){
         // 先获取jql的总数目
+        let fieldsForSearch = Object.keys(JiraIssueReader.fieldReadConfig["fields"]);
         let eachTimeFetchNum = 1000;        // 每次从Jira服务器获取issue的数目为1000，这个是服务器规定的
         let jqlResultNum = await this._fetchJqlResultNum(jql);
         let issues = [];
         for (let i=0; i<Math.ceil(jqlResultNum.total/eachTimeFetchNum); ++i){
-            let eachIssues = await this._fetchJqlIssues(jql, eachTimeFetchNum, i*eachTimeFetchNum, hasChangeLog);
+            let eachIssues = await this._fetchJqlIssues(jql, eachTimeFetchNum, i*eachTimeFetchNum, hasChangeLog, fieldsForSearch);
             issues = issues.concat(eachIssues.issues);
         }
 

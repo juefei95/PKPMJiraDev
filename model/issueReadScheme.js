@@ -1,12 +1,10 @@
 /**
- * 各种issue读取的方案
- * 不同的项目可能方案不同，也就是jira读取的实际字段 => 语义字段的映射
- */
-
-/**
  * 根据项目名获取issue的读取方案
  * @param {string} projName 项目名，取的是Jira issue的前面部分，即项目的英文缩写，如结构的是JGVIRUS
  */
+
+import { Issue }  from "./issue.js"
+
 export function getIssueReadScheme(projName, issueType){
     if (projName === "JGVIRUS") {
         if (issueType === "故事") {
@@ -49,6 +47,17 @@ export class IssueReadScheme{
 
     howToReadField(field){
         return this[field];
+    }
+
+    getFieldsForJiraSearch(){
+        let validFields = Issue.getValidFields();
+        let fieldsForJiraSearch = [];
+        for (const field of validFields) {
+            if (this[field] && this[field][0] == "fields") {
+                fieldsForJiraSearch.push(this[field][1])
+            }
+        }
+        return fieldsForJiraSearch;
     }
 }
 
