@@ -39,7 +39,7 @@ export function getViewConfig(issues){
     if (["故障"].includes(mostIssueType)) {
         if (["PC"].includes(mostProj)) {
             return new PCBugViewConfig();
-        }else if(["JGVIRUS"].includes(mostProj)){
+        }else if(["JGVIRUS", "STS"].includes(mostProj)){
             return new JGBugViewConfig();
         }else if(["BIMMEP"].includes(mostProj)){
             return new MEPBugViewConfig();
@@ -47,7 +47,7 @@ export function getViewConfig(issues){
     }else if(["故事", "Epic"].includes(mostIssueType)){
         if (["PC"].includes(mostProj)) {
             return new PCStoryViewConfig();
-        }else if(["JGVIRUS"].includes(mostProj)){
+        }else if(["JGVIRUS", "STS"].includes(mostProj)){
             return new JGStoryViewConfig();
         }else if(["BIMMEP"].includes(mostProj)){
             return new MEPStoryViewConfig();
