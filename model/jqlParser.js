@@ -5,7 +5,7 @@ JQL解析类
 export class JQL{
     constructor(jql){
         this.rawJql = jql.toUpperCase();
-        this.jql = {};
+        //this.jql = {};
         this.orderPart = "";
         this.jqlWithoutOrderPart = "";
         this._parse();
@@ -15,7 +15,7 @@ export class JQL{
     getRawJQL(){
         return this.rawJql;
     }
-
+/* 
     // 获取项目名
     getProject(){
         return this.jql["PROJECT"];
@@ -25,7 +25,7 @@ export class JQL{
     getIssueType(){
         return this.jql["ISSUETYPE"];
     }
-
+*/
     // 生成新的JQL
     genNewJQL(newCondition){
         let s = this.jqlWithoutOrderPart;
@@ -57,7 +57,7 @@ export class JQL{
             this.jqlWithoutOrderPart = this.rawJql;
         }
 
-        // 再分解其他搜索条件
+        /* 再分解其他搜索条件
         let indexOfAnd = this.rawJql.indexOf('AND');
         let lastIndex = 0;
         while(indexOfAnd != -1){
@@ -70,7 +70,7 @@ export class JQL{
 
         let s = this.rawJql.slice(lastIndex, startIndexOfOrder===-1 ? this.rawJql.length : startIndexOfOrder);
         const [key, value] = this._parseKeyValue(s);
-        this.jql[key] = value;
+        this.jql[key] = value;*/
     }
 
     // 解析类似于project = JGVIRUS

@@ -3,9 +3,10 @@ import { ViewModel } from '../common/viewModel.js'
 
 
 export class BtnViewModel extends ViewModel{
-    constructor(model, config){
-        super("BtnViewModel", model);
-        this.config = config;
+    constructor(model, viewConfig){
+        super("BtnViewModel");
+        this.model = model;
+        this.viewConfig = viewConfig;
     }
 
     clearFilterSelectedOptions(){
@@ -17,11 +18,11 @@ export class BtnViewModel extends ViewModel{
     * @returns {json} filterVis {key : {visible : true/false}}
     */
     getFieldsVisibility() {
-        return this.config.getFieldsVisibility()
+        return this.viewConfig.getFieldsVisibility()
     }
 
     setFieldsVisibility(fieldsVis){
-        this.model.setFieldsVisibility(fieldsVis)
+        this.viewConfig.setFieldsVisibility(fieldsVis)
     }
 
     genJQLWithSelection(){

@@ -2,9 +2,10 @@
 这里主要是管理数据
 */
 
-import {Config}  from './configManager.js';
+import {ViewConfig}  from './viewConfig.js';
 import {JQL}  from '../model/jqlParser.js';
 import {JiraIssueReader} from '../model/jiraIssueReader.js'
+import {getIssueReadScheme} from '../model/issueReadScheme.js'
 import {Issue} from './../model/issue.js'
 import {AbstractModel} from './../common/model.js'
 
@@ -15,10 +16,11 @@ export class Model extends AbstractModel{
     static initEndDate = new Date('2999-01-01');
 
 
-    constructor(issues, config, jql){
+    constructor(issues, viewConfig, jql){
         super("FilterModel");
         this.issues = issues;
-        this.config = config;
+        this.issuesAllReadScheme = undefined;
+        this.viewConfig = viewConfig;
         this.jql = jql;
         this.filterOptions = {};
         this.filterSelectedOptions = {};
@@ -46,7 +48,7 @@ export class Model extends AbstractModel{
         let options = new Set();
         for (const issue of this.issues) {
             let v = issue.getAttr(propName);
-            if (v) options.add(v);
+            options.add(v);
         }
         return options;
     }
@@ -61,7 +63,7 @@ export class Model extends AbstractModel{
         for (const issue of this.issues) {
             if (this.selectedIssueId.has(issue.getJiraId())) {
                 let v = issue.getAttr(propName);
-                if (v) propCount[v] ? propCount[v]+=1 : propCount[v]=1;
+                propCount[v] ? propCount[v]+=1 : propCount[v]=1;
             }
         }
         return propCount;
@@ -76,16 +78,13 @@ export class Model extends AbstractModel{
         return undefined;
     }
 
+    // 获取某Filter被选中的项
     getFilterSelectedOptions(key){
         
         if (key in this.filterSelectedOptions) {
             return this.filterSelectedOptions[key];
         }
         return undefined;
-    }
-
-    getAllFilterSelectedOptions(){
-        return this.filterOptions;
     }
 
     // 更新DropDown类型的Filter的当前被选中项
@@ -115,7 +114,7 @@ export class Model extends AbstractModel{
     }
 
     clearFilterSelectedOptions(){
-        for (const key of Object.keys(this.config.getFiltersDict())){
+        for (const key of Object.keys(this.viewConfig.getFiltersDict())){
             // DropDown的选中项
             if (this.filterSelectedOptions[key] instanceof Set){
                 this.filterSelectedOptions[key].clear();
@@ -124,7 +123,7 @@ export class Model extends AbstractModel{
                 this.filterSelectedOptions[key] = '';
             // DateRange的选中项    
             }else if(this.filterSelectedOptions[key] instanceof Array){
-                this.filterSelectedOptions[key] = [Model.initStartDate, Model.initEndDate];
+                this.filterSelectedOptions[key] = new Array();
             }
         }
         // 发送消息，选中项变了
@@ -135,49 +134,99 @@ export class Model extends AbstractModel{
 
     // 根据筛选条件生成新的JQL
     genJQLWithSelection(){
+        // 先确保从所有的Issue那找到了用了哪几个ReadScheme
+        this._getIssuesAllReadScheme();
+        // 有哪些选项是可以选择的
+        let filterConfig = this.viewConfig.getFiltersDict();
+        // 定义一个比较Array of string的lambda函数
+        let isSamePath = (a,b) => {
+            if(a.length != b.length) return false;
+            for(let i=0; i<a.length; ++i){
+                if(a[i] != b[i]) return false;
+            }
+            return true;
+        }
+        // 循环所有已选项
         let validSelection = {};
         let reader = new JiraIssueReader();
-        for (const key of Object.keys(this.config.getFiltersDict())){
+        for (const [k,v] of Object.entries(this.filterSelectedOptions)) {
+            // 跳过没有筛选项的filter
+            if(v instanceof Set && v.size === 0) continue;
+            if(typeof v === 'string' && v === '') continue;
+            if(v instanceof Array && v.length === 0) continue;
+            // 循环每一个ReadScheme，如果出现当前key的读取Path不一致，则无法构造JQL
+            let path = undefined;
+            for (const scheme of this.issuesAllReadScheme) {
+                let p = scheme.howToReadField(k);
+                if(!p) continue;
+                if(!path){
+                    path = p;
+                }else if(!isSamePath(path, p)){
+                    return [false, "字段\"" + filterConfig[k]["filter"]["label"] + "\"有多种读取方法，无法构造JQL，请联系史建鑫查看原因。"];
+                }
+            }
+            if(!path) return [false, "字段\"" + filterConfig[k]["filter"]["label"] + "\"找不到读取字段，无法构造JQL，请联系史建鑫查看原因。"];
+            let jqlName = reader.getJQLName(path);
+
+            
             // DropDown的选中项
-            if (this.filterSelectedOptions[key] instanceof Set && this.filterSelectedOptions[key].size !== 0){
-                let jqlName = reader.getJQLName(this.config.getFieldPath(key));
+            if (v instanceof Set){
                 let jqlValues = new Set();
-                for (const v of this.filterSelectedOptions[key]) {
-                    jqlValues.add(this.config.getFieldJQLValue(key, v));
+                for (const vv of v) {
+                    if (k === "status") {
+                        let valueReplace = {"处理中" : "In Progress", "完成" : "Done", "开放" : "Open", "重新打开" : "Reopened", "已解决" : "Resolved", "已关闭" : "Closed"};
+                        if (vv in valueReplace) {
+                            jqlValues.add(valueReplace[vv])
+                        }else{
+                            jqlValues.add(vv)
+                        }
+                    }else{
+                        jqlValues.add(vv)
+                    }
                 }
                 validSelection[jqlName] = jqlValues;
             // Text的选中项
-            }else if(typeof this.filterSelectedOptions[key] === 'string' && this.filterSelectedOptions[key] !== ""){
-                let jqlName = reader.getJQLName(this.config.getFieldPath(key));
-                validSelection[jqlName] = this.filterSelectedOptions[key];
+            }else if(typeof v === 'string'){
+                validSelection[jqlName] = v;
             // DateRange的选中项    
-            }else if(this.filterSelectedOptions[key] instanceof Array && this.filterSelectedOptions[key][0]!==Model.initStartDate &&  this.filterSelectedOptions[key][0]!==Model.initEndDate){
-                let jqlName = reader.getJQLName(this.config.getFieldPath(key));
-                validSelection[jqlName] = this.filterSelectedOptions[key];
+            }else if(v instanceof Array){
+                validSelection[jqlName] = v;
             }
         }
-        return this.jql.genNewJQL(validSelection);
+        return [true, this.jql.genNewJQL(validSelection)];
+    }
+
+    // 根据所有的Issue，找到他们的ReadScheme
+    _getIssuesAllReadScheme(){
+        if(this.issuesAllReadScheme) return;
+        this.issuesAllReadScheme = new Set();
+        for (const issue of this.issues) {
+            let projName = issue.getAttr("projName");
+            let issueType = issue.getAttr("issueType");
+            let scheme = getIssueReadScheme(projName, issueType)
+            this.issuesAllReadScheme.add(scheme);
+        }
     }
     
     // 根据数据生成Filter字段的选项
     _genFilterOptions(){
 
-        for (const [k,v] of Object.entries(this.config.getFiltersDict())){
-            if (v.type == 'DropDown'){
+        for (const [k,v] of Object.entries(this.viewConfig.getFiltersDict())){
+            if (v["filter"].type == 'DropDown'){
                 this.filterOptions[k]                   = new Set();
                 this.filterSelectedOptions[k]           = new Set();
-            }else if(v.type == 'Text'){
+            }else if(v["filter"].type == 'Text'){
                 this.filterSelectedOptions[k]           = "";
-            }else if(v.type == 'DateRange'){
-                //this.filterSelectedOptions[k]           = [date2String(Model.initStartDate), date2String(Model.initEndDate)];
-                this.filterSelectedOptions[k]           = [Model.initStartDate, Model.initEndDate];
+            }else if(v["filter"].type == 'DateRange'){
+                this.filterSelectedOptions[k]           = new Array();
             }
         }
 
+        let filters = this.viewConfig.getFiltersDict()
         for (const issue of this.issues) {
-            for (const [k,v] of Object.entries(this.config.getFiltersDict())){
-                let attr = issue.getAttr(k);
-                if (attr && v.type == 'DropDown'){
+            for (const [k,v] of Object.entries(filters)){
+                if (v["filter"].type == 'DropDown'){
+                    let attr = issue.getAttr(k);
                     this.filterOptions[k].add(attr);
                 }
             }
@@ -204,16 +253,5 @@ export class Model extends AbstractModel{
         }
     }
 
-    setFieldsVisibility(fieldsVis){
-        this.config.setFieldsVisibility(fieldsVis);
-        // 发送消息，选中项变了
-        this.trigModelChangeEvent("FieldsVisibility");
-    }
-
-    setChartVisibility(key, visible){
-        this.config.setChartVisibility(key, visible);
-        // 发送消息，选中项变了
-        this.trigModelChangeEvent("ChartsVisibility");
-    }
 
 }

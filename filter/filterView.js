@@ -59,13 +59,13 @@ export class FilterPanel extends View{
 			</style>
 		`;
         for (const [k,v] of Object.entries(this.vm.getFilters())){
-            if (v.type == "DropDown"){
+            if (v["filter"].type == "DropDown"){
                 filterH5 += `
 					<div id="${k+"Filter"}Div" style="display:inline-block;">
 						<div style="display:inline;margin:4px;">
                         `;
-                if (v.hasChart){
-                    if (v.isShowChart){
+                if (v["chart"]){
+                    if (v["chart"].visible){
                         filterH5 += `
                             <input type="checkbox" id="${k+"Filter"}Check" checked></input>
                             `;
@@ -76,32 +76,32 @@ export class FilterPanel extends View{
                     }
                 }
                 filterH5 += `
-							<label for="${k+"Filter"}">${v.label}</label>
+							<label for="${k+"Filter"}">${v["filter"].label}</label>
 						</div>
-						<div style="display:inline-block;margin:4px;width:${v.width};">
+						<div style="display:inline-block;margin:4px;width:${v["filter"].width};">
 							<select  id="${k+"Filter"}" multiple="multiple"/>
 						</div>
                     </div>
                 `;
-            }else if(v.type == "Text"){
+            }else if(v["filter"].type == "Text"){
                 filterH5 += `
 					<div id="${k+"Filter"}Div" style="display:inline-block;">
 						<div style="display:inline;margin:4px;">
-							<label for="${k+"Filter"}">${v.label}</label>
+							<label for="${k+"Filter"}">${v["filter"].label}</label>
 						</div>
-						<div style="display:inline-block;margin:4px;width:${v.width};">
+						<div style="display:inline-block;margin:4px;width:${v["filter"].width};">
 							<select id="${k+"Filter"}"  multiple="multiple"/>
 						</div>
                     </div>
                 `;
-            }else if(v.type == "DateRange"){
+            }else if(v["filter"].type == "DateRange"){
                 filterH5 += `
 					<div id="${k+"Filter"}Div" style="display:inline-block;">
 						<div style="display:inline;margin:4px;">
-							<label for="${k+"Filter"}">${v.label}</label>
+							<label for="${k+"Filter"}">${v["filter"].label}</label>
 						</div>
 						<div style="display:inline-block;margin:4px;">
-                            <input id="${k+"Filter"}1" style="width:${v.width};"> - <input id="${k+"Filter"}2" style="width:${v.width};">
+                            <input id="${k+"Filter"}1" style="width:${v["filter"].width};"> - <input id="${k+"Filter"}2" style="width:${v["filter"].width};">
 						</div>
                     </div>
                 `;
@@ -133,14 +133,14 @@ export class FilterPanel extends View{
         
         // 把filter DOM和filter控件接起来
         for (const [k, v] of Object.entries(this.vm.getFilters())){
-            this.filters.push(CreateFilterControl(v.type, {vm : this.vm, key : k, id : k+"Filter", placeholder : v.placeholder ? v.placeholder : ""}));
+            this.filters.push(CreateFilterControl(v["filter"].type, {vm : this.vm, key : k, id : k+"Filter", placeholder : v["filter"].placeholder ? v["filter"].placeholder : ""}));
         }
 
         // 有配置的Filter绑定点击弹出菜单
         for (const [k, v] of Object.entries(this.vm.getFilters())){
-            if (v.type == "DropDown" && 'labelMenu' in v){
+            if (v["filter"].type == "DropDown" && 'labelMenu' in v["filter"]){
                 let menu = [];
-                for (const lm of v.labelMenu){
+                for (const lm of v["filter"].labelMenu){
                     menu.push({
                         name : lm.btnName,
                         title : lm.btnName + '按钮',
@@ -156,7 +156,7 @@ export class FilterPanel extends View{
         
         // 绑定Checkbox控制Chart的展示
         for (const [k, v] of Object.entries(this.vm.getFilters())){
-            if (v.type == "DropDown" && v.hasChart){
+            if (v["filter"].type == "DropDown" && v["chart"]){
                 $("#" + k+"Filter" + "Check").on('click', ()=>{
                     this.vm.setChartVisibility(k, $("#" + k+"Filter" + "Check").prop("checked"));
                 });

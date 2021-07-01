@@ -3,6 +3,7 @@
 */
 
 import { Issue } from "./issue.js";
+import { getIssueReadScheme, IssueReadScheme } from "./issueReadScheme.js";
 
 export class JiraIssueReader{
 
@@ -169,52 +170,50 @@ export class JiraIssueReader{
     // 读取数据
     // param:
     //     jql(string) - JQL搜索语句
-    //     fieldsDict({string : array of string}) - 字典，key是字段的名字，value是从issue里去获取的路径，匹配fieldReaderConfig使用
     //     hasChangeLog(bool) : 是否读取changelog
     // return:
-    //     data(array of dict) - 读取的数据
-    async read(jql, fieldsDict, hasChangeLog = false){
-        // 根据fieldsDict获取fields
-        let fields = [];
-        Object.values(fieldsDict).forEach(v =>{
-            if (v[v.length - 1] !== 'key'){
-                fields.push(v[v.length - 1]);
-            }
-        });
+    //     [data(Array<json>),notReadIssueKey(Array<string>)] - 读取的数据,未读取的JiraId
+    async read(jql, hasChangeLog = false){
         // 先获取jql的总数目
         let eachTimeFetchNum = 1000;        // 每次从Jira服务器获取issue的数目为1000，这个是服务器规定的
         let jqlResultNum = await this._fetchJqlResultNum(jql);
         let issues = [];
         for (let i=0; i<Math.ceil(jqlResultNum.total/eachTimeFetchNum); ++i){
-            let eachIssues = await this._fetchJqlIssues(jql, fields, eachTimeFetchNum, i*eachTimeFetchNum, hasChangeLog);
+            let eachIssues = await this._fetchJqlIssues(jql, eachTimeFetchNum, i*eachTimeFetchNum, hasChangeLog);
             issues = issues.concat(eachIssues.issues);
         }
 
         // 从issues中提取值
+        let issueValidFields = Issue.getValidFields();
         let data = [];
+        let notReadIssueKey = [];
         for (const i of issues){
-            let o = {};
-            // 循环每个待提取的字段
-            for (const [k, v] of Object.entries(fieldsDict)){
-                let f = this._getDictValue(JiraIssueReader.fieldReadConfig, v)['f'];
-                o[k] = f(i);
+            let projName = i["key"].slice(0,i["key"].indexOf("-"))
+            let issueType = i["fields"]["issuetype"]["name"];
+            let readScheme = getIssueReadScheme(projName, issueType);
+            if (!readScheme) {
+                notReadIssueKey.push(i["key"]);
+                continue;
             }
-            // 如果有changelog，则加入
+            let o = {}
+            o["projName"] = projName;
+            o["issueType"] = issueType;
+
+            for (const field of issueValidFields) {
+                let scheme = readScheme.howToReadField(field);
+                if (scheme) {
+                    let f = this._getDictValue(JiraIssueReader.fieldReadConfig, scheme)['f'];
+                    o[field] = f(i);
+                }
+            }
             if (hasChangeLog) {
-                let cl = [];
-                i["changelog"]["histories"].forEach(h => {
-                    cl.push({
-                        "author" :  h["author"]["displayName"],
-                        "date" :  new Date(h["created"]),
-                        "items" :  h["items"],
-                    });
-                });
-                o["changelog"] = cl;
+                let f = this._getDictValue(JiraIssueReader.fieldReadConfig, ['changelog']);
+                o['changelog'] = f(i);
             }
             data.push(new Issue(o));
         }
 
-        return data;
+        return [data, notReadIssueKey];
     }
 
 
@@ -255,8 +254,11 @@ export class JiraIssueReader{
 
     // 获取Issues
     // 参考 https://docs.atlassian.com/software/jira/docs/api/REST/7.6.1/#api/2/search-search
-    async _fetchJqlIssues(jql, fields, maxResults, startAt, hasChangeLog = false){
-        let fields2 = fields.filter(f => f != "changelog");
+    async _fetchJqlIssues(jql, maxResults, startAt, hasChangeLog = false, fields = undefined){
+        let fields2 = undefined;
+        if (fields) {
+            fields2 = fields.filter(f => f != "changelog");
+        }
         let expand = hasChangeLog ? ["changelog"] : [];
         return fetch('https://jira.pkpm.cn/rest/api/2/search/', {
             method: 'POST', // *GET, POST, PUT, DELETE, etc.

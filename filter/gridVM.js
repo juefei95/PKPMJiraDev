@@ -3,15 +3,22 @@
  */
 
 import { ViewModel } from "./../common/viewModel.js"
+import { Model } from "./modelManager.js";
+import { Issue } from "./../model/issue.js";
 
 
 export class GridViewModel extends ViewModel {
-    constructor(model, config) {
-        super("GridViewModel", model);
-        this.config = config;
+    
+    static emptyText = "Empty Field"
+    static invalidDate = "Empty Field"
 
-        this.regModelEvent("SelectedOptions", ()=>{this.trigVMChangeEvent("SelectedOptions")})
-        this.regModelEvent("FieldsVisibility", ()=>{this.trigVMChangeEvent("FieldsVisibility")})
+    constructor(model, viewConfig) {
+        super("GridViewModel");
+        this.model = model;
+        this.viewConfig = viewConfig;
+
+        this.regModelEvent(this.model, "SelectedOptions", ()=>{this.trigVMChangeEvent("SelectedOptions")})
+        this.regModelEvent(this.viewConfig, "FieldsVisibility", ()=>{this.trigVMChangeEvent("FieldsVisibility")})
     }
 
     /**
@@ -19,7 +26,7 @@ export class GridViewModel extends ViewModel {
     * @returns {json} filters
     */
     getFilters() {
-        return this.config.getFiltersDict();
+        return this.viewConfig.getFiltersDict();
     }
 
     /**
@@ -31,7 +38,20 @@ export class GridViewModel extends ViewModel {
      * @returns {*} selectedOptions
      */
     getFilterSelectedOptions(key) {
-        return this.model.getFilterSelectedOptions(key);
+        let selOptions = this.model.getFilterSelectedOptions(key);
+        if(selOptions instanceof Array){
+            if(selOptions.length != 2) return undefined;
+            let selOptions2 = selOptions.map((x) => x);     // 深拷贝一份，免得修改了model的数据
+            if (selOptions2[0] === undefined) selOptions2[0] = Model.initStartDate;
+            if (selOptions2[1] === undefined) selOptions2[1] = Model.initEndDate;
+            return selOptions2;
+        }else if(selOptions instanceof Set){
+            let selOptionsCopy = Array.from(selOptions);
+            let selOptionsCopy2 = selOptionsCopy.map(x => x===undefined?"Empty Field":x)
+            return new Set(selOptionsCopy2);
+        }else{
+            return selOptions;
+        }
     }
 
     /**
@@ -39,7 +59,7 @@ export class GridViewModel extends ViewModel {
     * @returns {json} filterVis {key : {visible : true/false}}
     */
     getFieldsVisibility() {
-        return this.config.getFieldsVisibility()
+        return this.viewConfig.getFieldsVisibility()
     }
 
     /**
@@ -47,13 +67,17 @@ export class GridViewModel extends ViewModel {
      * @returns {json} 对于grid各列情况的描述
      */
     getGrids() {
-        return this.config.getGridsDict();
+        return this.viewConfig.getGridsDict();
     }
 
     getRecords(){
+        let issueValidFields = Issue.getValidFields();
         let records = this.model.getRawIssues();
         for (const r of records) {
             r["recid"] = r.jiraId;
+            for (const field of issueValidFields) {
+                r[field] = r[field] === undefined ? "Empty Field" : r[field];
+            }
         }
         return records;
     }

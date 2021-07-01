@@ -113,7 +113,11 @@ export class BtnPanel extends View{
 
     // 导出JQL
     _openJQL(){
-        let newJQL = this.vm.genJQLWithSelection();
-        window.open("https://jira.pkpm.cn/issues/?jql=" + encodeURIComponent(newJQL));
+        let [ret, newJQL] = this.vm.genJQLWithSelection();
+        if (ret) {
+            window.open("https://jira.pkpm.cn/issues/?jql=" + encodeURIComponent(newJQL));
+        }else{
+            alert(newJQL);
+        }
     }
 }
