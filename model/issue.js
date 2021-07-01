@@ -5,37 +5,38 @@
 
 export class Issue{
 
-    static emptyText = "Empty Field";
-    static invalidDate = new Date('1999-01-01');
+    static emptyText = undefined;
+    static invalidDate = undefined;
     // 获得通用的字段定义
-    static getConfig(){
-        return {
-            "jiraId" : {},
-            "category" : {},
-            "MEPCategory" : {},
-            "affectVersions" : {},
-            "fixVersions" : {},
-            "title" : {},
-            "status" : {},
-            "assignee" :{},
-            "designer" : {},
-            "developer" : {},
-            "confluenceLink" : {},
-            "docPlanCommitDate" : {},
-            "programPlanCommitDate" : {},
-            "designerActualCommitTestDate" : {},
-            "testPlanEndDate" : {},
-            "bugPriority" : {},
-            "bugPhase" : {},
-            "epicId": {},
-            "fixedChangeset": {},
-            "testComment" :{},
-            "tester" : {},
-            "resolution" :{},
-            "resolvePerson" :{},
-            "createDate" :{},
-            "resolutionDate" :{},
-        };;
+    static getValidFields(){
+        return [
+            "jiraId",
+            "category",
+            "MEPCategory",
+            "affectVersions",
+            "fixVersions",
+            "title",
+            "status",
+            "reporter",
+            "assignee",
+            "designer",
+            "developer",
+            "confluenceLink",
+            "docPlanCommitDate",
+            "programPlanCommitDate",
+            "designerActualCommitTestDate",
+            "testPlanEndDate",
+            "bugPriority",
+            "bugPhase",
+            "epicId",
+            "fixedChangeset",
+            "testComment",
+            "tester",
+            "resolution",
+            "resolvePerson",
+            "createDate",
+            "resolutionDate",
+        ];
     }
 
     constructor(issueJson){
@@ -47,9 +48,8 @@ export class Issue{
     }
     
     getAttr(key){
-        let getFunc = "get" + key[0].toUpperCase() + key.slice(1,key.length);
-        if (getFunc in Issue.prototype) {
-            return Issue.prototype[getFunc].call(this);
+        if (key in this.issue) {
+            return this.issue[key]
         }else{
             return undefined;
         }
@@ -85,6 +85,10 @@ export class Issue{
 
     getStatus(){
         return this.issue.status;
+    }
+
+    getReporter(){
+        return this.issue.reporter;
     }
 
     getAssignee(){

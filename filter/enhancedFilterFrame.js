@@ -3,7 +3,7 @@
 */
 
 import {  loadScript, loadCss } from "./../model/toolSet.js";
-import { Config }               from "./configManager.js"
+import { ViewConfig }           from "./viewConfig.js"
 import { Model }                from "./modelManager.js"
 
 import { FilterViewModel }      from './filterVM.js'
@@ -17,8 +17,8 @@ import { BtnPanel }             from './btnView.js'
 
 
 export class EnhancedFilterFrame{
-    constructor(config, model){
-        this.config = config;
+    constructor(viewConfig, model){
+        this.viewConfig = viewConfig;
         this.model = model;
         this.ids = {
             outmostDiv                      : 'outmostDiv',                     // 最外层的Div
@@ -33,10 +33,10 @@ export class EnhancedFilterFrame{
         };      // 各种控件ID定义
 
         // 创建ViewModel
-        this.filterVM = new FilterViewModel(this.model, this.config);
-        this.gridVM = new GridViewModel(this.model, this.config);
-        this.chartVM = new ChartViewModel(this.model, this.config);
-        this.btnVM = new BtnViewModel(this.model, this.config);
+        this.filterVM   = new FilterViewModel(this.model, this.viewConfig);
+        this.gridVM     = new GridViewModel(this.model, this.viewConfig);
+        this.chartVM    = new ChartViewModel(this.model, this.viewConfig);
+        this.btnVM      = new BtnViewModel(this.model, this.viewConfig);
 
         // 各种Panel
         this.filterPanel    = new FilterPanel   (this.ids.filterPanel, this.filterVM);

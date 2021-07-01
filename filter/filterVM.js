@@ -4,18 +4,19 @@
 
 import { ViewModel } from "../common/viewModel.js";
 import { Model } from "./modelManager.js";
-import { Config } from "./configManager.js"
+import { ViewConfig } from "./viewConfig.js"
 import {date2String} from "./../model/toolSet.js"
 
 export class FilterViewModel extends ViewModel {
-    constructor(model, config) {
-        super("FilterViewModel", model);
-        this.config = config;
+    constructor(model, viewConfig) {
+        super("FilterViewModel");
+        this.model = model;
+        this.viewConfig = viewConfig;
 
         this.filterSelectedOptions = {};
 
-        this.regModelEvent("SelectedOptions", ()=>{this.trigVMChangeEvent("SelectedOptions")})
-        this.regModelEvent("FieldsVisibility", ()=>{this.trigVMChangeEvent("FieldsVisibility")})
+        this.regModelEvent(this.model, "SelectedOptions", ()=>{this.trigVMChangeEvent("SelectedOptions")})
+        this.regModelEvent(this.viewConfig, "FieldsVisibility", ()=>{this.trigVMChangeEvent("FieldsVisibility")})
     }
 
     /**
@@ -23,7 +24,7 @@ export class FilterViewModel extends ViewModel {
      * @returns {json} filters
      */
     getFilters(){
-        return this.config.getFiltersDict();
+        return this.viewConfig.getFiltersDict();
     }
 
     /**
@@ -31,7 +32,7 @@ export class FilterViewModel extends ViewModel {
      * @returns {json} filterVis {key : {visible : true/false}}
      */
     getFilterVisibility(){
-        return this.config.getFieldsVisibility()
+        return this.viewConfig.getFieldsVisibility()
     }
 
     /**
@@ -41,7 +42,10 @@ export class FilterViewModel extends ViewModel {
      * @returns {Set<string>} options
      */
     getFilterOptions(key) {
-        return this.model.getFilterOptions(key);
+        let options = this.model.getFilterOptions(key);
+        let arrOptions = Array.from(options);
+        let arrOptions2 = arrOptions.map(x => x===undefined ? "Empty Field":x)
+        return new Set(arrOptions2);
     }
 
     /**
@@ -56,6 +60,8 @@ export class FilterViewModel extends ViewModel {
         let selected = this.model.getFilterSelectedOptions(key);
         // 如果是DateRange，则把时间替换为字符串
         if(selected instanceof Array){
+            if (selected.length != 2) return ['',''];
+
             let selCopy = Array.from(selected);
             if (selCopy[0] === Model.initStartDate) {
                 selCopy[0] = '';
@@ -68,6 +74,10 @@ export class FilterViewModel extends ViewModel {
                 selCopy[1] = date2String(selCopy[1]);
             }
             return selCopy;
+        }else if(selected instanceof Set){
+            let selCopy = Array.from(selected);
+            let selCopy2 = selCopy.map(x => x===undefined?"Empty Field":x)
+            return new Set(selCopy2);
         }
         return selected;
     }
@@ -80,8 +90,16 @@ export class FilterViewModel extends ViewModel {
     setFilterSelectedOptions(key, selectedOptions) {
         // 如果是DateRange，则把字符串改为时间
         if(selectedOptions instanceof Array){
-            selectedOptions[0] = selectedOptions[0] === "" ? Model.initStartDate : new Date(selectedOptions[0]);
-            selectedOptions[1] = selectedOptions[1] === "" ? Model.initEndDate : new Date(selectedOptions[1]);
+            if(selectedOptions[0] === "" && selectedOptions[1] === ""){
+                selectedOptions = new Array();
+            }else{
+                selectedOptions[0] = selectedOptions[0] === "" ? Model.initStartDate : new Date(selectedOptions[0]);
+                selectedOptions[1] = selectedOptions[1] === "" ? Model.initEndDate : new Date(selectedOptions[1]);
+            }
+        }else if(selectedOptions instanceof Set){
+            let selectedOptionsCopy = Array.from(selectedOptions);
+            let selectedOptionsCopy2 = selectedOptionsCopy.map(x => x==="Empty Field"?undefined:x)
+            selectedOptions = new Set(selectedOptionsCopy2);
         }
         this.model.setFilterSelectedOptions(key, selectedOptions);
     }
@@ -92,7 +110,7 @@ export class FilterViewModel extends ViewModel {
      * @param {bool} chartVis 该Filter对应chart的可见性
      */
     setChartVisibility(key, chartVis){
-        this.model.setChartVisibility(key, chartVis);
+        this.viewConfig.setChartVisibility(key, chartVis);
     }
 
 }

@@ -6,8 +6,8 @@ import {  loadScript, loadCss } from "./../model/toolSet.js";
 import { getReport }            from "./reportFactory.js";
 
 export class EnhancedReportFrame{
-    constructor(config, model){
-        this.config = config;
+    constructor(viewConfig, model){
+        this.viewConfig = viewConfig;
         this.model = model;
         this.ids = {
             tabs                        : 'tabs',                       // 标签页的Div
@@ -26,7 +26,7 @@ export class EnhancedReportFrame{
     show(){
 
         this._createLayout();
-        let reportsConfig = this.config.getReports();
+        let reportsConfig = this.viewConfig;
         let tabs = []
         for (const [k,v] of Object.entries(reportsConfig)) {
             tabs.push(

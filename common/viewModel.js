@@ -5,9 +5,8 @@
 import { AbstractModel } from './model.js'
 
 export class ViewModel{
-    constructor(vmName, model){
+    constructor(vmName){
         this.vmName = vmName;
-        this.model = model;
     }
 
     /**
@@ -30,12 +29,13 @@ export class ViewModel{
     
     /**
      * 注册Model的数据变化事件
+     * @param {Model} model 具体注册哪个model的实例
      * @param {string} dataName 注册ViewModel的哪个数据变化事件
      * @param {func} callback 消息响应函数
      */
-     regModelEvent(dataName, callback){
+     regModelEvent(model, dataName, callback){
         // 绑定vm的change消息
-        window.addEventListener(this.model.getModelChangeEventName(dataName), callback);
+        window.addEventListener(model.getModelChangeEventName(dataName), callback);
     }
 
 }

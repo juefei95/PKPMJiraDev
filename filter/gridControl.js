@@ -19,7 +19,7 @@ export class GridControl{
         var sd = w2ui[this.gridName].searchData;
         for (const  [k, v] of Object.entries(this.vm.getFilters())){
             let selected = this.vm.getFilterSelectedOptions(k);
-            if (v.type === 'DropDown'){
+            if (v["filter"].type === 'DropDown'){
                 if (selected && selected.size != 0){
                     sd.push({
                         field:  k, // search field name
@@ -29,7 +29,7 @@ export class GridControl{
                         // if not defined it will be selected based on the type
                     });
                 }
-            }else if(v.type === 'Text'){
+            }else if(v["filter"].type === 'Text'){
                 if (selected && selected != ''){
                     sd.push({
                         field:  k, // search field name
@@ -39,7 +39,7 @@ export class GridControl{
                         // if not defined it will be selected based on the type
                     });
                 }
-            }else if(v.type === 'DateRange'){
+            }else if(v["filter"].type === 'DateRange'){
                 if (selected && selected.length != 0){
                     sd.push({
                         field:  k, // search field name
@@ -109,11 +109,11 @@ export class GridControl{
             columns: columns,
             reorderColumns: true,       // 设置表格的列可以拖动
             textSearch:'contains',
-            onSearch: function (event) {
+            //onSearch: function (event) {
             //    event.done(function () {
             //        updateCharts();
             //    });
-            },
+            //},
             onContextMenu: function(event) {
                 event.preventDefault();
             },
