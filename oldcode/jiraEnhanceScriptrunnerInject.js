@@ -62,3 +62,5 @@ async function showReport(){
 
     await showEnhanceTab('report', 'https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/entryPoint.js')
 }
+
+showEnhanceTab('filter', 'http://127.0.0.1:8887/entryPoint.js', true)

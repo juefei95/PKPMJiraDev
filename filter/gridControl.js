@@ -73,6 +73,11 @@ export class GridControl{
         w2ui[this.gridName].showColumn(...showCol);
     }
 
+    resetRecords(){
+        let records = this.vm.getRecords();
+        w2ui[this.gridName].records = records;
+        w2ui[this.gridName].refresh();
+    }
     
     // 获得表格中过滤后的所有条目
     _getFilteredIssues() {

@@ -28,4 +28,8 @@ export class BtnViewModel extends ViewModel{
     genJQLWithSelection(){
         return this.model.genJQLWithSelection();
     }
+
+    async regetAllIssues(){
+        await this.model.regetAllIssues();
+    }
 }

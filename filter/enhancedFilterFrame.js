@@ -43,6 +43,8 @@ export class EnhancedFilterFrame{
         this.btnPanel       = new BtnPanel      (this.ids.btnPanel, this.btnVM);
         this.gridPanel      = new GridPanel     (this.ids.gridPanel, this.gridVM);
         this.chartPanel     = new ChartPanel    (this.ids.chartPanel, this.chartVM);
+
+        window.addEventListener(this.model.getModelChangeEventName("IssueReget"), this._setTabTile.bind(this));
     }
 
     async prepare(){
@@ -52,7 +54,7 @@ export class EnhancedFilterFrame{
 
     // 初始化框架
     show(){
-
+        this._setTabTile();
         // 划分layout
         this._createLayout();
         // 每个layout里放置容器
@@ -91,6 +93,12 @@ export class EnhancedFilterFrame{
         }
     }
 
+    _setTabTile(){
+        
+        // 修改Tab标题
+        let title = this.model.getIssuesNum() + "个Issue的过滤器";
+        window.document.title = title;
+    }
     
     // 把框架的各个分区布局做好
     _createLayout(){

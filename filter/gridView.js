@@ -15,6 +15,7 @@ export class GridPanel extends View{
         this.grid = undefined;
         
         this.regVMEvent("SelectedOptions", this.updateView.bind(this));
+        this.regVMEvent("IssueReget", this.resetRecords.bind(this));
         this.regVMEvent("FieldsVisibility", this.updateFieldsVisibility.bind(this));
         
     }
@@ -23,6 +24,10 @@ export class GridPanel extends View{
     }
     updateView(){
         this.grid.updateView();
+    }
+
+    resetRecords(){
+        this.grid.resetRecords();
     }
 
     updateFieldsVisibility(){

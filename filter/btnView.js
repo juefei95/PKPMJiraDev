@@ -11,6 +11,7 @@ export class BtnPanel extends View{
             resetFilter : 'resetFilter',
             selectField : 'selectField',
             openJQL : 'openJQL',
+            refresh : 'refresh',
         };
     }
     createHtml(){
@@ -20,6 +21,7 @@ export class BtnPanel extends View{
                 <button class="w2ui-btn" id="${this.ids.resetFilter}">重置筛选 </button>
                 <button class="w2ui-btn" id="${this.ids.selectField}">字段选择 </button>
                 <button class="w2ui-btn" id="${this.ids.openJQL}">导出JQL </button>
+                <button class="w2ui-btn" id="${this.ids.refresh}">刷新 </button>
             </div>
         `;
         return html;
@@ -39,6 +41,9 @@ export class BtnPanel extends View{
 
         // 导出JQL回调函数
         $('#' + this.ids.openJQL).on( "click", this._openJQL.bind(this) );
+
+        // 刷新
+        $('#' + this.ids.refresh).on( "click", this._refresh.bind(this) );
     }
 
     _resetFilter(){
@@ -119,5 +124,9 @@ export class BtnPanel extends View{
         }else{
             alert(newJQL);
         }
+    }
+
+    async _refresh(){
+        await this.vm.regetAllIssues();
     }
 }

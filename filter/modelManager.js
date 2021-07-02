@@ -39,6 +39,10 @@ export class Model extends AbstractModel{
         return issues;
     }
 
+    // 获取issue的数目
+    getIssuesNum(){
+        return this.issues.length;
+    }
     /**
      * 获取某个issue属性的所有可能值
      * @property {string} propName
@@ -130,7 +134,46 @@ export class Model extends AbstractModel{
         this.trigModelChangeEvent("SelectedOptions");
     }
 
+    // 根据JQL重新获取issue
+    async regetAllIssues(){
+        let [issues, notReadIssueKey] = await new JiraIssueReader().read(this.jql.getRawJQL())
+        this.issues = issues;
 
+        // 检测Filter的Option，适配新的issues
+        let filters = this.viewConfig.getFiltersDict()
+        for (const [k,v] of Object.entries(filters)){
+            if (v["filter"].type == 'DropDown'){
+                this.filterOptions[k] = new Set();
+            }
+        }
+        for (const issue of this.issues) {
+            for (const [k,v] of Object.entries(filters)){
+                if (v["filter"].type == 'DropDown'){
+                    let attr = issue.getAttr(k);
+                    this.filterOptions[k].add(attr);
+                }
+            }
+        }
+        let isFilterSelectedOptionChange = false;       // 是不是issues的改变会带来已选项的改变
+        for (const [k,v] of Object.entries(filters)){
+            if (v["filter"].type == 'DropDown'){
+                if(this.filterSelectedOptions[k].size > 0){
+                    for (const option of this.filterSelectedOptions[k]) {
+                        if (!this.filterOptions[k].has(option)) {
+                            this.filterSelectedOptions[k].delete(option);
+                            isFilterSelectedOptionChange = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        // 发送消息，重新获取issue
+        this.trigModelChangeEvent("IssueReget");
+        if (isFilterSelectedOptionChange) {
+            this.trigModelChangeEvent("SelectedOptions");
+        }
+    }
 
     // 根据筛选条件生成新的JQL
     genJQLWithSelection(){

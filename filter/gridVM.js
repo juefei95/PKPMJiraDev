@@ -18,6 +18,7 @@ export class GridViewModel extends ViewModel {
         this.viewConfig = viewConfig;
 
         this.regModelEvent(this.model, "SelectedOptions", ()=>{this.trigVMChangeEvent("SelectedOptions")})
+        this.regModelEvent(this.model, "IssueReget", ()=>{this.trigVMChangeEvent("IssueReget")})
         this.regModelEvent(this.viewConfig, "FieldsVisibility", ()=>{this.trigVMChangeEvent("FieldsVisibility")})
     }
 

@@ -16,10 +16,6 @@ export async function helloFilter(){
         let [issues, notReadIssueKey] = await new JiraIssueReader().read(jql.getRawJQL())
         let viewConfig = getViewConfig(issues);
         let model = new Model(issues, viewConfig, jql);
-        
-        // 修改Tab标题
-        let title = issues.length + "个Issue的过滤器";
-        window.document.title = title;
 
         // 展示框架
         printInfo(" 展示框架");
