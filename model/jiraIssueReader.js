@@ -62,7 +62,7 @@ export class JiraIssueReader{
                 'f' : i => 'customfield_10538' in i.fields && i.fields.customfield_10538 !== null   ? i.fields.customfield_10538.displayName        : Issue.emptyText,
                 'jqlName' : '研发人员',
             },
-            // 结构流程的tester
+            // 结构、深化流程的tester
             'customfield_10539' : {
                 'f' : i => 'customfield_10539' in i.fields && i.fields.customfield_10539 !== null   ? i.fields.customfield_10539.displayName        : Issue.emptyText,
                 'jqlName' : '测试人员',
@@ -72,7 +72,7 @@ export class JiraIssueReader{
                 'f' : i => 'customfield_10713' in i.fields && i.fields.customfield_10713 !== null   ? i.fields.customfield_10713                    : Issue.emptyText,
                 'jqlName' : 'Confluence链接 ',
             },
-            // 结构流程的产品设计计划提交时间
+            // 结构流程（深化流程）的产品设计计划提交时间
             'customfield_11415' : {
                 'f' : i => 'customfield_11415' in i.fields && i.fields.customfield_11415 !== null   ? new Date(i.fields.customfield_11415)          : Issue.invalidDate,
                 'jqlName' : '产品计划提交时间',
@@ -117,10 +117,15 @@ export class JiraIssueReader{
                 'f' : i => 'customfield_10703' in i.fields && i.fields.customfield_10703 !== null   ? i.fields.customfield_10703                    : Issue.emptyText,
                 'jqlName' : '变更集号',
             },
-            // PC流程的研发计划提测时间
+            // PC流程的研发计划提验时间
             'customfield_11308' : {
                 'f' : i => 'customfield_11308' in i.fields && i.fields.customfield_11308 !== null   ? new Date(i.fields.customfield_11308)          : Issue.invalidDate,
                 'jqlName' : '计划提验时间',
+            },
+            // PC流程的研发实际提验时间
+            'customfield_11302' : {
+                'f' : i => 'customfield_11302' in i.fields && i.fields.customfield_11302 !== null   ? new Date(i.fields.customfield_11302)          : Issue.invalidDate,
+                'jqlName' : '实际提验时间',
             },
             // PC流程的研发实际提测时间
             'customfield_11409' : {
@@ -131,6 +136,11 @@ export class JiraIssueReader{
             'customfield_11312' : {
                 'f' : i => 'customfield_11312' in i.fields && i.fields.customfield_11312 !== null   ? new Date(i.fields.customfield_11312)          : Issue.invalidDate,
                 'jqlName' : '计划测试结束',
+            },
+            // PC流程的测试实际结束时间
+            'customfield_11305' : {
+                'f' : i => 'customfield_11305' in i.fields && i.fields.customfield_11305 !== null   ? new Date(i.fields.customfield_11305)          : Issue.invalidDate,
+                'jqlName' : '实际测试结束',
             },
             // PC流程的测试备注
             'customfield_11443' : {
@@ -156,6 +166,56 @@ export class JiraIssueReader{
             'customfield_10408' : {
                 'f' : i => 'customfield_10408' in i.fields && i.fields.customfield_10408 !== null   ? i.fields.customfield_10408.value              : Issue.emptyText,
                 'jqlName' : 'bug发现阶段',
+            },
+            // PC、深化流程的产品设计实际评审时间
+            'customfield_11306' : {
+                'f' : i => 'customfield_11306' in i.fields && i.fields.customfield_11306 !== null   ? new Date(i.fields.customfield_11306)          : Issue.invalidDate,
+                'jqlName' : '实际设计评审',
+            },
+            // PC、深化流程的产品设计计划评审时间
+            'customfield_11307' : {
+                'f' : i => 'customfield_11307' in i.fields && i.fields.customfield_11307 !== null   ? new Date(i.fields.customfield_11307)          : Issue.invalidDate,
+                'jqlName' : '计划设计评审',
+            },
+            // PC流程的测试用例计划评审日期
+            'customfield_11310' : {
+                'f' : i => 'customfield_11310' in i.fields && i.fields.customfield_11310 !== null   ? new Date(i.fields.customfield_11310)          : Issue.invalidDate,
+                'jqlName' : '计划用例评审',
+            },
+            // PC流程的测试用例实际评审日期
+            'customfield_11313' : {
+                'f' : i => 'customfield_11313' in i.fields && i.fields.customfield_11313 !== null   ? new Date(i.fields.customfield_11313)          : Issue.invalidDate,
+                'jqlName' : '实际用例评审',
+            },
+            // 深化流程的产品设计实际评审时间
+            'customfield_11301' : {
+                'f' : i => 'customfield_11301' in i.fields && i.fields.customfield_11301 !== null   ? new Date(i.fields.customfield_11301)          : Issue.invalidDate,
+                'jqlName' : '实际评审时间',
+            },
+            // 深化流程的计划提测时间
+            'customfield_11309' : {
+                'f' : i => 'customfield_11309' in i.fields && i.fields.customfield_11309 !== null   ? new Date(i.fields.customfield_11309)          : Issue.invalidDate,
+                'jqlName' : '计划提测',
+            },
+            // PC流程的计划提测日期
+            'customfield_11434' : {
+                'f' : i => 'customfield_11434' in i.fields && i.fields.customfield_11434 !== null   ? new Date(i.fields.customfield_11434)          : Issue.invalidDate,
+                'jqlName' : '计划提测时间',
+            },
+            // PC流程的实际提测日期
+            'customfield_11409' : {
+                'f' : i => 'customfield_11409' in i.fields && i.fields.customfield_11409 !== null   ? new Date(i.fields.customfield_11409)          : Issue.invalidDate,
+                'jqlName' : '实际提测时间',
+            },
+            // PC流程的测试计划开始
+            'customfield_11311' : {
+                'f' : i => 'customfield_11311' in i.fields && i.fields.customfield_11311 !== null   ? new Date(i.fields.customfield_11311)          : Issue.invalidDate,
+                'jqlName' : '计划测试开始',
+            },
+            // PC流程的测试实际开始
+            'customfield_11304' : {
+                'f' : i => 'customfield_11304' in i.fields && i.fields.customfield_11304 !== null   ? new Date(i.fields.customfield_11304)          : Issue.invalidDate,
+                'jqlName' : '实际测试开始',
             },
         },
         'changelog' : i => {

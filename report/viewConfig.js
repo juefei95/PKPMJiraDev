@@ -101,12 +101,12 @@ let storyReportViewConfig = {
             },
         },
     },
-    "docCommitDelay" : {
+    "docReviewDelay" : {
         "tab" : {
-            "name" : "产品设计逾期",
+            "name" : "产品设计评审逾期",
         },
         "report" : {
-            "viewClass" : "DocCommitDelayReport",
+            "viewClass" : "DocReviewDelayReport",
             "toolbar"     : {
                 "delayDays" : {
                     "name" : "逾期天数",

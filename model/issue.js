@@ -22,10 +22,20 @@ export class Issue{
             "designer",
             "developer",
             "confluenceLink",
-            "docPlanCommitDate",
-            "programPlanCommitDate",
-            "designerActualCommitTestDate",
-            "testPlanEndDate",
+            "docPlanCommitDate",                    // 产品设计计划提交的日期
+            "docActualCommitDate",                  // 产品设计实际提交的日期
+            "docPlanReviewDate",                    // 产品设计计划评审通过的日期
+            "docActualReviewDate",                  // 产品设计实际评审通过的日期
+            "testCasePlanCommitDate",               // 测试用例计划评审通过日期
+            "testCaseActualCommitDate",             // 测试用例实际评审通过日期
+            "programPlanCommitDate",                // 研发计划提交产品验证日期
+            "programActualCommitDate",              // 研发实际提交产品验证日期
+            "designerPlanCommitTestDate",           // 产品验证通过，计划提测日期
+            "designerActualCommitTestDate",         // 产品验证通过，实际提测日期
+            "testPlanStartDate",                    // 测试计划开始日期
+            "testActualStartDate",                  // 测试实际开始日期
+            "testPlanEndDate",                      // 测试计划结束日期
+            "testActualEndDate",                    // 测试实际结束日期
             "bugPriority",
             "bugPhase",
             "epicId",
@@ -63,32 +73,12 @@ export class Issue{
         return this.issue.category;
     }
 
-    getMEPCategory(){
-        return this.issue.MEPCategory;
-    }
-
-    getAffectVersions(){
-        return this.issue.affectVersions;
-    }
-
-    getFixVersions(){
-        return this.issue.fixVersions;
-    }
-
     getTitle(){
         return this.issue.title;
     }
 
-    getConfluenceLink(){
-        return this.issue.confluenceLink;
-    }
-
     getStatus(){
         return this.issue.status;
-    }
-
-    getReporter(){
-        return this.issue.reporter;
     }
 
     getAssignee(){
@@ -108,8 +98,8 @@ export class Issue{
     }
 
 
-    getDocPlanCommitDate(){
-        return this.issue.docPlanCommitDate;
+    getDocPlanReviewDate(){
+        return this.issue.docPlanReviewDate;
     }
 
     // 程序计划体验时间
@@ -117,48 +107,8 @@ export class Issue{
         return this.issue.programPlanCommitDate;
     }
 
-    getDesignerActualCommitTestDate(){
-        return this.issue.designerActualCommitTestDate;
-    }
-
-    getTestPlanEndDate(){
-        return this.issue.testPlanEndDate;
-    }
-
-    getBugPriority(){
-        return this.issue.bugPriority;
-    }
-
-    getBugPhase(){
-        return this.issue.bugPhase;
-    }
-
-    getEpicId(){
-        return this.issue.epicId;
-    }
-
-    getFixedChangeset(){
-        return this.issue.fixedChangeset;
-    }
-
-    getTestComment(){
-        return this.issue.testComment;
-    }
-
-    getResolution(){
-        return this.issue.resolution;
-    }
-
-    getResolvePerson(){
-        return this.issue.resolvePerson;
-    }
-
     getCreateDate(){
         return this.issue.createDate;
-    }
-
-    getResolutionDate(){
-        return this.issue.resolutionDate;
     }
 
     /**

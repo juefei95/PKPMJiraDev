@@ -3,7 +3,7 @@
 */
 
 import { DeveloperCommitDelayReport }           from "./developerCommitDelayReport.js";
-import { DocCommitDelayReport }                 from "./docCommitDelayReport.js";
+import { DocReviewDelayReport }                 from "./docReviewDelayReport.js";
 import { TestLongTimeReport }                   from "./testLongTimeReport.js";
 import { RequirementVerifyLongTimeReport }      from "./requirementVerifyLongTimeReport.js";
 import { StoryTimelineReport }                  from "./storyTimelineReport.js";
@@ -15,7 +15,7 @@ import { BugRetestStatusReport }                from "./bugRetestStatusReport.js
 import { BugUnresolvedByCategoryReport }        from "./bugUnresolvedByCategoryReport.js";
 import { BugUnresolvedAndRetestFailReport }     from "./bugUnresolvedAndRetestFailReport.js";
 
-const classes = { DeveloperCommitDelayReport, DocCommitDelayReport, TestLongTimeReport, RequirementVerifyLongTimeReport, StoryTimelineReport,
+const classes = { DeveloperCommitDelayReport, DocReviewDelayReport, TestLongTimeReport, RequirementVerifyLongTimeReport, StoryTimelineReport,
     BugResolveDelayReport, BugTitleNotFollowRuleReport, BugResolveStatusReport, BugBlockedStatusReport, BugRetestStatusReport, BugUnresolvedByCategoryReport, BugUnresolvedAndRetestFailReport};
 
 export function getReport(classname, id, config, model){

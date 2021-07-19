@@ -50,12 +50,12 @@ export class Config{
                         },
                     },
                 },
-                "docCommitDelay" : {
+                "docReviewDelay" : {
                     "tab" : {
-                        "name" : "产品设计逾期",
+                        "name" : "产品设计评审通过逾期",
                     },
                     "report" : {
-                        "viewClass" : "DocCommitDelayReport",
+                        "viewClass" : "DocReviewDelayReport",
                         "toolbar"     : {
                             "delayDays" : {
                                 "name" : "逾期天数",
@@ -226,7 +226,7 @@ class StructStoryReport extends Config{
         this.config.developer["path"]               = ["fields", "customfield_10538"];
         this.config.tester["path"]                  = ["fields", "customfield_10539"];
         this.config.confluenceLink["path"]          = ["fields", "customfield_10713"];
-        this.config.docPlanCommitDate["path"]       = ["fields", "customfield_11415"];
+        this.config.docPlanReviewDate["path"]       = ["fields", "customfield_11415"];
         this.config.programPlanCommitDate["path"]   = ["fields", "customfield_11408"];
     }
 

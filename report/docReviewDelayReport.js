@@ -9,7 +9,7 @@ import { Issue }                  from "../model/issue.js";
 
 
 
-export class DocCommitDelayReport extends AbstractReport{
+export class DocReviewDelayReport extends AbstractReport{
     constructor(reportName, id, config, model){
         super(reportName, id, config, model);
     }
@@ -20,10 +20,10 @@ export class DocCommitDelayReport extends AbstractReport{
         let tbValues = this._getToolBarValues(event);
         let items = {};
         for (const issue of this.model.getIssues()) {
-            let docPlanCommitDate = issue.getDocPlanCommitDate();
+            let docPlanReviewDate = issue.getDocPlanReviewDate();
             let designer = issue.getDesigner(); 
             let status = issue.getStatus();
-            if (designer !== Issue.emptyText && status === "需求待设计" && docPlanCommitDate !== Issue.invalidDate && diffDays(new Date(), docPlanCommitDate) > tbValues.delayDays) {
+            if (designer !== Issue.emptyText && status === "需求待设计" && docPlanReviewDate !== Issue.invalidDate && diffDays(new Date(), docPlanReviewDate) > tbValues.delayDays) {
                 let jiraId = issue.getJiraId();
                 let title = issue.getTitle();
                 (items[designer] ||= []).push({
@@ -33,7 +33,7 @@ export class DocCommitDelayReport extends AbstractReport{
                     },
                     "planDate" : {
                         "text" : "，计划日期",
-                        "value" : date2String(docPlanCommitDate),
+                        "value" : date2String(docPlanReviewDate),
                     },
                     "title" : {
                         "text" : "标题为",

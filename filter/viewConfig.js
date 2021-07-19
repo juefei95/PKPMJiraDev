@@ -51,6 +51,8 @@ export function getViewConfig(issues){
             return new JGStoryViewConfig();
         }else if(["BIMMEP"].includes(mostProj)){
             return new MEPStoryViewConfig();
+        }else if(["PBIMSDETAI"].includes(mostProj)){
+            return new PBIMsDetailStoryViewConfig();
         }
     }
     return new DefaultViewConfig();
@@ -70,8 +72,7 @@ export class ViewConfig extends AbstractModel{
                     return '<div><a target="_blank" href="https://jira.pkpm.cn/browse/' + record.jiraId + '">' + record.jiraId + '</a></div>';
                 }
             }
-        };
-        
+        };  
         this["category"] = {
             "chart" : {
                 "visible" : true,
@@ -316,14 +317,14 @@ export class ViewConfig extends AbstractModel{
         this["confluenceLink"] = {
 
         };
-        this["docPlanCommitDate"] = {
+        this["docPlanCommitDate"] = {   // 产品设计计划提交的日期
             "filter" : {
                 type : 'DateRange',
-                label : '产品计划日期',
+                label : '产品计划提交日期',
                 width : '80px',
             },
             "grid" : {
-                caption: '产品计划日期',
+                caption: '产品计划提交日期',
                 sortable: true,
                 size: '100px',
                 render: function (record) {
@@ -331,6 +332,101 @@ export class ViewConfig extends AbstractModel{
                         return ViewConfig.renderEmptyField();
                     } else {
                         return '<div>' + date2String(record.docPlanCommitDate) + '</div>';
+                    }
+                },
+            },
+        };
+        this["docActualCommitDate"] = {   // 产品设计实际提交的日期
+            "filter" : {
+                type : 'DateRange',
+                label : '产品实际提交日期',
+                width : '80px',
+            },
+            "grid" : {
+                caption: '产品实际提交日期',
+                sortable: true,
+                size: '100px',
+                render: function (record) {
+                    if (record.docActualCommitDate === GridViewModel.invalidDate) {
+                        return ViewConfig.renderEmptyField();
+                    } else {
+                        return '<div>' + date2String(record.docActualCommitDate) + '</div>';
+                    }
+                },
+            },
+        };
+        this["docPlanReviewDate"] = {   // 产品设计计划评审的日期
+            "filter" : {
+                type : 'DateRange',
+                label : '产品计划评审日期',
+                width : '80px',
+            },
+            "grid" : {
+                caption: '产品计划评审日期',
+                sortable: true,
+                size: '100px',
+                render: function (record) {
+                    if (record.docPlanReviewDate === GridViewModel.invalidDate) {
+                        return ViewConfig.renderEmptyField();
+                    } else {
+                        return '<div>' + date2String(record.docPlanReviewDate) + '</div>';
+                    }
+                },
+            },
+        };
+        this["docActualReviewDate"] = {   // 产品设计实际评审的日期
+            "filter" : {
+                type : 'DateRange',
+                label : '产品实际评审日期',
+                width : '80px',
+            },
+            "grid" : {
+                caption: '产品实际评审日期',
+                sortable: true,
+                size: '100px',
+                render: function (record) {
+                    if (record.docActualReviewDate === GridViewModel.invalidDate) {
+                        return ViewConfig.renderEmptyField();
+                    } else {
+                        return '<div>' + date2String(record.docActualReviewDate) + '</div>';
+                    }
+                },
+            },
+        };
+        this["testCasePlanCommitDate"] = {   // 测试用例计划评审通过日期
+            "filter" : {
+                type : 'DateRange',
+                label : '测试用例计划日期',
+                width : '80px',
+            },
+            "grid" : {
+                caption: '测试用例计划日期',
+                sortable: true,
+                size: '100px',
+                render: function (record) {
+                    if (record.testCasePlanCommitDate === GridViewModel.invalidDate) {
+                        return ViewConfig.renderEmptyField();
+                    } else {
+                        return '<div>' + date2String(record.testCasePlanCommitDate) + '</div>';
+                    }
+                },
+            },
+        };
+        this["testCaseActualCommitDate"] = {   // 测试用例实际评审通过日期
+            "filter" : {
+                type : 'DateRange',
+                label : '测试用例实际日期',
+                width : '80px',
+            },
+            "grid" : {
+                caption: '测试用例实际日期',
+                sortable: true,
+                size: '100px',
+                render: function (record) {
+                    if (record.testCaseActualCommitDate === GridViewModel.invalidDate) {
+                        return ViewConfig.renderEmptyField();
+                    } else {
+                        return '<div>' + date2String(record.testCaseActualCommitDate) + '</div>';
                     }
                 },
             },
@@ -354,6 +450,44 @@ export class ViewConfig extends AbstractModel{
                 },
             },
         };
+        this["programActualCommitDate"] = {
+            "filter" : {
+                type : 'DateRange',
+                label : '研发实际提验',
+                width : '80px',
+            },
+            "grid" : {
+                caption: '研发实际提验',
+                sortable: true,
+                size: '100px',
+                render: function (record) {
+                    if (record.programActualCommitDate === GridViewModel.invalidDate) {
+                        return ViewConfig.renderEmptyField();
+                    } else {
+                        return '<div>' + date2String(record.programActualCommitDate) + '</div>';
+                    }
+                },
+            },
+        };
+        this["designerPlanCommitTestDate"] = {
+            "filter" : {
+                type : 'DateRange',
+                label : '产品计划提测',
+                width : '80px',
+            },
+            "grid" : {
+                caption: '产品计划提测',
+                sortable: true,
+                size: '100px',
+                render: function (record) {
+                    if (record.designerPlanCommitTestDate === GridViewModel.invalidDate) {
+                        return ViewConfig.renderEmptyField();
+                    } else {
+                        return '<div>' + date2String(record.designerPlanCommitTestDate) + '</div>';
+                    }
+                },
+            },
+        };
         this["designerActualCommitTestDate"] = {
             "filter" : {
                 type : 'DateRange',
@@ -373,6 +507,44 @@ export class ViewConfig extends AbstractModel{
                 },
             },
         };
+        this["testPlanStartDate"] = {
+            "filter" : {
+                type : 'DateRange',
+                label : '测试计划开始',
+                width : '80px',
+            },
+            "grid" : {
+                caption: '测试计划开始',
+                sortable: true,
+                size: '100px',
+                render: function (record) {
+                    if (record.testPlanStartDate === GridViewModel.invalidDate) {
+                        return ViewConfig.renderEmptyField();
+                    } else {
+                        return '<div>' + date2String(record.testPlanStartDate) + '</div>';
+                    }
+                },
+            },
+        };
+        this["testActualStartDate"] = {
+            "filter" : {
+                type : 'DateRange',
+                label : '测试实际开始',
+                width : '80px',
+            },
+            "grid" : {
+                caption: '测试实际开始',
+                sortable: true,
+                size: '100px',
+                render: function (record) {
+                    if (record.testActualStartDate === GridViewModel.invalidDate) {
+                        return ViewConfig.renderEmptyField();
+                    } else {
+                        return '<div>' + date2String(record.testActualStartDate) + '</div>';
+                    }
+                },
+            },
+        };
         this["testPlanEndDate"] = {
             "filter" : {
                 type : 'DateRange',
@@ -388,6 +560,25 @@ export class ViewConfig extends AbstractModel{
                         return ViewConfig.renderEmptyField();
                     } else {
                         return '<div>' + date2String(record.testPlanEndDate) + '</div>';
+                    }
+                },
+            },
+        };
+        this["testActualEndDate"] = {
+            "filter" : {
+                type : 'DateRange',
+                label : '测试实际结束',
+                width : '80px',
+            },
+            "grid" : {
+                caption: '测试实际结束',
+                sortable: true,
+                size: '100px',
+                render: function (record) {
+                    if (record.testActualEndDate === GridViewModel.invalidDate) {
+                        return ViewConfig.renderEmptyField();
+                    } else {
+                        return '<div>' + date2String(record.testActualEndDate) + '</div>';
                     }
                 },
             },
@@ -716,7 +907,7 @@ class JGStoryViewConfig extends ViewConfig{
         this["status"]["visible"] = true;
         this["designer"]["visible"] = true;
         this["developer"]["visible"] = true;
-        this["docPlanCommitDate"]["visible"] = true;
+        this["docPlanReviewDate"]["visible"] = true;
         this["programPlanCommitDate"]["visible"] = true;
         this["tester"]["visible"] = true;
     }
@@ -804,5 +995,20 @@ class MEPBugViewConfig extends ViewConfig{
         this["fixVersions"]["visible"] = true;
         this["epicId"]["visible"] = true;
         this["fixedChangeset"]["visible"] = true;
+    }
+}
+
+class PBIMsDetailStoryViewConfig extends ViewConfig{
+    constructor(){
+        super();
+        this["jiraId"]["visible"] = true;
+        this["category"]["visible"] = true;
+        this["title"]["visible"] = true;
+        this["status"]["visible"] = true;
+        this["assignee"]["visible"] = true; 
+        this["docPlanCommitDate"]["visible"] = true;
+        this["docPlanReviewDate"]["visible"] = true;
+        this["docActualReviewDate"]["visible"] = true;
+        this["designerPlanCommitTestDate"]["visible"] = true;
     }
 }
