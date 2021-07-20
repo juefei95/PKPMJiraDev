@@ -62,7 +62,7 @@ export class ToolBarView{
         let values = {};
         for (const [k,v] of Object.entries(this.config)) {
             if ("type" in v && v.type === "select") {
-                values[k] = [$("#"+k+"option:selected").text(), $("#"+k).val()];
+                values[k] = [$("#"+k+" option:selected").text(), $("#"+k).val()];
             } else if("type" in v && v.type === "inputRange"){
                 if ("parseFunc" in v) {
                     values[k] = [v.parseFunc($("#"+k+"0").val()), v.parseFunc($("#"+k+"1").val())];
