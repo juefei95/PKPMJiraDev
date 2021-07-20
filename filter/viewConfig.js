@@ -1006,9 +1006,13 @@ class PBIMsDetailStoryViewConfig extends ViewConfig{
         this["title"]["visible"] = true;
         this["status"]["visible"] = true;
         this["assignee"]["visible"] = true; 
+        this["designer"]["visible"] = true; 
+        this["developer"]["visible"] = true; 
+        this["tester"]["visible"] = true; 
         this["docPlanCommitDate"]["visible"] = true;
         this["docPlanReviewDate"]["visible"] = true;
         this["docActualReviewDate"]["visible"] = true;
         this["designerPlanCommitTestDate"]["visible"] = true;
+        this["programActualCommitDate"]["visible"] = true;
     }
 }

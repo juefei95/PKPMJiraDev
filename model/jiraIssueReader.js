@@ -52,12 +52,12 @@ export class JiraIssueReader{
                 'f' : i => 'resolutiondate' in i.fields && i.fields.resolutiondate !== null         ? new Date(i.fields.resolutiondate.slice(0,10)) : Issue.invalidDate,
                 'jqlName' : 'resolutiondate',
             },
-            // 结构流程的designer
+            // 结构、深化流程的designer
             'customfield_10537' : {
                 'f' : i => 'customfield_10537' in i.fields && i.fields.customfield_10537 !== null   ? i.fields.customfield_10537.displayName        : Issue.emptyText,
                 'jqlName' : '需求人员',
             },
-            // 结构流程的developer
+            // 结构、深化流程的developer
             'customfield_10538' : {
                 'f' : i => 'customfield_10538' in i.fields && i.fields.customfield_10538 !== null   ? i.fields.customfield_10538.displayName        : Issue.emptyText,
                 'jqlName' : '研发人员',
@@ -122,7 +122,7 @@ export class JiraIssueReader{
                 'f' : i => 'customfield_11308' in i.fields && i.fields.customfield_11308 !== null   ? new Date(i.fields.customfield_11308)          : Issue.invalidDate,
                 'jqlName' : '计划提验时间',
             },
-            // PC流程的研发实际提验时间
+            // PC、深化流程的研发实际提验时间
             'customfield_11302' : {
                 'f' : i => 'customfield_11302' in i.fields && i.fields.customfield_11302 !== null   ? new Date(i.fields.customfield_11302)          : Issue.invalidDate,
                 'jqlName' : '实际提验时间',

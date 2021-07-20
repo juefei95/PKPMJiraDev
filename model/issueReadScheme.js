@@ -147,8 +147,8 @@ class PBIMsDetailIssueReadScheme extends IssueReadScheme{
     constructor(issueType){
         super()
 
-        this.designer                      = ["fields", "reporter"];
-        this.developer                     = ["fields", "assignee"];
+        this.designer                      = ["fields", "customfield_10537"];
+        this.developer                     = ["fields", "customfield_10538"];
         if (issueType === "故事") {      
             this.tester                    = ["fields", "customfield_10539"];
         }else if(issueType === "故障"){
@@ -157,7 +157,8 @@ class PBIMsDetailIssueReadScheme extends IssueReadScheme{
         this.docPlanCommitDate             = ["fields", "customfield_11415"];
         this.docPlanReviewDate             = ["fields", "customfield_11307"];
         this.docActualReviewDate           = ["fields", "customfield_11301"];
-        this.designerPlanCommitTestDate    = ["fields", "customfield_11309"];    
+        this.designerPlanCommitTestDate    = ["fields", "customfield_11309"];   
+        this.programActualCommitDate       = ["fields", "customfield_11302"];
     }
 }
 

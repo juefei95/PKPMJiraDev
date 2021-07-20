@@ -14,9 +14,11 @@ import { BugBlockedStatusReport }               from "./bugBlockedStatusReport.j
 import { BugRetestStatusReport }                from "./bugRetestStatusReport.js";
 import { BugUnresolvedByCategoryReport }        from "./bugUnresolvedByCategoryReport.js";
 import { BugUnresolvedAndRetestFailReport }     from "./bugUnresolvedAndRetestFailReport.js";
+import { DateDiffReport }                       from "./dateDiffReport.js";
 
 const classes = { DeveloperCommitDelayReport, DocReviewDelayReport, TestLongTimeReport, RequirementVerifyLongTimeReport, StoryTimelineReport,
-    BugResolveDelayReport, BugTitleNotFollowRuleReport, BugResolveStatusReport, BugBlockedStatusReport, BugRetestStatusReport, BugUnresolvedByCategoryReport, BugUnresolvedAndRetestFailReport};
+    BugResolveDelayReport, BugTitleNotFollowRuleReport, BugResolveStatusReport, BugBlockedStatusReport, BugRetestStatusReport,
+    BugUnresolvedByCategoryReport, BugUnresolvedAndRetestFailReport, DateDiffReport};
 
 export function getReport(classname, id, config, model){
     let rp = undefined;

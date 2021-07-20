@@ -8,6 +8,7 @@ let bugReportViewConfig = {
             "viewClass" : "BugResolveDelayReport",
             "toolbar"     : {
                 "delayDays" : {
+                    "type" : "input",
                     "name" : "逾期天数",
                     "defaultValue" : 15,
                     "parseFunc" : parseInt,
@@ -31,6 +32,7 @@ let bugReportViewConfig = {
             "viewClass" : "BugResolveStatusReport",
             "toolbar"     : {
                 "nearDays" : {
+                    "type" : "input",
                     "name" : "统计最近多少天解决的Bug",
                     "defaultValue" : 15,
                     "parseFunc" : parseInt,
@@ -62,6 +64,7 @@ let bugReportViewConfig = {
             "viewClass" : "BugUnresolvedByCategoryReport",
             "toolbar"     : {
                 "nearDays" : {
+                    "type" : "input",
                     "name" : "统计最近多少天未解决的Bug",
                     "defaultValue" : 15,
                     "parseFunc" : parseInt,
@@ -77,6 +80,7 @@ let bugReportViewConfig = {
             "viewClass" : "BugUnresolvedAndRetestFailReport",
             "toolbar"     : {
                 "nearDays" : {
+                    "type" : "input",
                     "name" : "统计最近多少天未解决的Bug",
                     "defaultValue" : 15,
                     "parseFunc" : parseInt,
@@ -94,6 +98,7 @@ let storyReportViewConfig = {
             "viewClass" : "DeveloperCommitDelayReport",
             "toolbar"     : {
                 "delayDays" : {
+                    "type" : "input",
                     "name" : "逾期天数",
                     "defaultValue" : 1,
                     "parseFunc" : parseInt,
@@ -109,6 +114,7 @@ let storyReportViewConfig = {
             "viewClass" : "DocReviewDelayReport",
             "toolbar"     : {
                 "delayDays" : {
+                    "type" : "input",
                     "name" : "逾期天数",
                     "defaultValue" : 1,
                     "parseFunc" : parseInt,
@@ -124,6 +130,7 @@ let storyReportViewConfig = {
             "viewClass" : "TestLongTimeReport",
             "toolbar"     : {
                 "usedDays" : {
+                    "type" : "input",
                     "name" : "已测试天数",
                     "defaultValue" : 15,
                     "parseFunc" : parseInt,
@@ -139,6 +146,7 @@ let storyReportViewConfig = {
             "viewClass" : "RequirementVerifyLongTimeReport",
             "toolbar"     : {
                 "usedDays" : {
+                    "type" : "input",
                     "name" : "已验证天数",
                     "defaultValue" : 15,
                     "parseFunc" : parseInt,
@@ -152,6 +160,76 @@ let storyReportViewConfig = {
         },
         "report" : {
             "viewClass" : "StoryTimelineReport",
+        },
+    },
+    "dateDiff" : {
+        "tab" : {
+            "name" : "日期差异比较",
+        },
+        "report" : {
+            "viewClass" : "DateDiffReport",
+            "toolbar"     : {
+                "date1" : {
+                    "type" : "select",
+                    "options" : {
+                        "产品设计计划提交" : "docPlanCommitDate",           
+                        "产品设计实际提交" : "docActualCommitDate",         
+                        "产品设计计划评审" : "docPlanReviewDate",           
+                        "产品设计实际评审" : "docActualReviewDate",         
+                        "测试用例计划评审" : "testCasePlanCommitDate",      
+                        "测试用例实际评审" : "testCaseActualCommitDate",    
+                        "研发计划提验"     : "programPlanCommitDate",       
+                        "研发实际提验"     : "programActualCommitDate",     
+                        "产品计划提测"     : "designerPlanCommitTestDate",  
+                        "产品实际提测"     : "designerActualCommitTestDate",
+                        "测试计划开始"     : "testPlanStartDate",           
+                        "测试实际开始"     : "testActualStartDate",         
+                        "测试实际结束"     : "testPlanEndDate",             
+                        "测试实际结束"     : "testActualEndDate",           
+                    },
+                    "name" : "日期1",
+                    "defaultValue" : ["测试用例实际评审", "testCaseActualCommitDate"],
+                },
+                "date2" : {
+                    "type" : "select",
+                    "options" : {
+                        "产品设计计划提交" : "docPlanCommitDate",           
+                        "产品设计实际提交" : "docActualCommitDate",         
+                        "产品设计计划评审" : "docPlanReviewDate",           
+                        "产品设计实际评审" : "docActualReviewDate",         
+                        "测试用例计划评审" : "testCasePlanCommitDate",      
+                        "测试用例实际评审" : "testCaseActualCommitDate",    
+                        "研发计划提验"     : "programPlanCommitDate",       
+                        "研发实际提验"     : "programActualCommitDate",     
+                        "产品计划提测"     : "designerPlanCommitTestDate",  
+                        "产品实际提测"     : "designerActualCommitTestDate",
+                        "测试计划开始"     : "testPlanStartDate",           
+                        "测试实际开始"     : "testActualStartDate",         
+                        "测试实际结束"     : "testPlanEndDate",             
+                        "测试实际结束"     : "testActualEndDate",           
+                    },
+                    "name" : "减 日期2",
+                    "defaultValue" : ["研发计划提验", "programPlanCommitDate"],
+                },
+                "daysDiffRange" : {
+                    "type" : "inputRange",
+                    "name" : "在几天范围内",
+                    "defaultValue" : [-2, 5],
+                    "parseFunc" : parseInt,
+                },
+                "person" : {
+                    "type" : "select",
+                    "options" : {
+                        "产品" : "designer",           
+                        "研发" : "developer",         
+                        "测试" : "tester",           
+                        "报告人" : "reporter",         
+                        "指派给" : "assignee",       
+                    },
+                    "name" : "按谁来统计",
+                    "defaultValue" : ["产品", "designer"],
+                },
+            },
         },
     },
 };
