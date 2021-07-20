@@ -68,7 +68,23 @@ export class GridViewModel extends ViewModel {
      * @returns {json} 对于grid各列情况的描述
      */
     getGrids() {
-        return this.viewConfig.getGridsDict();
+        let gridDict = this.viewConfig.getGridsDict();
+        let gridArr = [];
+        let counter = 0;
+        for (const [k, v] of Object.entries(gridDict)){
+            counter += 1;
+            let newV = v;
+            newV["field"] = k;
+            newV["dictIndex"] = counter;
+            gridArr.push(newV);
+        }
+        // 排序
+        let sortedGridArr = gridArr.sort((x,y) => {
+            let xi = "index" in x ? x.index : x.dictIndex*100;
+            let yi = "index" in y ? y.index : y.dictIndex*100;
+            return xi-yi;
+        })
+        return sortedGridArr;
     }
 
     getRecords(){

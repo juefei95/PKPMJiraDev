@@ -92,14 +92,14 @@ export class GridControl{
         // 构造列
         let columnVis = this.vm.getFieldsVisibility();
         let columns = [];
-        for (const [k, v] of Object.entries(this.vm.getGrids())){
+        for (const v of this.vm.getGrids()){
             columns.push({
-                field : k,
+                field : v.field,
                 caption : v.caption,
                 sortable : v.sortable,
                 size : v.size,
                 render : v.render,
-                hidden : !columnVis[k].visible,
+                hidden : !columnVis[v.field].visible,
             });
         }
         let records = this.vm.getRecords();

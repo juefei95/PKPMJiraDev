@@ -1014,5 +1014,20 @@ class PBIMsDetailStoryViewConfig extends ViewConfig{
         this["docActualReviewDate"]["visible"] = true;
         this["designerPlanCommitTestDate"]["visible"] = true;
         this["programActualCommitDate"]["visible"] = true;
+
+        // 定义grid的列排序
+        this["jiraId"]["grid"]["index"]                     = 1;
+        this["category"]["grid"]["index"]                   = 2;
+        this["title"]["grid"]["index"]                      = 3;
+        this["status"]["grid"]["index"]                     = 4;
+        this["assignee"]["grid"]["index"]                   = 5;
+        this["designer"]["grid"]["index"]                   = 6;
+        this["developer"]["grid"]["index"]                  = 7;
+        this["tester"]["grid"]["index"]                     = 8;
+        this["docPlanCommitDate"]["grid"]["index"]          = 9;
+        this["docPlanReviewDate"]["grid"]["index"]          = 10;
+        this["designerPlanCommitTestDate"]["grid"]["index"] = 11;
+        this["programActualCommitDate"]["grid"]["index"]    = 12;
+
     }
 }
