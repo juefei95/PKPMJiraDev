@@ -36,7 +36,7 @@ export class DeveloperCommitDelayReport extends AbstractReport{
                             "value" : developer,
                         },
                         "planDate" : {
-                            "text" : "计划提测日期",
+                            "text" : "计划提验日期",
                             "value" : date2String(programPlanCommitDate),
                         },
                         "title" : {
