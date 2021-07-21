@@ -1027,7 +1027,8 @@ class PBIMsDetailStoryViewConfig extends ViewConfig{
         this["docPlanCommitDate"]["grid"]["index"]          = 9;
         this["docPlanReviewDate"]["grid"]["index"]          = 10;
         this["designerPlanCommitTestDate"]["grid"]["index"] = 11;
-        this["programActualCommitDate"]["grid"]["index"]    = 12;
+        this["docActualReviewDate"]["grid"]["index"]        = 12;
+        this["programActualCommitDate"]["grid"]["index"]    = 13;
 
     }
 }
