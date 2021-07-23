@@ -13,6 +13,7 @@ export class ToolBarView{
     updateView(){
         $('#'+this.id).w2destroy(this.id);
         let items = [];
+        let explicitApplyBtn = false;
         for (const [k,v] of Object.entries(this.config)) {
             items.push({type : 'break'});
             this.values[k] = v.defaultValue;
@@ -35,7 +36,7 @@ export class ToolBarView{
                                 ~ <input id="${k}1" value=${this.values[k][1]} size="10" style="padding: 3px; border-radius: 2px; border: 1px solid silver"/>
                             </div>
                         `
-            } else {
+            } else if("type" in v === false){
                 control =  `
                             <div style="padding: 3px 10px;">
                                 ${v.name}:<input id="${k}" value=${this.values[k]} size="10" style="padding: 3px; border-radius: 2px; border: 1px solid silver"/>
@@ -48,9 +49,22 @@ export class ToolBarView{
                     html: control,
                 }
             );
+
+            // 应用按钮
+            if("type" in v && v.type === "applyButton"){
+                items.push({ type: 'button', text: '应用', onClick : this._onApply.bind(this) });
+                explicitApplyBtn = true;
+            }
+            
+            if("type" in v && v.type === "button"){
+                items.push({ type: 'button', text: v.name, onClick : this._onButtonClick.bind(this, k) });
+            }
         }
-        items.push({type : 'break'});
-        items.push({ type: 'button', text: '应用', onClick : this._onApply.bind(this) });
+        // 如果前面没有显式指定应用按钮，则最后补上
+        if (!explicitApplyBtn) {
+            items.push({type : 'break'});
+            items.push({ type: 'button', text: '应用', onClick : this._onApply.bind(this) });
+        }
         items.push({type : 'break'});
         $('#'+this.id).w2toolbar({
             name: this.id,
@@ -58,7 +72,8 @@ export class ToolBarView{
         });        
     }
 
-    _onApply(){
+    _getToolBarValues(){
+
         let values = {};
         for (const [k,v] of Object.entries(this.config)) {
             if ("type" in v && v.type === "select") {
@@ -77,9 +92,19 @@ export class ToolBarView{
                 }
             }
         }
+        return values;
+    }
+    _onApply(){
         window.dispatchEvent(new CustomEvent("updateContent"+this.reportName, {
             detail: {
-                toolbarValues : values,
+                toolbarValues : this._getToolBarValues(),
+        }}));
+    }
+
+    _onButtonClick(eventName){
+        window.dispatchEvent(new CustomEvent("onButtonClick"+this.reportName+eventName, {
+            detail: {
+                toolbarValues : this._getToolBarValues(),
         }}));
     }
 }

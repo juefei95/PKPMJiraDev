@@ -229,6 +229,13 @@ let storyReportViewConfig = {
                     "name" : "按谁来统计",
                     "defaultValue" : ["产品", "designer"],
                 },
+                "apply" : {
+                    "type" : "applyButton",
+                },
+                "copyToConf" : {
+                    "type" : "button",
+                    "name" : "复制到Confluence",
+                },
             },
         },
     },
