@@ -36,7 +36,7 @@ export class ToolBarView{
                                 ~ <input id="${k}1" value=${this.values[k][1]} size="10" style="padding: 3px; border-radius: 2px; border: 1px solid silver"/>
                             </div>
                         `
-            } else if("type" in v === false){
+            } else if("type" in v && v.type === "input"){
                 control =  `
                             <div style="padding: 3px 10px;">
                                 ${v.name}:<input id="${k}" value=${this.values[k]} size="10" style="padding: 3px; border-radius: 2px; border: 1px solid silver"/>
@@ -84,7 +84,7 @@ export class ToolBarView{
                 }else{
                     values[k] = [$("#"+k+"0").val(), $("#"+k+"1").val()];
                 }
-            } else{
+            } else if("type" in v && v.type === "input"){
                 if ("parseFunc" in v) {
                     values[k] = v.parseFunc($("#"+k).val());
                 }else{
