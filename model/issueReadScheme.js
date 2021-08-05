@@ -6,11 +6,17 @@
 import { Issue }  from "./issue.js"
 
 export function getIssueReadScheme(projName, issueType){
-    if (["JGVIRUS","STS"].includes(projName)) {
+    if (["JGVIRUS"].includes(projName)) {
         if (issueType === "故事") {
             return JGIssueReadStoryScheme;
         }else if (issueType === "故障") {
             return JGIssueReadBugScheme;
+        }
+    }else if (["STS"].includes(projName)) {
+        if (issueType === "故事") {
+            return STSIssueReadStoryScheme;
+        }else if (issueType === "故障") {
+            return STSIssueReadBugScheme;
         }
     }else if (projName === "PC") {
         if (issueType === "Epic") {
@@ -82,6 +88,25 @@ class JGIssueReadScheme extends IssueReadScheme{
         this.confluenceLink          = ["fields", "customfield_10713"];
         this.docPlanReviewDate       = ["fields", "customfield_11415"];
         this.programPlanCommitDate   = ["fields", "customfield_11408"];
+        this.resolvePerson           = ["fields", "customfield_10716"];
+        this.bugPriority             = ["fields", "customfield_10510"];
+    }
+}
+
+class STSIssueReadScheme extends IssueReadScheme{
+    constructor(issueType){
+        super()
+
+        this.designer                = ["fields", "customfield_10537"];
+        this.developer               = ["fields", "customfield_10538"];
+        if (issueType === "故事") {
+            this.tester              = ["fields", "customfield_10539"];
+        }else if(issueType === "故障"){
+            this.tester              = ["fields", "reporter"];
+        }
+        this.confluenceLink          = ["fields", "customfield_10713"];
+        this.docPlanReviewDate       = ["fields", "customfield_11415"];
+        this.programPlanCommitDate   = ["fields", "customfield_11434"];
         this.resolvePerson           = ["fields", "customfield_10716"];
         this.bugPriority             = ["fields", "customfield_10510"];
     }
@@ -165,6 +190,8 @@ class PBIMsDetailIssueReadScheme extends IssueReadScheme{
 let DeafaultIssueReadScheme          = new IssueReadScheme();
 let JGIssueReadStoryScheme           = new JGIssueReadScheme("故事");
 let JGIssueReadBugScheme             = new JGIssueReadScheme("故障");
+let STSIssueReadStoryScheme          = new STSIssueReadScheme("故事");
+let STSIssueReadBugScheme            = new STSIssueReadScheme("故障");
 let PCIssueReadStoryScheme           = new PCIssueReadScheme("Epic");
 let PCIssueReadBugScheme             = new PCIssueReadScheme("故障");
 let MEPIssueReadStoryScheme          = new MEPIssueReadScheme("故事");
