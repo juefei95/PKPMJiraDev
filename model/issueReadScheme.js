@@ -6,7 +6,7 @@
 import { Issue }  from "./issue.js"
 
 export function getIssueReadScheme(projName, issueType){
-    if (projName === "JGVIRUS") {
+    if (["JGVIRUS","STS"].includes(projName)) {
         if (issueType === "故事") {
             return JGIssueReadStoryScheme;
         }else if (issueType === "故障") {
