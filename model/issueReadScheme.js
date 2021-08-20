@@ -184,6 +184,7 @@ class PBIMsDetailIssueReadScheme extends IssueReadScheme{
         this.docActualReviewDate           = ["fields", "customfield_11301"];
         this.designerPlanCommitTestDate    = ["fields", "customfield_11309"];   
         this.programActualCommitDate       = ["fields", "customfield_11302"];
+        this.testPlanStartDate             = ["fields", "customfield_11311"];
     }
 }
 
