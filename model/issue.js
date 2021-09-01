@@ -37,6 +37,7 @@ export class Issue{
             "testPlanEndDate",                      // 测试计划结束日期
             "testActualEndDate",                    // 测试实际结束日期
             "bugPriority",
+            "bugSeverity",
             "bugPhase",
             "epicId",
             "fixedChangeset",

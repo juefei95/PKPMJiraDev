@@ -606,6 +606,29 @@ export class ViewConfig extends AbstractModel{
                 },
             },
         };
+        this["bugSeverity"] = {
+            "chart" : {
+                "visible" : false,
+            },
+            "filter" : {
+                type : 'DropDown',
+                label : '严重等级',
+                width : '200px',
+                placeholder : "请选择Bug严重等级",
+            },
+            "grid" : {
+                caption: '严重等级',
+                sortable: true,
+                size: '100px',
+                render: function (record) {
+                    if (record.bugSeverity === GridViewModel.emptyText) {
+                        return ViewConfig.renderEmptyField();
+                    } else {
+                        return '<div>' + record.bugSeverity + '</div>';
+                    }
+                },
+            },
+        };
         this["bugPhase"] = {
             "chart" : {
                 "visible" : false,
