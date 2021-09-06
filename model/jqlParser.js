@@ -28,7 +28,7 @@ export class JQL{
 */
     // 生成新的JQL
     genNewJQL(newCondition){
-        let s = this.jqlWithoutOrderPart;
+        let s = '(' + this.jqlWithoutOrderPart + ')';
         for (const [k,v] of Object.entries(newCondition)) {
             // DropDown的选中项
             if (v instanceof Set){
