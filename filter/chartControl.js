@@ -60,7 +60,13 @@ export class ChartControl{
                             };
                         },
                         formatter: function (value, context) {
-                            return context.chart.data.labels[context.dataIndex] + context.dataset.data[context.dataIndex];
+                            let sum = 0;
+                            let dataArr = context.dataset.data;
+                            dataArr.map(data => {
+                                sum += data;
+                            });
+                            let percentage = (value * 100 / sum).toFixed(0) + "%";
+                            return context.chart.data.labels[context.dataIndex] + context.dataset.data[context.dataIndex] + "\r\n" + percentage;
                         }
                     }
                 }
