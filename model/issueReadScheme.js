@@ -24,6 +24,10 @@ export function getIssueReadScheme(projName, issueType){
         }else if (issueType === "故障") {
             return PCIssueReadBugScheme;
         }
+    }else if (projName === "YHT") {
+        if (issueType === "故事") {
+            return PCIssueReadStoryScheme;
+        }
     }else if (projName === "BIMMEP") {
         if (issueType === "故事") {
             return MEPIssueReadStoryScheme;
