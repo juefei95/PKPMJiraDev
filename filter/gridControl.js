@@ -87,6 +87,19 @@ export class GridControl{
         return sel;
     }
 
+    _getColumnSetting(){
+        let columnSetting = {};
+        let index = 0;
+        for (const cc of w2ui[this.gridName].columns) {
+            columnSetting[cc.field] = {
+                "visible" : !cc.hidden,
+                "index" : index,
+            };
+            index++;
+        }
+        return columnSetting;
+    }
+
     _init(){
 
         // 构造列
@@ -121,6 +134,12 @@ export class GridControl{
             //},
             onContextMenu: function(event) {
                 event.preventDefault();
+            },
+            onColumnDragEnd: (event) => {
+                if (event.phase == "after"){
+                    let columnSetting = this._getColumnSetting();
+                    this.vm.saveColumnSetting(columnSetting);
+                }
             },
         });
     }

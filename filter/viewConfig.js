@@ -820,6 +820,50 @@ export class ViewConfig extends AbstractModel{
         return '<div><i style="color:#A9A9A9">Empty Field</i></div>';
     }
 
+    //保存设置到本地
+    saveColumnSetting(columnSetting){
+        // 目前是保存列的显示与否以及列的显示顺序
+        // 保存的形式是{fieldname:{show：true，index：1}...}
+        if(!window.localStorage){
+            console.log("浏览器不支持localStorage，无法保存显示设置");
+            return;
+        }
+
+        let storage = window.localStorage;
+        //写入a字段
+        storage.setItem("pkpm_jira_plugin_view_config", JSON.stringify(columnSetting));
+        storage.setItem("pkpm_jira_plugin_view_config_version", 1.0);
+    }
+
+    //加载本地的设置
+    loadColumnSetting(){
+        if(!window.localStorage){
+            console.log("浏览器不支持localStorage，无法保存显示设置");
+            return;
+        }
+        let storage = window.localStorage;
+        let version = storage.getItem("pkpm_jira_plugin_view_config_version");
+        if(!version){
+            console.log("显示设置不存在");
+            return;
+        }
+
+        let configString = storage.getItem("pkpm_jira_plugin_view_config");
+        let config = JSON.parse(configString);
+        return config;
+    }
+
+    setColumnSetting(columnSetting){
+        if(columnSetting){
+            for(const [k,v] of Object.entries(columnSetting)){
+                if (k in this) {
+                    this[k]["visible"] = v["visible"];
+                    this[k]["grid"]["index"] = v["index"];
+                }
+            }
+        }
+    }
+
     // 获取当前配置的所有包含grid的key的标题，包括显示的和隐藏的
     getFieldsVisibility(){
         let issueValidFields = Issue.getValidFields();
@@ -846,6 +890,17 @@ export class ViewConfig extends AbstractModel{
                 this[field]["visible"] = false;
             }
         }
+        // 保存一下设置
+        let columnSetting = this.loadColumnSetting();
+        for (const [k,v] of Object.entries(columnSetting)){
+            // 显式的设置了field的visible为true，则记下来；设置为false或者没设置的，都视为false
+            if (k in fieldsVisibility && fieldsVisibility[k] && "visible" in fieldsVisibility[k] & fieldsVisibility[k]["visible"]) {
+                columnSetting[k]["visible"] = true;
+            }else{
+                columnSetting[k]["visible"] = false;
+            }
+        }
+        this.saveColumnSetting(columnSetting);
         // 发送消息，选中项变了
         this.trigModelChangeEvent("FieldsVisibility");
     }

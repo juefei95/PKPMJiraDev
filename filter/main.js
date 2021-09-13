@@ -15,6 +15,7 @@ export async function helloFilter(){
         printInfo(" 获取数据");
         let [issues, notReadIssueKey] = await new JiraIssueReader().read(jql.getRawJQL())
         let viewConfig = getViewConfig(issues);
+        viewConfig.setColumnSetting(viewConfig.loadColumnSetting());
         let model = new Model(issues, viewConfig, jql);
 
         // 展示框架

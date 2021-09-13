@@ -102,4 +102,8 @@ export class GridViewModel extends ViewModel {
     setSelectedRecords(ids){
         this.model.setSelectedRecords(ids);
     }
+
+    saveColumnSetting(columnSetting){
+        this.viewConfig.saveColumnSetting(columnSetting);
+    }
 }
