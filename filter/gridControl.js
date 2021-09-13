@@ -136,7 +136,7 @@ export class GridControl{
                 event.preventDefault();
             },
             onColumnDragEnd: (event) => {
-                if (event.phase == "after"){
+                event.onComplete = () => {
                     let columnSetting = this._getColumnSetting();
                     this.vm.saveColumnSetting(columnSetting);
                 }
