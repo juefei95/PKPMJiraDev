@@ -1,6 +1,7 @@
 
 import { date2String, getDateFormat } from "../model/toolSet.js";
 import { GridViewModel }              from './gridVM.js'
+import { Issue }                      from './../model/issue.js'
 
 export class GridControl{
 
@@ -79,6 +80,20 @@ export class GridControl{
         w2ui[this.gridName].refresh();
     }
     
+    // 清空所有修改中的change
+    clearChange(){
+        w2ui[this.gridName].records = w2ui[this.gridName].records.map((item) => {
+            delete item.changes;
+            return item
+          });
+        w2ui[this.gridName].refresh();
+    }
+
+    // 合并所有修改中的change
+    mergeChange(){
+        w2ui[this.gridName].mergeChanges();
+    }
+
     // 获得表格中过滤后的所有条目
     _getFilteredIssues() {
         w2ui[this.gridName].selectAll();
@@ -113,6 +128,7 @@ export class GridControl{
                 size : v.size,
                 render : v.render,
                 hidden : !columnVis[v.field].visible,
+                editable: Issue.isDateField(v.field) ? { type: 'date' } : undefined,
             });
         }
         let records = this.vm.getRecords();
@@ -141,6 +157,16 @@ export class GridControl{
                     this.vm.saveColumnSetting(columnSetting);
                 }
             },
+            onChange: (event) => {
+                if (event.phase === "before"){
+                    let jiraId = w2ui[this.gridName].records[event.index]["jiraId"];
+                    let projName = w2ui[this.gridName].records[event.index]["projName"];
+                    let issueType = w2ui[this.gridName].records[event.index]["issueType"];
+                    let field = w2ui[this.gridName].columns[event.column].field;
+                    let ret = this.vm.setIssueFieldValue(jiraId, projName, issueType, field, event.value_new);
+                    if(!ret) event.preventDefault();
+                }
+            }
         });
     }
 }

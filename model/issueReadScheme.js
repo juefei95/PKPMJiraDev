@@ -5,6 +5,12 @@
 
 import { Issue }  from "./issue.js"
 
+/**
+ * 按projName和issueType返回IssueReadScheme
+ * @param {string} projName 
+ * @param {string} issueType 
+ * @returns class IssueReadScheme 
+ */
 export function getIssueReadScheme(projName, issueType){
     if (["JGVIRUS"].includes(projName)) {
         if (issueType === "故事") {
@@ -68,6 +74,11 @@ export class IssueReadScheme{
 
     howToReadField(field){
         return this[field];
+    }
+
+    // 获取field在Jira中对应的是哪个字段
+    getFieldNameInJira(field){
+        return this[field] && this[field][0] == "fields" ? this[field][1] : undefined;
     }
 
     getFieldsForJiraSearch(){

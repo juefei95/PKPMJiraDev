@@ -19,6 +19,10 @@ export class Model extends AbstractModel{
     constructor(issues, viewConfig, jql){
         super("FilterModel");
         this.issues = issues;
+        this.issuesDict = {};
+        for (const ii of issues) {
+            this.issuesDict[ii.getJiraId()] = ii;
+        }
         this.issuesAllReadScheme = undefined;
         this.viewConfig = viewConfig;
         this.jql = jql;
@@ -37,6 +41,11 @@ export class Model extends AbstractModel{
             issues.push(iss.getRawIssue());
         }
         return issues;
+    }
+
+    // 根据issueKey获得issue
+    getIssue(issueKey){
+        return issueKey in this.issuesDict ? this.issuesDict[issueKey] : undefined;
     }
 
     // 获取issue的数目

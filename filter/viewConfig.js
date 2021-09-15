@@ -63,6 +63,26 @@ export class ViewConfig extends AbstractModel{
         super("FilterViewConfig");
 
         //#region  配置各字段的显示
+        this["projName"] = {
+            "grid" : {
+                caption: '项目名称',
+                sortable: true,
+                size: '100px',
+                render: function (record) {
+                    return '<div>' + record.projName + '</div>';
+                }
+            }
+        };  
+        this["issueType"] = {
+            "grid" : {
+                caption: '类型',
+                sortable: true,
+                size: '100px',
+                render: function (record) {
+                    return '<div>' + record.issueType + '</div>';
+                }
+            }
+        };  
         this["jiraId"] = {
             "grid" : {
                 caption: 'ID',

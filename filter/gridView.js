@@ -17,6 +17,8 @@ export class GridPanel extends View{
         this.regVMEvent("SelectedOptions", this.updateView.bind(this));
         this.regVMEvent("IssueReget", this.resetRecords.bind(this));
         this.regVMEvent("FieldsVisibility", this.updateFieldsVisibility.bind(this));
+        this.regVMEvent("MergeGridChange", this.mergeGridChange.bind(this));
+        this.regVMEvent("ClearGridChange", this.clearGridChange.bind(this));
         
     }
     createHtml(){
@@ -39,5 +41,12 @@ export class GridPanel extends View{
         // 把各种控件Dom和实际的控件类关联起来
         this.grid = new GridControl(this.vm, this.ids.gridId, this.ids.gridName);
     }
+    
+    mergeGridChange(){
+        this.grid.mergeChange();
+    }
 
+    clearGridChange(){
+        this.grid.clearChange();
+    }
 }

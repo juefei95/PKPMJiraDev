@@ -10,6 +10,8 @@ export class Issue{
     // 获得通用的字段定义
     static getValidFields(){
         return [
+            "projName",
+            "issueType",
             "jiraId",
             "category",
             "MEPCategory",
@@ -50,10 +52,40 @@ export class Issue{
         ];
     }
 
+    // 该字段是不是日期相关的
+    static isDateField(field){
+        return [
+            "docPlanCommitDate",                    // 产品设计计划提交的日期
+            "docActualCommitDate",                  // 产品设计实际提交的日期
+            "docPlanReviewDate",                    // 产品设计计划评审通过的日期
+            "docActualReviewDate",                  // 产品设计实际评审通过的日期
+            "testCasePlanCommitDate",               // 测试用例计划评审通过日期
+            "testCaseActualCommitDate",             // 测试用例实际评审通过日期
+            "programPlanCommitDate",                // 研发计划提交产品验证日期
+            "programActualCommitDate",              // 研发实际提交产品验证日期
+            "designerPlanCommitTestDate",           // 产品验证通过，计划提测日期
+            "designerActualCommitTestDate",         // 产品验证通过，实际提测日期
+            "testPlanStartDate",                    // 测试计划开始日期
+            "testActualStartDate",                  // 测试实际开始日期
+            "testPlanEndDate",                      // 测试计划结束日期
+            "testActualEndDate",                    // 测试实际结束日期
+            "createDate",
+            "resolutionDate",
+        ].includes(field);
+    }
+
     constructor(issueJson){
         this.issue = issueJson;
     }
     
+
+    // 设置日期字段的值
+    setDateField(field, newDate){
+        if(newDate instanceof Date && Issue.isDateField(field)){
+            this.issue[field] = newDate;
+        }
+    }
+
     getRawIssue(){
         return this.issue;
     }

@@ -261,10 +261,15 @@ export class JiraIssueReader{
                 continue;
             }
             let o = {}
-            o["projName"] = projName;
-            o["issueType"] = issueType;
-
             for (const field of issueValidFields) {
+                if("projName" === field){
+                    o["projName"] = projName;
+                    continue;
+                }
+                if("issueType" === field){
+                    o["issueType"] = issueType;
+                    continue;
+                }
                 let scheme = readScheme.howToReadField(field);
                 if (scheme) {
                     let f = this._getDictValue(JiraIssueReader.fieldReadConfig, scheme)['f'];

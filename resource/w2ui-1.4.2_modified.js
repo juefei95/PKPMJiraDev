@@ -130,6 +130,7 @@ var w2utils = (function () {
         return email.test(val);
     }
 
+/* modify by sjx 2021-09-15 把isDate的实现换成了V1.5版本的
     function isDate (val, format, retDate) {
         if (!val) return false;
 
@@ -187,6 +188,73 @@ var w2utils = (function () {
         // do checks
         if (month == null) return false;
         if (dt === 'Invalid Date') return false;
+        if ((dt.getMonth() + 1 !== month) || (dt.getDate() !== day) || (dt.getFullYear() !== year)) return false;
+        if (retDate === true) return dt; else return true;
+    }
+*/
+    function isDate (val, format, retDate) {
+        if (!val) return false;
+
+        var dt   = 'Invalid Date';
+        var month, day, year;
+
+        if (format == null) format = w2utils.settings.dateFormat;
+
+        if (typeof val.getFullYear === 'function') { // date object
+            year  = val.getFullYear();
+            month = val.getMonth() + 1;
+            day   = val.getDate();
+        } else if (parseInt(val) == val && parseInt(val) > 0) {
+            val = new Date(parseInt(val));
+            year  = val.getFullYear();
+            month = val.getMonth() + 1;
+            day   = val.getDate();
+        } else {
+            try {
+                val = String(val);
+                // convert month formats
+                if (new RegExp('mon', 'ig').test(format)) {
+                    format = format.replace(/month/ig, 'm').replace(/mon/ig, 'm').replace(/dd/ig, 'd').replace(/[, ]/ig, '/').replace(/\/\//g, '/').toLowerCase();
+                    val    = val.replace(/[, ]/ig, '/').replace(/\/\//g, '/').toLowerCase();
+                    for (var m = 0, len = w2utils.settings.fullmonths.length; m < len; m++) {
+                        var t = w2utils.settings.fullmonths[m];
+                        val = val.replace(new RegExp(t, 'ig'), (parseInt(m) + 1)).replace(new RegExp(t.substr(0, 3), 'ig'), (parseInt(m) + 1));
+                    }
+                }
+                // format date
+                var tmp  = val.replace(/-/g, '/').replace(/\./g, '/').toLowerCase().split('/');
+                var tmp2 = format.replace(/-/g, '/').replace(/\./g, '/').toLowerCase();
+                if (tmp2 === 'mm/dd/yyyy') { month = tmp[0]; day = tmp[1]; year = tmp[2]; }
+                if (tmp2 === 'm/d/yyyy')   { month = tmp[0]; day = tmp[1]; year = tmp[2]; }
+                if (tmp2 === 'dd/mm/yyyy') { month = tmp[1]; day = tmp[0]; year = tmp[2]; }
+                if (tmp2 === 'd/m/yyyy')   { month = tmp[1]; day = tmp[0]; year = tmp[2]; }
+                if (tmp2 === 'yyyy/dd/mm') { month = tmp[2]; day = tmp[1]; year = tmp[0]; }
+                if (tmp2 === 'yyyy/d/m')   { month = tmp[2]; day = tmp[1]; year = tmp[0]; }
+                if (tmp2 === 'yyyy/mm/dd') { month = tmp[1]; day = tmp[2]; year = tmp[0]; }
+                if (tmp2 === 'yyyy/m/d')   { month = tmp[1]; day = tmp[2]; year = tmp[0]; }
+                if (tmp2 === 'mm/dd/yy')   { month = tmp[0]; day = tmp[1]; year = tmp[2]; }
+                if (tmp2 === 'm/d/yy')     { month = tmp[0]; day = tmp[1]; year = parseInt(tmp[2]) + 1900; }
+                if (tmp2 === 'dd/mm/yy')   { month = tmp[1]; day = tmp[0]; year = parseInt(tmp[2]) + 1900; }
+                if (tmp2 === 'd/m/yy')     { month = tmp[1]; day = tmp[0]; year = parseInt(tmp[2]) + 1900; }
+                if (tmp2 === 'yy/dd/mm')   { month = tmp[2]; day = tmp[1]; year = parseInt(tmp[0]) + 1900; }
+                if (tmp2 === 'yy/d/m')     { month = tmp[2]; day = tmp[1]; year = parseInt(tmp[0]) + 1900; }
+                if (tmp2 === 'yy/mm/dd')   { month = tmp[1]; day = tmp[2]; year = parseInt(tmp[0]) + 1900; }
+                if (tmp2 === 'yy/m/d')     { month = tmp[1]; day = tmp[2]; year = parseInt(tmp[0]) + 1900; }
+            } catch (error) {
+                
+            }
+        }
+        if (!isInt(year)) return false;
+        if (!isInt(month)) return false;
+        if (!isInt(day)) return false;
+        year  = +year;
+        month = +month;
+        day   = +day;
+        dt    = new Date(year, month - 1, day);
+        dt.setFullYear(year);
+        // do checks
+        if (month == null) return false;
+        if (String(dt) === 'Invalid Date') return false;
         if ((dt.getMonth() + 1 !== month) || (dt.getDate() !== day) || (dt.getFullYear() !== year)) return false;
         if (retDate === true) return dt; else return true;
     }
@@ -3494,6 +3562,14 @@ w2utils.keyboard = (function (obj) {
                         '    type="text" style="font-family: inherit; font-size: inherit; outline: none; '+ addStyle + edit.style +'" field="'+ col.field +'" recid="'+ recid +'" '+
                         '    column="'+ column +'" '+ edit.inTag +
                         '>' + edit.outTag);
+                
+                // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ modify by sjx 2021-09-15 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+                // 对date类型做了特殊处理，保证在修改时临时显示的date是想要的格式
+                if (edit.type == 'date') {
+                    val = w2utils.formatDate(w2utils.isDate(val, edit.format, true) || new Date(), edit.format);
+                }
+                // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ modify by sjx 2021-09-15 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
                 if (value == null) el.find('input').val(val != 'object' ? val : '');
                 // init w2field
                 var input = el.find('input').get(0);
@@ -3642,6 +3718,12 @@ w2utils.keyboard = (function (obj) {
                 if (tmp.type == 'list' && new_val != '') new_val = $(el).data('selected');
             }
             if (el.type == 'checkbox') new_val = el.checked;
+            
+            // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ modify by sjx 2021-09-15 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+            // 对date类型做了特殊处理，保证产生的new_val是Date类型
+            if (w2utils.isDate(new_val, w2utils.settings.date_format, false)) new_val = new Date(new_val);
+            // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ modify by sjx 2021-09-15 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
             // change/restore event
             var eventData = {
                 phase: 'before', type: 'change', target: this.name, input_id: el.id, recid: rec.recid, index: index, column: column,
@@ -3650,11 +3732,15 @@ w2utils.keyboard = (function (obj) {
             while (true) {
                 new_val = eventData.value_new;
                 if ((typeof new_val != 'object' && String(old_val) != String(new_val)) || 
+                    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ modify by sjx 20210914 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+                    // 这里我理解是判断新值和旧值不相等才记入rec.changes，我加入对Date类型数据的特殊判断
+                    (new_val instanceof Date && old_val instanceof Date && new_val.getTime() !== old_val.getTime()) ||
+                    // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ modify by sjx 20210914 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
                     (typeof new_val == 'object' && (typeof old_val != 'object' || new_val.id != old_val.id))) {
                     // change event
                     eventData = this.trigger($.extend(eventData, { type: 'change', phase: 'before' }));
                     if (eventData.isCancelled !== true) {
-                        if (new_val !== eventData.value_new) {
+                        if ((new_val !== eventData.value_new)){
                             // re-evaluate the type of change to be made
                             continue;
                         }

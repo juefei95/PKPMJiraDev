@@ -2,10 +2,12 @@
  * gridView的ViewModel
  */
 
-import { ViewModel } from "./../common/viewModel.js"
-import { Model } from "./modelManager.js";
-import { Issue } from "./../model/issue.js";
-
+import { ViewModel }            from "./../common/viewModel.js"
+import { Model }                from "./modelManager.js";
+import { Issue }                from "./../model/issue.js";
+import { JiraIssueWriter }      from './../model/jiraIssueWriter.js'
+import { getIssueReadScheme }   from './../model/issueReadScheme.js'
+import { showToastMessage }     from './../common/toolToastMessage.js'
 
 export class GridViewModel extends ViewModel {
     
@@ -16,7 +18,6 @@ export class GridViewModel extends ViewModel {
         super("GridViewModel");
         this.model = model;
         this.viewConfig = viewConfig;
-
         this.regModelEvent(this.model, "SelectedOptions", ()=>{this.trigVMChangeEvent("SelectedOptions")})
         this.regModelEvent(this.model, "IssueReget", ()=>{this.trigVMChangeEvent("IssueReget")})
         this.regModelEvent(this.viewConfig, "FieldsVisibility", ()=>{this.trigVMChangeEvent("FieldsVisibility")})
@@ -106,4 +107,39 @@ export class GridViewModel extends ViewModel {
     saveColumnSetting(columnSetting){
         this.viewConfig.saveColumnSetting(columnSetting);
     }
+
+    // 设置某个Issue的某个field为新值
+    /**
+     * 
+     * @param {string} issueKey issue的key
+     * @param {int} columnIndex 该field在grid的column中的index
+     * @param {*} newVal 该field的新值
+     * @return bool 是否发送任务去修改该Issue的该Field，但并不保证修改成功
+     */
+    setIssueFieldValue(issueKey, projName, issueType, field, newVal){
+        let scheme = getIssueReadScheme(projName, issueType);
+        let fieldInJira = scheme.getFieldNameInJira(field);
+        let issue = this.model.getIssue(issueKey);
+        if (!fieldInJira) {
+            showToastMessage("无法获取该列对应的Jira字段，导致无法设置值");
+            return false;
+        }
+        if (!issue){
+            showToastMessage("没有找到该Issue，导致无法设置值");
+            return false;
+        }
+        new JiraIssueWriter().setIssueDateField(issueKey, fieldInJira, newVal
+            , ()=>{
+                showToastMessage("修改成功");
+                issue.setDateField(field, newVal);  // 修改成功则同步修改Model里的数据，就不再重新获取了
+                this.trigVMChangeEvent("MergeGridChange");}
+            , ()=>{
+                showToastMessage("修改失败，已回退");
+                this.trigVMChangeEvent("ClearGridChange");}
+        );
+        return true;
+    }
+
+
+
 }
