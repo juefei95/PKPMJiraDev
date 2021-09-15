@@ -84,7 +84,7 @@ export class BtnPanel extends View{
                 <button class="w2ui-btn" onclick="w2popup['save'] = true;w2popup.close();">Save</button>
                 `,
             width: 500,
-            height: 300,
+            height: 450,
             overflow: 'hidden',
             color: '#333',
             speed: '0.3',
