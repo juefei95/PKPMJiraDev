@@ -892,15 +892,17 @@ export class ViewConfig extends AbstractModel{
         }
         // 保存一下设置
         let columnSetting = this.loadColumnSetting();
-        for (const [k,v] of Object.entries(columnSetting)){
-            // 显式的设置了field的visible为true，则记下来；设置为false或者没设置的，都视为false
-            if (k in fieldsVisibility && fieldsVisibility[k] && "visible" in fieldsVisibility[k] & fieldsVisibility[k]["visible"]) {
-                columnSetting[k]["visible"] = true;
-            }else{
-                columnSetting[k]["visible"] = false;
+        if (columnSetting){
+            for (const [k,v] of Object.entries(columnSetting)){
+                // 显式的设置了field的visible为true，则记下来；设置为false或者没设置的，都视为false
+                if (k in fieldsVisibility && fieldsVisibility[k] && "visible" in fieldsVisibility[k] & fieldsVisibility[k]["visible"]) {
+                    columnSetting[k]["visible"] = true;
+                }else{
+                    columnSetting[k]["visible"] = false;
+                }
             }
+            this.saveColumnSetting(columnSetting);
         }
-        this.saveColumnSetting(columnSetting);
         // 发送消息，选中项变了
         this.trigModelChangeEvent("FieldsVisibility");
     }
