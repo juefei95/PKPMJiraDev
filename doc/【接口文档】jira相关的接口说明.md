@@ -12,7 +12,7 @@ https://developer.atlassian.com/server/jira/platform/jira-rest-api-example-edit-
 
 # 如何知道某个Issue支持哪些field
 
-- 【GET】 https://jira.pkpm.cn/rest/api/2/issue/JGVIRUS-9535/editmeta
+- 【GET】 https://jira.pkpm.cn/rest/api/2/issue/YHT-179/editmeta
 - 返回的是个json
 
 # 如何获得某个JQL的结果数目

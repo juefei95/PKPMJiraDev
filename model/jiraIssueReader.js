@@ -217,6 +217,11 @@ export class JiraIssueReader{
                 'f' : i => 'customfield_11304' in i.fields && i.fields.customfield_11304 !== null   ? new Date(i.fields.customfield_11304)          : Issue.invalidDate,
                 'jqlName' : '实际测试开始',
             },
+            // PC流程的产品实际提交时间
+            'customfield_11602' : {
+                'f' : i => 'customfield_11602' in i.fields && i.fields.customfield_11602 !== null   ? new Date(i.fields.customfield_11602)          : Issue.invalidDate,
+                'jqlName' : '产品实际提交时间',
+            },
         },
         'changelog' : i => {
             let cl = [];

@@ -17,9 +17,12 @@ export class JiraIssueWriter{
 
         fetch('https://jira.pkpm.cn/rest/api/2/issue/'+issueKey+'/', {
             method: 'PUT', // *GET, POST, PUT, DELETE, etc.
-            body: JSON.stringify({ "fields": {
-                [field]: dateStr},
-            }), // must match 'Content-Type' header
+            body: JSON.stringify(
+            {
+                "update" : {
+                    [field] : [{"set" : dateStr}]
+                }
+            }),
             headers: {
                 'user-agent': 'Mozilla/4.0 MDN Example',
                 'content-type': 'application/json'

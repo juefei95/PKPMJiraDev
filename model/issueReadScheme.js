@@ -30,7 +30,7 @@ export function getIssueReadScheme(projName, issueType){
         }else if (issueType === "故障") {
             return PCIssueReadBugScheme;
         }
-    }else if (projName === "YHT") {
+    }else if (["YHT","BIMBASEJM"].includes(projName)) {
         if (issueType === "故事") {
             return PCIssueReadStoryScheme;
         }
@@ -40,7 +40,7 @@ export function getIssueReadScheme(projName, issueType){
         }else if (issueType === "故障") {
             return MEPIssueReadBugScheme;
         }
-    }else if (projName === "PBIMSDETAI") {
+    }else if (["PBIMSDETAI"].includes(projName)) {
         if (issueType === "故事") {
             return PBIMsDetailIssueReadStoryScheme;
         }else if (issueType === "故障") {
@@ -147,6 +147,8 @@ class PCIssueReadScheme extends IssueReadScheme{
         this.fixedChangeset                = ["fields", "customfield_10703"];
         this.testComment                   = ["fields", "customfield_11443"];
 
+        this.docPlanCommitDate              = ["fields", "customfield_11415"];           // 产品设计计划提交的日期
+        this.docActualCommitDate            = ["fields", "customfield_11602"];           // 产品设计实际提交的日期
         this.docPlanReviewDate              = ["fields", "customfield_11307"];           // 产品设计计划评审通过的日期    
         this.docActualReviewDate            = ["fields", "customfield_11306"];           // 产品设计实际评审通过的日期
         this.testCasePlanCommitDate         = ["fields", "customfield_11310"];           // 测试用例计划评审通过日期
