@@ -11,10 +11,10 @@ export async function main(){
             alert("您是不是没有登录到Jira，请尝试重新登录。")
             return;
         }else{
-            if (!window.isDebug) {
-                let msg = username + "于" + new Date(new Date().getTime()+ 8 * 3600 * 1000).toISOString().substring(0, 16) + "使用了" + window.mode + "，JQL为" + window.jql;
-                jira.addComment("JGCSXM-23", msg);
-            }
+            //if (!window.isDebug) {
+            //    let msg = username + "于" + new Date(new Date().getTime()+ 8 * 3600 * 1000).toISOString().substring(0, 16) + "使用了" + window.mode + "，JQL为" + window.jql;
+            //    jira.addComment("JGCSXM-23", msg);
+            //}
         }
     } catch (error) {
         alert("您是不是没有登录到Jira，请尝试重新登录。")
