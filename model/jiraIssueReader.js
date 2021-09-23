@@ -57,7 +57,7 @@ export class JiraIssueReader{
                 'f' : i => 'customfield_10537' in i.fields && i.fields.customfield_10537 !== null   ? i.fields.customfield_10537.displayName        : Issue.emptyText,
                 'jqlName' : '需求人员',
             },
-            // 结构、深化流程的developer
+            // 结构、深化、机电流程的developer
             'customfield_10538' : {
                 'f' : i => 'customfield_10538' in i.fields && i.fields.customfield_10538 !== null   ? i.fields.customfield_10538.displayName        : Issue.emptyText,
                 'jqlName' : '研发人员',
@@ -187,12 +187,12 @@ export class JiraIssueReader{
                 'f' : i => 'customfield_11313' in i.fields && i.fields.customfield_11313 !== null   ? new Date(i.fields.customfield_11313)          : Issue.invalidDate,
                 'jqlName' : '实际用例评审',
             },
-            // 深化流程的产品设计实际评审时间
+            // MEP、深化流程的产品设计实际评审时间
             'customfield_11301' : {
                 'f' : i => 'customfield_11301' in i.fields && i.fields.customfield_11301 !== null   ? new Date(i.fields.customfield_11301)          : Issue.invalidDate,
                 'jqlName' : '实际评审时间',
             },
-            // 深化流程的计划提测时间
+            // MEP、深化流程的计划提测时间
             'customfield_11309' : {
                 'f' : i => 'customfield_11309' in i.fields && i.fields.customfield_11309 !== null   ? new Date(i.fields.customfield_11309)          : Issue.invalidDate,
                 'jqlName' : '计划提测',

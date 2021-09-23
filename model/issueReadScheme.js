@@ -176,14 +176,25 @@ class MEPIssueReadScheme extends IssueReadScheme{
             this.tester                    = ["fields", "customfield_10539"];
         }else if(issueType === "故障"){
             this.tester                    = ["fields", "reporter"];
-        }      
-        this.programPlanCommitDate         = ["fields", "customfield_11308"];
-        this.designerActualCommitTestDate  = ["fields", "customfield_11409"];
-        this.testPlanEndDate               = ["fields", "customfield_11312"];
+        }
         this.bugPriority                   = ["fields", "priority"];
         this.bugPhase                      = ["fields", "customfield_10408"];
         this.epicId                        = ["fields", "customfield_10102"];
         this.fixedChangeset                = ["fields", "customfield_10703"];
+        
+        this.docPlanCommitDate              = ["fields", "customfield_11415"];           // 产品设计计划提交的日期
+        this.docPlanReviewDate              = ["fields", "customfield_11307"];           // 产品设计计划评审通过的日期    
+        this.docActualReviewDate            = ["fields", "customfield_11301"];           // 产品设计实际评审通过的日期
+        this.programPlanCommitDate          = ["fields", "customfield_11308"];           // 研发计划提交产品验证日期
+        this.programActualCommitDate        = ["fields", "customfield_11302"];           // 研发实际提交产品验证日期
+        this.designerPlanCommitTestDate     = ["fields", "customfield_11309"];           // 产品验证通过，计划提测日期
+        this.designerActualCommitTestDate   = ["fields", "customfield_11409"];           // 产品验证通过，实际提测日期
+        this.testCasePlanCommitDate         = ["fields", "customfield_11310"];           // 测试用例计划评审通过日期
+        this.testCaseActualCommitDate       = ["fields", "customfield_11313"];           // 测试用例实际评审通过日期
+        this.testPlanStartDate              = ["fields", "customfield_11311"];           // 测试计划开始日期
+        this.testActualStartDate            = ["fields", "customfield_11304"];           // 测试实际开始日期
+        this.testPlanEndDate                = ["fields", "customfield_11312"];           // 测试计划结束日期
+        this.testActualEndDate              = ["fields", "customfield_11305"];           // 测试实际结束日期
     
     }
 }
