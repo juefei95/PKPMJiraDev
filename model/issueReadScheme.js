@@ -171,7 +171,7 @@ class MEPIssueReadScheme extends IssueReadScheme{
 
         this.MEPCategory                   = ["fields", "customfield_10701"];
         this.designer                      = ["fields", "reporter"];
-        this.developer                     = ["fields", "assignee"];
+        this.developer                     = ["fields", "customfield_10538"];
         if (issueType === "故事") {      
             this.tester                    = ["fields", "customfield_10539"];
         }else if(issueType === "故障"){
