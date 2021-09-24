@@ -106,7 +106,7 @@ class JGIssueReadScheme extends IssueReadScheme{
         }
         this.confluenceLink          = ["fields", "customfield_10713"];
         this.docPlanReviewDate       = ["fields", "customfield_11415"];
-        this.programPlanCommitDate   = ["fields", "customfield_11434"];
+        this.programPlanCommitDate   = ["fields", "customfield_11308"];
         this.resolvePerson           = ["fields", "customfield_10716"];
         this.bugPriority             = ["fields", "customfield_10510"];
     }
