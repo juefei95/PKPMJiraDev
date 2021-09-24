@@ -106,7 +106,7 @@ class JGIssueReadScheme extends IssueReadScheme{
         }
         this.confluenceLink          = ["fields", "customfield_10713"];
         this.docPlanReviewDate       = ["fields", "customfield_11415"];
-        this.programPlanCommitDate   = ["fields", "customfield_11408"];
+        this.programPlanCommitDate   = ["fields", "customfield_11434"];
         this.resolvePerson           = ["fields", "customfield_10716"];
         this.bugPriority             = ["fields", "customfield_10510"];
     }
@@ -184,10 +184,10 @@ class MEPIssueReadScheme extends IssueReadScheme{
         
         this.docPlanCommitDate              = ["fields", "customfield_11415"];           // 产品设计计划提交的日期
         this.docPlanReviewDate              = ["fields", "customfield_11307"];           // 产品设计计划评审通过的日期    
-        this.docActualReviewDate            = ["fields", "customfield_11301"];           // 产品设计实际评审通过的日期
+        this.docActualReviewDate            = ["fields", "customfield_11306"];           // 产品设计实际评审通过的日期
         this.programPlanCommitDate          = ["fields", "customfield_11308"];           // 研发计划提交产品验证日期
         this.programActualCommitDate        = ["fields", "customfield_11302"];           // 研发实际提交产品验证日期
-        this.designerPlanCommitTestDate     = ["fields", "customfield_11309"];           // 产品验证通过，计划提测日期
+        this.designerPlanCommitTestDate     = ["fields", "customfield_11434"];           // 产品验证通过，计划提测日期
         this.designerActualCommitTestDate   = ["fields", "customfield_11409"];           // 产品验证通过，实际提测日期
         this.testCasePlanCommitDate         = ["fields", "customfield_11310"];           // 测试用例计划评审通过日期
         this.testCaseActualCommitDate       = ["fields", "customfield_11313"];           // 测试用例实际评审通过日期
@@ -213,8 +213,8 @@ class PBIMsDetailIssueReadScheme extends IssueReadScheme{
         }
         this.docPlanCommitDate             = ["fields", "customfield_11415"];
         this.docPlanReviewDate             = ["fields", "customfield_11307"];
-        this.docActualReviewDate           = ["fields", "customfield_11301"];
-        this.designerPlanCommitTestDate    = ["fields", "customfield_11309"];   
+        this.docActualReviewDate           = ["fields", "customfield_11306"];
+        this.designerPlanCommitTestDate    = ["fields", "customfield_11434"];   
         this.programActualCommitDate       = ["fields", "customfield_11302"];
         this.testPlanStartDate             = ["fields", "customfield_11311"];
     }
