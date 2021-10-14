@@ -1,0 +1,1 @@
+console.log(AJS.params.spaceKey);
