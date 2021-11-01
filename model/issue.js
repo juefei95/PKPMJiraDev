@@ -24,10 +24,12 @@ export class Issue{
             "designer",
             "developer",
             "confluenceLink",
-            "docPlanCommitDate",                    // 产品设计计划提交的日期
-            "docActualCommitDate",                  // 产品设计实际提交的日期
+            "docDraftPlanCommitDate",               // 产品设计初稿计划提交的日期
+            "docDraftActualCommitDate",             // 产品设计初稿实际提交的日期
             "docPlanReviewDate",                    // 产品设计计划评审通过的日期
             "docActualReviewDate",                  // 产品设计实际评审通过的日期
+            "docPlanCommitDate",                    // 产品设计计划提交的日期
+            "docActualCommitDate",                  // 产品设计实际提交的日期
             "testCasePlanCommitDate",               // 测试用例计划评审通过日期
             "testCaseActualCommitDate",             // 测试用例实际评审通过日期
             "programPlanCommitDate",                // 研发计划提交产品验证日期
@@ -55,6 +57,8 @@ export class Issue{
     // 该字段是不是日期相关的
     static isDateField(field){
         return [
+            "docDraftPlanCommitDate",               // 产品设计初稿计划提交的日期
+            "docDraftActualCommitDate",             // 产品设计初稿实际提交的日期
             "docPlanCommitDate",                    // 产品设计计划提交的日期
             "docActualCommitDate",                  // 产品设计实际提交的日期
             "docPlanReviewDate",                    // 产品设计计划评审通过的日期

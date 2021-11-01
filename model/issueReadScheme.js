@@ -211,12 +211,20 @@ class PBIMsDetailIssueReadScheme extends IssueReadScheme{
         }else if(issueType === "故障"){
             this.tester                    = ["fields", "reporter"];
         }
+        this.docDraftPlanCommitDate        = ["fields", "customfield_11415"];
+        this.docDraftActualCommitDate      = ["fields", "customfield_11602"];
         this.docPlanCommitDate             = ["fields", "customfield_11415"];
         this.docPlanReviewDate             = ["fields", "customfield_11307"];
         this.docActualReviewDate           = ["fields", "customfield_11306"];
-        this.designerPlanCommitTestDate    = ["fields", "customfield_11434"];   
+        this.programPlanCommitDate         = ["fields", "customfield_11308"];
         this.programActualCommitDate       = ["fields", "customfield_11302"];
-        this.testPlanStartDate             = ["fields", "customfield_11311"];
+        this.designerPlanCommitTestDate    = ["fields", "customfield_11434"];           // 产品验证通过，计划提测日期
+        this.designerActualCommitTestDate  = ["fields", "customfield_11409"];           // 产品验证通过，实际提测日期
+        this.testCasePlanCommitDate        = ["fields", "customfield_11310"];           // 测试用例计划评审通过日期
+        this.testPlanStartDate              = ["fields", "customfield_11311"];           // 测试计划开始日期
+        this.testActualStartDate            = ["fields", "customfield_11304"];           // 测试实际开始日期
+        this.testPlanEndDate                = ["fields", "customfield_11312"];           // 测试计划结束日期
+        this.testActualEndDate              = ["fields", "customfield_11305"];           // 测试实际结束日期
     }
 }
 
