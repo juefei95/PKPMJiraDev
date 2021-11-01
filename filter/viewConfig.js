@@ -337,6 +337,44 @@ export class ViewConfig extends AbstractModel{
         this["confluenceLink"] = {
 
         };
+        this["docDraftPlanCommitDate"] = {   // 产品设计初稿计划提交的日期
+            "filter" : {
+                type : 'DateRange',
+                label : '产品初稿计划提交',
+                width : '80px',
+            },
+            "grid" : {
+                caption: '产品初稿计划提交',
+                sortable: true,
+                size: '100px',
+                render: function (record) {
+                    if (record.docDraftPlanCommitDate === GridViewModel.invalidDate) {
+                        return ViewConfig.renderEmptyField();
+                    } else {
+                        return '<div>' + date2String(record.docDraftPlanCommitDate) + '</div>';
+                    }
+                },
+            },
+        };
+        this["docDraftActualCommitDate"] = {   // 产品设计初稿实际提交的日期
+            "filter" : {
+                type : 'DateRange',
+                label : '产品初稿实际提交',
+                width : '80px',
+            },
+            "grid" : {
+                caption: '产品初稿实际提交',
+                sortable: true,
+                size: '100px',
+                render: function (record) {
+                    if (record.docDraftActualCommitDate === GridViewModel.invalidDate) {
+                        return ViewConfig.renderEmptyField();
+                    } else {
+                        return '<div>' + date2String(record.docDraftActualCommitDate) + '</div>';
+                    }
+                },
+            },
+        };
         this["docPlanCommitDate"] = {   // 产品设计计划提交的日期
             "filter" : {
                 type : 'DateRange',

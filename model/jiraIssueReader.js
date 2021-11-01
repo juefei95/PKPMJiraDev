@@ -72,7 +72,7 @@ export class JiraIssueReader{
                 'f' : i => 'customfield_10713' in i.fields && i.fields.customfield_10713 !== null   ? i.fields.customfield_10713                    : Issue.emptyText,
                 'jqlName' : 'Confluence链接 ',
             },
-            // 结构流程（深化流程）的产品设计计划提交时间
+            // 结构流程（深化流程）的产品设计初稿计划提交时间
             'customfield_11415' : {
                 'f' : i => 'customfield_11415' in i.fields && i.fields.customfield_11415 !== null   ? new Date(i.fields.customfield_11415)          : Issue.invalidDate,
                 'jqlName' : '产品计划提交时间',
