@@ -14,6 +14,10 @@ export class MultiLineView{
     updateView(){        
         // 绘制线
         $("#"+this.id).empty();
+        $("#"+this.id).css("width", "95vw");
+        $("#"+this.id).css("height", "85vh");
+        $("#"+this.id).css("display", "block");
+        $("#"+this.id).css("margin", "0 auto");
         let canvas = document.createElement("canvas");
         $("#"+this.id).append(canvas);
         new Chart(canvas, {
@@ -23,7 +27,8 @@ export class MultiLineView{
                 datasets: this.datasets,
               },
             options: {
-                responsive: true, 
+                responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     yAxes: [{
                         ticks: {

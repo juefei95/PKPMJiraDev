@@ -42,6 +42,24 @@ export class ToolBarView{
                                 ${v.name}:<input id="${k}" value=${this.values[k]} size="10" style="padding: 3px; border-radius: 2px; border: 1px solid silver"/>
                             </div>
                         `
+            } else if("type" in v && v.type === "dateRange"){
+                control =  `
+                            <div style="padding: 3px 10px;">
+                                ${v.name}:<input id="${k}Start" type="date" value="" size="10" style="padding: 3px; border-radius: 2px; border: 1px solid silver"/><input id="${k}End" type="date" value="" size="10" style="padding: 3px; border-radius: 2px; border: 1px solid silver"/>
+                            </div>
+                            `
+            } else if("type" in v && v.type === "radio"){
+                control =  `
+                            <div style="padding: 3px 10px;">
+                                ${v.name}:`;
+                v.value.forEach((item, index, arr) => {
+                    if (item == v.defaultValue) {
+                        control += `<input type="radio" name="${k}" value="${item}" id="${k}${index}" style="vertical-align: middle;margin-top:-2px" checked /><label for="${k}${index}" style="padding: 3px;">${item}</label>`
+                    }else{
+                        control += `<input type="radio" name="${k}" value="${item}" id="${k}${index}" style="vertical-align: middle;margin-top:-2px" /><label for="${k}${index}" style="padding: 3px;">${item}</label>`
+                    }
+                });
+                control += `</div>`;
             }
             items.push(
                 { 
@@ -90,6 +108,10 @@ export class ToolBarView{
                 }else{
                     values[k] = $("#"+k).val();
                 }
+            } else if("type" in v && v.type === "dateRange"){
+                values[k] = [$("#"+k+"Start").val(), $("#"+k+"End").val()];
+            } else if("type" in v && v.type === "radio"){
+                values[k] = v.parseFunc(k);
             }
         }
         return values;

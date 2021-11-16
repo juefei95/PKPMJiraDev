@@ -2,6 +2,7 @@
 这里管理的是跨项目的，通用的字段定义。这个定义和具体使用的是哪个字段无关
 */
 
+import { cloneDate }          from "../model/toolSet.js"
 
 export class Issue{
 
@@ -135,17 +136,21 @@ export class Issue{
     }
 
 
+    getDocPlanCommitDate(){
+        return cloneDate(this.issue.docPlanCommitDate);
+    }
+
     getDocPlanReviewDate(){
-        return this.issue.docPlanReviewDate;
+        return cloneDate(this.issue.docPlanReviewDate);
     }
 
     // 程序计划体验时间
     getProgramPlanCommitDate(){
-        return this.issue.programPlanCommitDate;
+        return cloneDate(this.issue.programPlanCommitDate);
     }
 
     getCreateDate(){
-        return this.issue.createDate;
+        return cloneDate(this.issue.createDate);
     }
 
     /**
@@ -160,7 +165,7 @@ export class Issue{
                 for (let index2 = 0; index2<items.length; index2++){
                     if (items[index2].field === "status" && items[index2].toString === status){
                         let date = this.issue.changelog[index].date;
-                        return date;
+                        return cloneDate(date);
                     }
                 }
             }
@@ -178,7 +183,7 @@ export class Issue{
                     if (items[index2].field === "status" && items[index2].toString === status){
                         let status = items[index2].toString;
                         let date = this.issue.changelog[index].date;
-                        return date;
+                        return cloneDate(date);
                     }
                 }
             }
@@ -217,7 +222,7 @@ export class Issue{
                 if (this.issue.changelog[i].items[j].field === "status" && ["Resolved","Blocked"].includes(this.issue.changelog[i].items[j].toString)) {
                     let name = this.issue.changelog[i].author;
                     let date = this.issue.changelog[i].date;
-                    return [name, date];
+                    return [name, cloneDate(date)];
                 }
             }
         }
@@ -247,7 +252,7 @@ export class Issue{
                         this.issue.changelog[i].items[j].toString === "Resolved"
                     ){
                         developer = this.issue.changelog[i].author;
-                        return [developer, tester, date];
+                        return [developer, tester, cloneDate(date)];
                     }
                 }
             }

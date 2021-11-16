@@ -72,6 +72,8 @@ export class GridControl{
         }
         w2ui[this.gridName].hideColumn(...hideCol);
         w2ui[this.gridName].showColumn(...showCol);
+        let columnSetting = this._getColumnSetting();
+        this.vm.saveColumnSetting(columnSetting);
     }
 
     resetRecords(){

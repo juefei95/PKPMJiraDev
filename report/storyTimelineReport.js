@@ -18,6 +18,7 @@ export class StoryTimelineReport extends AbstractReport{
     // 根据判断条件生成报告
     _updateContent(event){
         
+        let tbValues = this._getToolBarValues(event);
         let storyTimeline = [];
         let minCreateDate = new Date();
         for (const issue of this.model.getIssues()) {
@@ -35,36 +36,41 @@ export class StoryTimelineReport extends AbstractReport{
         }
         
         // 判断需要多少数组长度
-        let len = diffDays(new Date(), minCreateDate);
+        let timelineStartDate = tbValues["timelineDateRange"] instanceof Array && tbValues["timelineDateRange"].length == 2 && tbValues["timelineDateRange"][0] && tbValues["timelineDateRange"][0] !== ''
+                                ? new Date(tbValues["timelineDateRange"][0]) : minCreateDate;
+        let timelineEndDate   = tbValues["timelineDateRange"] instanceof Array && tbValues["timelineDateRange"].length == 2 && tbValues["timelineDateRange"][1] && tbValues["timelineDateRange"][1] !== ''
+                                ? new Date(tbValues["timelineDateRange"][1]) : new Date();
+        let len = diffDays(timelineEndDate, timelineStartDate);
         let totalLine = Array(len).fill(0);
         let designLine = Array(len).fill(0);
         let developLine = Array(len).fill(0);
         let testLine = Array(len).fill(0);
         storyTimeline.forEach(o => {
-            let i1 = diffDays(o.createDate, minCreateDate)-1;
+            let i1 = 0;
+            i1 = diffDays(o.createDate, timelineStartDate)-1;
             totalLine.forEach((v,i,a) => {
                 if (i>=i1) a[i] += 1;
             });
             if (o.designEndDate) {
-                i1 = diffDays(o.designEndDate, minCreateDate)-1;
+                i1 = diffDays(o.designEndDate, timelineStartDate)-1;
                 designLine.forEach((v,i,a) => {
                     if (i>=i1) a[i] += 1;
                 });
             }
             if (o.developEndDate) {
-                i1 = diffDays(o.developEndDate, minCreateDate)-1;
+                i1 = diffDays(o.developEndDate, timelineStartDate)-1;
                 developLine.forEach((v,i,a) => {
                     if (i>=i1) a[i] += 1;
                 });
             }
             if (o.testEndDate) {
-                i1 = diffDays(o.testEndDate, minCreateDate)-1;
+                i1 = diffDays(o.testEndDate, timelineStartDate)-1;
                 testLine.forEach((v,i,a) => {
                     if (i>=i1) a[i] += 1;
                 });
             }
         });
-        let dataRange = dateRange(minCreateDate, new Date());
+        let dataRange = dateRange(timelineStartDate, timelineEndDate);
         let datasets = [{
             label : '全部需求',
             data : totalLine,

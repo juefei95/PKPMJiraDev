@@ -1,4 +1,16 @@
 
+function parseRadio(radioName){
+    const rbs = document.querySelectorAll(`input[name="${radioName}"]`);
+    let selectedValue;
+    for (const rb of rbs) {
+        if (rb.checked) {
+            selectedValue = rb.value;
+            break;
+        }
+    }
+    return selectedValue;
+}
+
 let bugReportViewConfig = {
     "bugResolveDelay" : {
         "tab" : {
@@ -106,18 +118,25 @@ let storyReportViewConfig = {
             },
         },
     },
-    "docReviewDelay" : {
+    "docDelay" : {
         "tab" : {
-            "name" : "产品设计评审逾期",
+            "name" : "产品设计逾期",
         },
         "report" : {
-            "viewClass" : "DocReviewDelayReport",
+            "viewClass" : "DocDelayReport",
             "toolbar"     : {
                 "delayDays" : {
                     "type" : "input",
                     "name" : "逾期天数",
                     "defaultValue" : 1,
                     "parseFunc" : parseInt,
+                },
+                "delayType" : {
+                    "type" : "radio",
+                    "name" : "逾期类型",
+                    "value" : ["提交逾期", "评审逾期"],
+                    "defaultValue" : "评审逾期",
+                    "parseFunc" : parseRadio,
                 },
             },
         },
@@ -160,6 +179,12 @@ let storyReportViewConfig = {
         },
         "report" : {
             "viewClass" : "StoryTimelineReport",
+            "toolbar"     : {
+                "timelineDateRange" : {
+                    "type" : "dateRange",
+                    "name" : "起止时间",
+                },
+            },
         },
     },
     "dateDiff" : {

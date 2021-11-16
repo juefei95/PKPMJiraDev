@@ -402,3 +402,8 @@ export function randomRGB() {
     var o = Math.round, r = Math.random, s = 255;
     return 'rgb(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ')';
 }
+
+export function cloneDate(date1){
+    if(date1 == undefined) return undefined;
+    return new Date(date1.valueOf());
+}

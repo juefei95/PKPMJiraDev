@@ -40,7 +40,7 @@ export function getIssueReadScheme(projName, issueType){
         }else if (issueType === "故障") {
             return MEPIssueReadBugScheme;
         }
-    }else if (["PBIMSDETAI"].includes(projName)) {
+    }else if (["BIMSTRU","PBIMSDETAI","BIMBASEJM"].includes(projName)) {
         if (issueType === "故事") {
             return PBIMsDetailIssueReadStoryScheme;
         }else if (issueType === "故障") {
