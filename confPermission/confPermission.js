@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         Confluence权限设置
 // @namespace    http://shijianxin.net/
-// @version      0.1
+// @version      0.2
 // @description  try to take over the world!
 // @author       shijianxin
 // @match        https://confluence.pkpm.cn/pages/*
 // @icon         https://www.google.com/s2/favicons?domain=pkpm.cn
 // @grant        GM_registerMenuCommand
+// @run-at       document-start
 // ==/UserScript==
 
 (function() {
@@ -15,7 +16,7 @@
     class PermissionHandler{
 		constructor(){}
 		
-		async post(url, data) {
+		async _post(url, data) {
 			return new Promise((res, rej) => {
 				const xhr = new XMLHttpRequest();
 				xhr.onreadystatechange = () => {
@@ -32,20 +33,22 @@
 			})
 		}
 
-		get(url){
+		_get(url){
 			let xmlHttp = new XMLHttpRequest();
 			xmlHttp.open( "GET", url, false ); // false for synchronous request
 			xmlHttp.send( null );
 			return xmlHttp.responseText;
 		}
 
-		getCurrentPageId(){
+		// 获得当前页面的ID
+		_getCurrentPageId(){
 			let url = new URL(window.location.href);
 			let searchParams3 = new URLSearchParams(url.search);
 			return searchParams3.get("pageId");
 		}
 
-		async setViewEditPermission(pageId, userKeys){
+		// 设置页面的权限，把读取和编辑权限都给user打开
+		async _setViewEditPermission(pageId, userKeys){
 			let token = document.getElementById("atlassian-token").getAttribute("content");
 			if (pageId && token){
 				let data = "";
@@ -57,25 +60,53 @@
 				}
 				data += "contentId="+pageId+"&atl_token="+token;
 				let ret = false;
-				await this.post("https://confluence.pkpm.cn/pages/setcontentpermissions.action", data).then(res => ret=true);
+				await this._post("https://confluence.pkpm.cn/pages/setcontentpermissions.action", data).then(res => ret=true);
 				return ret;
 			}
 		}
 		
-		getPermission(pageId){
-			let spaceKey = document.getElementById("confluence-space-key").getAttribute("content");
+		// 获得页面的所有用户权限
+		_getPermission(pageId){
+			let spaceKey = this._getSpaceKey();
 			let token = document.getElementById("atlassian-token").getAttribute("content");
+			let usersPermission = {};
 			if (spaceKey && token){
 				let url = "https://confluence.pkpm.cn/pages/getcontentpermissions.action?contentId=" + pageId + "&spaceKey=" + spaceKey + "&atl_token=" + token;
-				let ret = this.get(url);
+				let ret = this._get(url);
 				let retObj = JSON.parse(ret);
-				return Object.keys(retObj.users);
+				for (const permission of retObj.permissions) {
+					let userIdOfPermission = permission[2];
+					let pageIdOfPermission = permission[3];
+					if (userIdOfPermission in usersPermission) {
+						if (pageIdOfPermission === pageId) {
+							usersPermission[userIdOfPermission]["isHeritage"] = false;
+						}
+					}else{
+						usersPermission[userIdOfPermission] = {
+							"fullName" : retObj.users[userIdOfPermission]["entity"]["fullName"],
+							"isHeritage" : true,
+						}
+						if (pageIdOfPermission === pageId) {
+							usersPermission[userIdOfPermission]["isHeritage"] = false;
+						}
+					}
+				}
+				return usersPermission;
 			}
 		}
 	
+		// 获得当前页面所述Space的Key名
+		_getSpaceKey(){
+			return document.querySelector('meta[name=confluence-space-key]').content;
+		}
+
+		getCurrentPageUserPermission(){
+			return this._getPermission(this._getCurrentPageId());
+		}
+		// 查询用户
 		getPossibleUser(usernameInput){
 			let url = "https://confluence.pkpm.cn/rest/prototype/1/search/user-or-group.json?max-results=6&query=" + usernameInput;
-			let ret = this.get(url);
+			let ret = this._get(url);
 			let retObj = JSON.parse(ret);
 			let possibleUsers = [];
 			for (let uu of retObj.result){
@@ -88,11 +119,17 @@
 			return possibleUsers;
 		}
 		
+		// 在页面已有权限的基础上，添加新的用户的读写权限
 		async addPagePermission(pageId, userKeys){
-			let alreadyUsers = this.getPermission(pageId);
+			let alreadyUsers = Object.keys(this._getPermission(pageId));
 			let unionUsers = [...new Set([...alreadyUsers, ...userKeys])];
-			let ret = await this.setViewEditPermission(pageId, unionUsers);
+			let ret = await this._setViewEditPermission(pageId, unionUsers);
 			return ret;
+		}
+
+		// 清空页面的所有权限限制
+		async purgePagePermission(pageId){
+			await this._setViewEditPermission(pageId, []);
 		}
 	}
 
@@ -258,8 +295,8 @@
 	class FindContentNode{
 		constructor(){}
 		
-		// 传进来一个选择的Dom元素，返回对应class是plugin_pagetree_children_span的span
-		getNodeSpan(domElem){
+		// 传进来一个选择的Dom元素，往上找，往下找，返回对应class是plugin_pagetree_children_span的span
+		_getNodeSpan(domElem){
 			let isWantedSpan = ele => ele && ele.tagName == 'SPAN' && ele.classList.contains('plugin_pagetree_children_span');
 			if (isWantedSpan(domElem)) return domElem;
 			if (isWantedSpan(domElem.parentNode)) return domElem.parentNode;
@@ -267,23 +304,25 @@
 			return undefined;
 		}
 		
-		getPageIdFromRegex(idStr){
+		// 传入字符串，返回匹配得到的PageID
+		_getPageIdFromRegex(idStr){
 			const regex = /childrenspan([0-9]+)/;
 			const found = idStr.match(regex);
 			if (found.length == 2) return found[1];
 			return undefined;
 		}
 		
-		getPageIdFromSpanNode(ele){
-			return this.getPageIdFromRegex(ele.id);
+		// 从Span节点的id获得Confluence页面的PageID
+		_getPageIdFromSpanNode(ele){
+			return this._getPageIdFromRegex(ele.id);
 		}
 		
-		getAllOneLevelChildrenNode(eleSpan){
+		_getAllOneLevelChildrenNode(eleSpan){
 			let childrenSpans = document.evaluate("./../../div[3]/ul//li/div[2]/span", eleSpan, null, XPathResult.ANY_TYPE, null)
 			let thisSpan = childrenSpans.iterateNext();
 			let retNodes = [];
 			while (thisSpan) {
-			  let id = this.getPageIdFromRegex(thisSpan.id);
+			  let id = this._getPageIdFromRegex(thisSpan.id);
 			  let text = thisSpan.children[0].textContent;
 			  retNodes.push({id : id, title : text});
 			  thisSpan = childrenSpans.iterateNext();
@@ -292,16 +331,16 @@
 		}
 		
 		getAllOneLevelChildrenNodeFromSelectDomElem(domElem){
-			let eleSpan = this.getNodeSpan(domElem);
+			let eleSpan = this._getNodeSpan(domElem);
 			if (eleSpan){
-				return this.getAllOneLevelChildrenNode(eleSpan);
+				return this._getAllOneLevelChildrenNode(eleSpan);
 			}
 		}
 		
 		getPageIdFromSelectDomElem(domElem){
-			let eleSpan = this.getNodeSpan(domElem);
+			let eleSpan = this._getNodeSpan(domElem);
 			if (eleSpan){
-				return this.getPageIdFromSpanNode(eleSpan);
+				return this._getPageIdFromSpanNode(eleSpan);
 			}
 		}
 	}
@@ -490,7 +529,7 @@
 </div>
 <div style="display: flex;flex-direction: column">
 	<button id="addSingleDocPermissionBtn" style="width:160px;margin-top:10px;margin-bottom:10px;">增加单个文档权限</button>
-	<button style="width:160px;">批量增加子节点权限</button>
+	<button id="batchAddDocPermissionBtn" style="width:160px;margin-top:10px;margin-bottom:10px;">批量增加子节点权限</button>
 	<textarea id="permissionLog" style="width:260px;"></textarea>
 </div>
 		`;
@@ -504,6 +543,8 @@
 		delUserFromSelectedBtn.addEventListener('click', delUser);
 		let addSingleDocPermissionBtn = document.getElementById("addSingleDocPermissionBtn");
 		addSingleDocPermissionBtn.addEventListener('click', addSingleDocPermission);
+		let batchAddDocPermissionBtn = document.getElementById("batchAddDocPermissionBtn");
+		batchAddDocPermissionBtn.addEventListener('click', batchAddChildrenDocPermission);
 		
 	}
 
@@ -550,7 +591,7 @@
 			
 			let pageId = new FindContentNode().getPageIdFromSelectDomElem(element);
 			let ret = new PermissionHandler().addPagePermission(pageId, optionValues);
-			ret ? setLog("权限已添加") : setLog("权限添加失败");
+			ret ? setLog(pageId + "权限已添加") : setLog(pageId + "权限添加失败");
 		}
 		let myDomOutline = DomOutline({ onClick: myExampleClickHandler });
 
@@ -580,7 +621,7 @@
 	
 	function addLog(log){
 		let logText = document.getElementById("permissionLog");
-		logText.value += log;
+		logText.value += log + "\r\n";
 	}
 	
 	function setLog(log){
@@ -588,6 +629,27 @@
 		logText.value = log;
 	}
 	
-    //GM_registerMenuCommand("setPermission", setPermission, "s");
+	// 在页面上显示用户权限
+	function showPageUserPermission(){
+		console.log("showPageUserPermission");
+		// 获取当前页面的用户权限
+		var permissionHandler = new PermissionHandler();
+		var usersPermission = permissionHandler.getCurrentPageUserPermission();
+		var anchorElem = document.getElementById("content-metadata-page-restrictions");
+		for (const [key, value] of Object.entries(usersPermission)) {
+			let userElem = document.createElement("span");
+			userElem.innerHTML = value.fullName;
+			userElem.style.fontSize = "15px";
+			userElem.style.marginLeft = "2px";
+			userElem.style.marginRight = "2px";
+			userElem.style.verticalAlign = "top";
+			if (value.isHeritage == false) userElem.style.fontWeight = "bold";
+			anchorElem.parentNode.insertBefore(userElem, anchorElem.nextSibling);
+		}
+	}
+
+	window.addEventListener("load", showPageUserPermission);
+
+    GM_registerMenuCommand("showPageUserPermission", showPageUserPermission, "s");
     GM_registerMenuCommand("showDialog", showDialog, "d");
 })();
