@@ -100,6 +100,22 @@
 			return document.querySelector('meta[name=confluence-space-key]').content;
 		}
 
+		// 获得子页面ID
+		_getSubPages(pageId){
+			let url = "https://confluence.pkpm.cn/plugins/pagetree/naturalchildren.action?hasRoot=true&pageId=" + pageId;
+			let retHtmlStr = this._get(url);
+			const parser = new DOMParser();
+			const document1 = parser.parseFromString(retHtmlStr , "text/html");
+			let childrenSpans = document1.getElementsByClassName("plugin_pagetree_children_span");
+			let subPageIds = [];
+			for (const span of childrenSpans) {
+				const regex = /childrenspan([0-9]+)/;
+				const found = span["id"].match(regex);
+				if (found.length == 2) subPageIds.push(found[1]);
+			}
+			return subPageIds;
+		}
+
 		getCurrentPageUserPermission(){
 			return this._getPermission(this._getCurrentPageId());
 		}
