@@ -36,6 +36,23 @@ export class MultiLineView{
                         }
                     }]
                 },
+                // other options
+                plugins: {
+                    datalabels: {
+                        anchor :'end',
+                        align :'top',
+                        formatter: function(value, context) {
+                            if (context.dataIndex === context.dataset.data.length - 1)
+                            {
+                                return value.y;
+                            }
+                            return "";
+                        },
+                        font: {
+                          weight: 'bold'
+                        }
+                    }
+                }
             }
         });
     }

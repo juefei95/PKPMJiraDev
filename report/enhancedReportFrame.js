@@ -82,7 +82,7 @@ export class EnhancedReportFrame{
             host + "w2ui-1.4.2.css",
             ////-------- chart.js，用于chart的绘制，目前必须用2.9版本的，因为chartlabel这个js还没适配V3以上的chart.js--
             host + "Chart.min.js",
-            //host + "chartjs-plugin-datalabels.min.js",
+            host + "chartjs-plugin-datalabels.min.js",
             host + "Chart.min.css",
             //// ------------------- 加载 Select2，用于筛选器 ------------------
             //host + "select2.min.js",
