@@ -9,9 +9,9 @@ export class ChartViewModel extends ViewModel {
         this.model = model;
         this.viewConfig = viewConfig;
 
-        this.regModelEvent(this.model, "SelectedIssues", ()=>{this.trigVMChangeEvent("SelectedIssues")})
-        this.regModelEvent(this.viewConfig, "FieldsVisibility", ()=>{this.trigVMChangeEvent("FieldsVisibility")})
-        this.regModelEvent(this.viewConfig, "ChartsVisibility", ()=>{this.trigVMChangeEvent("ChartsVisibility")})
+        this.regModelEvent(this.model, "SelectedIssues", ()=>{this.trigVMChangeEvent("Chart.SelectedIssues")})
+        this.regModelEvent(this.viewConfig, "FieldsVisibility", ()=>{this.trigVMChangeEvent("Chart.FieldsVisibility")})
+        this.regModelEvent(this.viewConfig, "ChartsVisibility", ()=>{this.trigVMChangeEvent("Chart.ChartsVisibility")})
     }
 
     /**

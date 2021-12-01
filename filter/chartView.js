@@ -13,9 +13,9 @@ export class ChartPanel extends View {
             
         };
         this.charts = {};
-        this.regVMEvent("SelectedIssues", this.updateView.bind(this));
-        this.regVMEvent("FieldsVisibility", this.updateView.bind(this));
-        this.regVMEvent("ChartsVisibility", this.updateView.bind(this));
+        this.regVMEvent("Chart.SelectedIssues", this.updateView.bind(this));
+        this.regVMEvent("Chart.FieldsVisibility", this.updateView.bind(this));
+        this.regVMEvent("Chart.ChartsVisibility", this.updateView.bind(this));
     }
 
     updateView(){

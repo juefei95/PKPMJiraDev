@@ -18,9 +18,9 @@ export class GridViewModel extends ViewModel {
         super("GridViewModel");
         this.model = model;
         this.viewConfig = viewConfig;
-        this.regModelEvent(this.model, "SelectedOptions", ()=>{this.trigVMChangeEvent("SelectedOptions")})
-        this.regModelEvent(this.model, "IssueReget", ()=>{this.trigVMChangeEvent("IssueReget")})
-        this.regModelEvent(this.viewConfig, "FieldsVisibility", ()=>{this.trigVMChangeEvent("FieldsVisibility")})
+        this.regModelEvent(this.model, "SelectedOptions", ()=>{this.trigVMChangeEvent("Grid.SelectedOptions")})
+        this.regModelEvent(this.model, "IssueReget", ()=>{this.trigVMChangeEvent("Grid.IssueReget")})
+        this.regModelEvent(this.viewConfig, "FieldsVisibility", ()=>{this.trigVMChangeEvent("Grid.FieldsVisibility")})
     }
 
     /**
@@ -132,10 +132,10 @@ export class GridViewModel extends ViewModel {
             , ()=>{
                 showToastMessage("修改成功");
                 issue.setDateField(field, newVal);  // 修改成功则同步修改Model里的数据，就不再重新获取了
-                this.trigVMChangeEvent("MergeGridChange");}
+                this.trigVMChangeEvent("Grid.MergeGridChange");}
             , ()=>{
                 showToastMessage("修改失败，已回退");
-                this.trigVMChangeEvent("ClearGridChange");}
+                this.trigVMChangeEvent("Grid.ClearGridChange");}
         );
         return true;
     }

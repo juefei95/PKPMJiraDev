@@ -67,11 +67,11 @@ export class EnhancedFilterFrame{
     }
 
     // 所有panel都根据model数据更新一遍
-    updateView(event){
-        this.gridPanel.updateView(event);
-        this.btnPanel.updateView(event);
-        this.filterPanel.updateView(event);
-        this.chartPanel.updateView(event);
+    updateView(init=false){
+        this.gridPanel.updateView(init);
+        this.btnPanel.updateView(init);
+        this.filterPanel.updateView(init);
+        this.chartPanel.updateView(init);
     }
 
     // 所有panel都根据model数据更新一下控件的可见性
@@ -142,7 +142,7 @@ export class EnhancedFilterFrame{
         this.chartPanel.configControls();
         this.btnPanel.configControls();
         this.gridPanel.configControls();
-        this.updateView();  
+        this.updateView(true);  
         this.updateFieldsVisibility();
     }
 

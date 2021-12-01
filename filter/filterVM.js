@@ -15,8 +15,8 @@ export class FilterViewModel extends ViewModel {
 
         this.filterSelectedOptions = {};
 
-        this.regModelEvent(this.model, "SelectedOptions", ()=>{this.trigVMChangeEvent("SelectedOptions")})
-        this.regModelEvent(this.viewConfig, "FieldsVisibility", ()=>{this.trigVMChangeEvent("FieldsVisibility")})
+        this.regModelEvent(this.model, "SelectedOptions", ()=>{this.trigVMChangeEvent("Filter.SelectedOptions")})
+        this.regModelEvent(this.viewConfig, "FieldsVisibility", ()=>{this.trigVMChangeEvent("Filter.FieldsVisibility")})
     }
 
     /**

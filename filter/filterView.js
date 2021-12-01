@@ -13,8 +13,8 @@ export class FilterPanel extends View{
         this.filters = [];
 
         // 注册VM的数据变动消息
-        this.regVMEvent("SelectedOptions", this.updateView.bind(this));
-        this.regVMEvent("FieldsVisibility", this.updateFieldsVisibility.bind(this));
+        this.regVMEvent("Filter.SelectedOptions", this.updateView.bind(this));
+        this.regVMEvent("Filter.FieldsVisibility", this.updateFieldsVisibility.bind(this));
 
     }
     
@@ -113,9 +113,9 @@ export class FilterPanel extends View{
     }
 
     
-    updateView(){
+    updateView(init){
         this.filters.forEach(f => {
-            f.updateView();
+            f.updateView(init);
         });
     }
 

@@ -34,10 +34,14 @@ class OptionFilterControl extends AbstractFilterControl {
         this.placeholder = placeholder;
     }
 
-    updateView() {
+    updateView(init = false) {
         let options = this.vm.getFilterOptions(this.key);
         let selected = this.vm.getFilterSelectedOptions(this.key);
-        this._show(options, selected, this.id, this.placeholder, this.key);
+        if (init === true) {
+            this._init(options, selected, this.id, this.placeholder, this.key);
+        }else{
+            this._show(this.id, selected);
+        }
     }
 
     /**
@@ -51,7 +55,7 @@ class OptionFilterControl extends AbstractFilterControl {
      * @param {string} filterType    当前筛选器类型
      * @return None
      */
-    _show(options, selected, filterId, placeholder, filterType) {
+    _init(options, selected, filterId, placeholder, filterType) {
 
         var data = [];
         var selectedOption = [];
@@ -121,6 +125,9 @@ class OptionFilterControl extends AbstractFilterControl {
 
     }
 
+    _show(filterId, selectedOption){
+        $('#' + filterId).val(selectedOption)
+    }
 
     // 获得Select的所有选择的Option
     _getSelectedOptions(sel) {
@@ -149,13 +156,17 @@ class FreeTextFilterControl extends AbstractFilterControl {
         this.cbUpdateFilter = cbUpdateFilter;
     }
 
-    updateView() {
+    updateView(init = false) {
         let selected = this.vm.getFilterSelectedOptions(this.key);
-        this._show(selected, this.id, this.placeholder, this.key);
+        if (init === true) {
+            this._init(selected, this.id, this.placeholder, this.key);
+        }else{
+            this._show(this.id, selected);
+        }
     }
 
 
-    _show(selected, filterId, placeholder, filterType) {
+    _init(selected, filterId, placeholder, filterType) {
 
         // 根据筛选器的值设置input的值
         //if (selected == ""){
@@ -188,6 +199,9 @@ class FreeTextFilterControl extends AbstractFilterControl {
         });
     }
 
+    _show(filterId, selectedOption){
+        $('#' + filterId).val(selectedOption)
+    }
 }
 
 
@@ -200,13 +214,17 @@ class DateRangeFilterControl extends AbstractFilterControl {
         this.cbUpdateFilter = cbUpdateFilter;
     }
 
-    updateView() {
+    updateView(init = false) {
         let selected = this.vm.getFilterSelectedOptions(this.key);
-        this._show(selected, this.id, this.key);
+        if (init === true) {
+            this._init(selected, this.id, this.key);
+        }else{
+            this._show(this.id, selected);
+        }
     }
 
     // 显示Date Range Filter
-    _show(selected, filterId, filterType) {
+    _init(selected, filterId, filterType) {
 
         // 根据当前筛选器的值，决定初始化input的值
         $("#" + filterId + "1").val(selected[0]);
@@ -227,4 +245,9 @@ class DateRangeFilterControl extends AbstractFilterControl {
         });
     }
 
+    _show(filterId, selected){
+        // 根据当前筛选器的值，决定初始化input的值
+        $("#" + filterId + "1").val(selected[0]);
+        $("#" + filterId + "2").val(selected[1]);
+    }
 }
