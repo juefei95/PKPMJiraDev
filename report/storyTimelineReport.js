@@ -12,6 +12,14 @@ import { Issue }                        from "../model/issue.js";
 export class StoryTimelineReport extends AbstractReport{
     constructor(reportName, id, config, model){
         super(reportName, id, config, model);
+
+        this.totalLine = [];
+        this.designLine = [];
+        this.developLine = [];
+        this.testLine = [];
+        this.timelineStartDate = new Date();
+        this.timelineEndDate = new Date();
+        window.addEventListener("onButtonClickStoryTimelineReportsaveData", ()=>{this._saveDataToCSV();});
     }
 
     
@@ -36,63 +44,83 @@ export class StoryTimelineReport extends AbstractReport{
         }
         
         // 判断需要多少数组长度
-        let timelineStartDate = tbValues["timelineDateRange"] instanceof Array && tbValues["timelineDateRange"].length == 2 && tbValues["timelineDateRange"][0] && tbValues["timelineDateRange"][0] !== ''
+        this.timelineStartDate = tbValues["timelineDateRange"] instanceof Array && tbValues["timelineDateRange"].length == 2 && tbValues["timelineDateRange"][0] && tbValues["timelineDateRange"][0] !== ''
                                 ? new Date(tbValues["timelineDateRange"][0]) : minCreateDate;
-        let timelineEndDate   = tbValues["timelineDateRange"] instanceof Array && tbValues["timelineDateRange"].length == 2 && tbValues["timelineDateRange"][1] && tbValues["timelineDateRange"][1] !== ''
+        this.timelineEndDate   = tbValues["timelineDateRange"] instanceof Array && tbValues["timelineDateRange"].length == 2 && tbValues["timelineDateRange"][1] && tbValues["timelineDateRange"][1] !== ''
                                 ? new Date(tbValues["timelineDateRange"][1]) : new Date();
-        let len = diffDays(timelineEndDate, timelineStartDate);
-        let totalLine = Array(len).fill(0);
-        let designLine = Array(len).fill(0);
-        let developLine = Array(len).fill(0);
-        let testLine = Array(len).fill(0);
+        let len = diffDays(this.timelineEndDate, this.timelineStartDate);
+        this.totalLine = Array(len).fill(0);
+        this.designLine = Array(len).fill(0);
+        this.developLine = Array(len).fill(0);
+        this.testLine = Array(len).fill(0);
         storyTimeline.forEach(o => {
             let i1 = 0;
-            i1 = diffDays(o.createDate, timelineStartDate)-1;
-            totalLine.forEach((v,i,a) => {
+            i1 = diffDays(o.createDate, this.timelineStartDate)-1;
+            this.totalLine.forEach((v,i,a) => {
                 if (i>=i1) a[i] += 1;
             });
             if (o.designEndDate) {
-                i1 = diffDays(o.designEndDate, timelineStartDate)-1;
-                designLine.forEach((v,i,a) => {
+                i1 = diffDays(o.designEndDate, this.timelineStartDate)-1;
+                this.designLine.forEach((v,i,a) => {
                     if (i>=i1) a[i] += 1;
                 });
             }
             if (o.developEndDate) {
-                i1 = diffDays(o.developEndDate, timelineStartDate)-1;
-                developLine.forEach((v,i,a) => {
+                i1 = diffDays(o.developEndDate, this.timelineStartDate)-1;
+                this.developLine.forEach((v,i,a) => {
                     if (i>=i1) a[i] += 1;
                 });
             }
             if (o.testEndDate) {
-                i1 = diffDays(o.testEndDate, timelineStartDate)-1;
-                testLine.forEach((v,i,a) => {
+                i1 = diffDays(o.testEndDate, this.timelineStartDate)-1;
+                this.testLine.forEach((v,i,a) => {
                     if (i>=i1) a[i] += 1;
                 });
             }
         });
-        let dataRange = dateRange(timelineStartDate, timelineEndDate);
+        let dataRange = dateRange(this.timelineStartDate, this.timelineEndDate);
         let datasets = [{
             label : '全部需求',
-            data : totalLine,
+            data : this.totalLine.map((x) => x),    // clone not shallow copy
             fill : false,
             borderColor : 'blue',
         },{
             label : '产品进展',
-            data : designLine,
+            data : this.designLine.map((x) => x),    // clone not shallow copy
             fill : false,
             borderColor : 'yellow',
         },{
             label : '研发进展',
-            data : developLine,
+            data : this.developLine.map((x) => x),    // clone not shallow copy
             fill : false,
             borderColor : 'red',
         },{
             label : '测试进展',
-            data : testLine,
+            data : this.testLine.map((x) => x),    // clone not shallow copy
             fill : false,
             borderColor : 'green',
         }];
         this.content = new MultiLineView(this.ids.content, dataRange, datasets);
         this.content.updateView();
+    }
+
+    // 存储数据到CSV文件
+    _saveDataToCSV(){
+
+        let csv = "Date,Totle,Design,Develop,Test\n";
+        for (let i = 0; i < this.totalLine.length; i++) {
+            
+            csv += new Date(this.timelineStartDate.getTime() + 86400000*i).toLocaleDateString(); // + 1 day in ms
+            csv += ",";
+            csv += this.totalLine[i];
+            csv += ",";
+            csv += this.designLine[i];
+            csv += ",";
+            csv += this.developLine[i];
+            csv += ",";
+            csv += this.testLine[i];
+            csv += "\n";
+        }
+        window.open('data:text/csv;charset=utf-8,' + escape(csv));
     }
 }
