@@ -40,7 +40,7 @@ class OptionFilterControl extends AbstractFilterControl {
         if (init === true) {
             this._init(options, selected, this.id, this.placeholder, this.key);
         }else{
-            this._show(this.id, selected);
+            this._show(this.id, options, selected);
         }
     }
 
@@ -125,7 +125,11 @@ class OptionFilterControl extends AbstractFilterControl {
 
     }
 
-    _show(filterId, selectedOption){
+    _show(filterId, options, selected){
+        var selectedOption = [];
+        for (const [i, v] of Array.from(options).entries()) {
+            if (selected.has(v)) selectedOption.push(i + 1);
+        }
         $('#' + filterId).val(selectedOption)
     }
 
@@ -200,7 +204,7 @@ class FreeTextFilterControl extends AbstractFilterControl {
     }
 
     _show(filterId, selectedOption){
-        $('#' + filterId).val(selectedOption)
+        $('#' + filterId).val([selectedOption])
     }
 }
 
