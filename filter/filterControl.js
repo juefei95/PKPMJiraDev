@@ -111,10 +111,10 @@ class OptionFilterControl extends AbstractFilterControl {
                 return null;
             },
         });
-        $('#' + filterId).val(selectedOption).trigger('change');
+        $('#' + filterId).val(selectedOption).trigger('change.select2');
 
         // 添加消息响应
-        $('#' + filterId).on('change.select2', e => {
+        $('#' + filterId).on('change', e => {
             var optionSelected = this._getSelectedOptions(e.target);
             var optionTexts = [];
             for (const o of optionSelected) {
@@ -130,7 +130,7 @@ class OptionFilterControl extends AbstractFilterControl {
         for (const [i, v] of Array.from(options).entries()) {
             if (selected.has(v)) selectedOption.push(i + 1);
         }
-        $('#' + filterId).val(selectedOption)
+        $('#' + filterId).val(selectedOption).trigger('change.select2');
     }
 
     // 获得Select的所有选择的Option
@@ -172,11 +172,6 @@ class FreeTextFilterControl extends AbstractFilterControl {
 
     _init(selected, filterId, placeholder, filterType) {
 
-        // 根据筛选器的值设置input的值
-        //if (selected == ""){
-        //    $("#"+filterId).empty().trigger('change');
-        //}
-
         // 初始化select2
         $("#" + filterId).select2({
             data: [selected],
@@ -197,14 +192,14 @@ class FreeTextFilterControl extends AbstractFilterControl {
         // 添加消息响应
         $("#" + filterId).on('select2:open', e => {
             $('.select2-container--open .select2-dropdown--below').css('display', 'none');
-        }).on('change.select2', e => {
+        }).on('change', e => {
             var optionTexts = e.target.value;
             this.vm.setFilterSelectedOptions(filterType, optionTexts);
         });
     }
 
     _show(filterId, selectedOption){
-        $('#' + filterId).val([selectedOption])
+        //$('#' + filterId).val([selectedOption])
     }
 }
 
@@ -250,8 +245,7 @@ class DateRangeFilterControl extends AbstractFilterControl {
     }
 
     _show(filterId, selected){
-        // 根据当前筛选器的值，决定初始化input的值
-        $("#" + filterId + "1").val(selected[0]);
-        $("#" + filterId + "2").val(selected[1]);
+        //$("#" + filterId + "1").val(selected[0]).trigger('change.select2');
+        //$("#" + filterId + "2").val(selected[1]).trigger('change.select2');
     }
 }
