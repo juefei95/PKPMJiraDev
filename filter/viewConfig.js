@@ -51,7 +51,7 @@ export function getViewConfig(issues){
             return new JGStoryViewConfig();
         }else if(["BIMMEP"].includes(mostProj)){
             return new MEPStoryViewConfig();
-        }else if(["PBIMSDETAI"].includes(mostProj)){
+        }else if(["PBIMSDETAI", "PBIMSDLSS"].includes(mostProj)){
             return new PBIMsDetailStoryViewConfig();
         }
     }
