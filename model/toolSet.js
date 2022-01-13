@@ -1,3 +1,15 @@
+// 返回HOST
+export function getHost(){
+    return window.isDebug ? "http://127.0.0.1:8887/" : "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/";
+}
+
+export async function loadJsOrCss(dom, scriptUrl){
+    if (/\.js(\?.*)*$/g.test(scriptUrl)){
+        await loadScript(dom, scriptUrl, false);
+    }else if(/\.css(\?.*)*$/g.test(scriptUrl)){
+        await loadCss(dom, scriptUrl);
+    }
+}
 
 // 加载JS
 export async function loadScript(dom, scriptUrl, isModule){
@@ -76,7 +88,7 @@ export function dateRange(startDate, endDate, steps = 1) {
 }
 
 
-
+// 读数组进行多条件的排序
 export function arrayMultisort (arr) {
     // +   original by: Theriault
     // *     example 1: array_multisort([1, 2, 1, 2, 1, 2], [1, 2, 3, 4, 5, 6]);

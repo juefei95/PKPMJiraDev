@@ -219,7 +219,7 @@ export class Model extends AbstractModel{
             }
             if(!path) return [false, "字段\"" + filterConfig[k]["filter"]["label"] + "\"找不到读取字段，无法构造JQL，请联系史建鑫查看原因。"];
             let jqlName = reader.getJQLName(path);
-
+            if (jqlName === undefined) continue;
             
             // DropDown的选中项
             if (v instanceof Set){

@@ -22,6 +22,7 @@ export class Issue{
             "status",
             "reporter",
             "assignee",
+            "issuelinks",
             "designer",
             "developer",
             "confluenceLink",
@@ -140,17 +141,67 @@ export class Issue{
         return cloneDate(this.issue.docPlanCommitDate);
     }
 
+    getDocActualReviewDate(){
+        return cloneDate(this.issue.docActualReviewDate);
+    }
+    
     getDocPlanReviewDate(){
         return cloneDate(this.issue.docPlanReviewDate);
     }
 
-    // 程序计划体验时间
+    // 程序计划提验时间
     getProgramPlanCommitDate(){
         return cloneDate(this.issue.programPlanCommitDate);
     }
 
+    getProgramActualCommitDate(){
+        return cloneDate(this.issue.programActualCommitDate);
+    }
+
+    getDesignerPlanCommitTestDate(){
+        return cloneDate(this.issue.designerPlanCommitTestDate);
+    }
+
+    getDesignerActualCommitTestDate(){
+        return cloneDate(this.issue.designerActualCommitTestDate);
+    }
+
     getCreateDate(){
         return cloneDate(this.issue.createDate);
+    }
+
+    // 获得当前issue link的所有bug
+    getLinkBugs(){
+        let bugs = [];
+        if ('issuelinks' in this.issue){
+            for (const link of this.issue.issuelinks) {
+                // 先是outwardIssue
+                let issueType = link?.outwardIssue?.fields?.issuetype?.name;
+                if(issueType !== undefined && issueType == "故障"){
+                    const issueKey = link?.outwardIssue?.key;
+                    const issueStatus = link?.outwardIssue?.fields?.status?.name;
+                    if (issueKey !== undefined && issueStatus !== undefined){
+                        bugs.push({
+                            key : issueKey,
+                            status : issueStatus,
+                        });
+                    }
+                }
+                // 再试inwardIssue
+                issueType = link?.inwardIssue?.fields?.issuetype?.name;
+                if(issueType !== undefined && issueType == "故障"){
+                    const issueKey = link?.inwardIssue?.key;
+                    const issueStatus = link?.inwardIssue?.fields?.status?.name;
+                    if (issueKey !== undefined && issueStatus !== undefined){
+                        bugs.push({
+                            key : issueKey,
+                            status : issueStatus,
+                        });
+                    }
+                }
+            }
+        }
+        return bugs;
     }
 
     /**
@@ -191,6 +242,21 @@ export class Issue{
         return undefined;
     }
 
+    // 某个状态出现的次数
+    getStatusCount(status){
+        let count = 0;
+        if ("changelog" in this.issue) {
+            for (let index = 0; index < this.issue.changelog.length; index++) {
+                const items = this.issue.changelog[index].items;
+                for (let index2 = 0; index2<items.length; index2++){
+                    if (items[index2].field === "status" && items[index2].toString === status){
+                        count++;
+                    }
+                }
+            }
+        }
+        return count;
+    }
     
     // 产品设计结束时间
     getDesignEndDate(){

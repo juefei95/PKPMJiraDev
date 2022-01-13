@@ -66,6 +66,7 @@ export class IssueReadScheme{
         this.resolution             = ["fields", "resolution"];
         this.resolutionDate         = ["fields", "resolutiondate"];
         this.createDate             = ["fields", "created"];
+        this.issuelinks             = ["fields", "issuelinks"];
         this.bugPriority            = ["fields", "priority"];
         this.bugSeverity            = ["fields", "customfield_10510"];
         this.bugPhase               = ["fields", "customfield_10408"];

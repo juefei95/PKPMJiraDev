@@ -52,6 +52,11 @@ export class JiraIssueReader{
                 'f' : i => 'resolutiondate' in i.fields && i.fields.resolutiondate !== null         ? new Date(i.fields.resolutiondate.slice(0,10)) : Issue.invalidDate,
                 'jqlName' : 'resolutiondate',
             },
+            // 相关联的其他issue，比如故事关联的bug
+            'issuelinks'        : {
+                'f' : i => 'issuelinks' in i.fields && i.fields.issuelinks !== null                 ? i.fields.issuelinks                           : [],
+                'jqlName' : undefined,
+            },
             // 结构、深化流程的designer
             'customfield_10537' : {
                 'f' : i => 'customfield_10537' in i.fields && i.fields.customfield_10537 !== null   ? i.fields.customfield_10537.displayName        : Issue.emptyText,
@@ -241,17 +246,12 @@ export class JiraIssueReader{
     //     jql(string) - JQL搜索语句
     //     hasChangeLog(bool) : 是否读取changelog
     // return:
-    //     [data(Array<json>),notReadIssueKey(Array<string>)] - 读取的数据,未读取的JiraId
+    //     [data(Array<json>), notReadIssueKey(Array<string>)] - 读取的数据,未读取的JiraId
     async read(jql, hasChangeLog = false){
-        // 先获取jql的总数目
+
+        // 先读取所有issue
         let fieldsForSearch = Object.keys(JiraIssueReader.fieldReadConfig["fields"]);
-        let eachTimeFetchNum = 1000;        // 每次从Jira服务器获取issue的数目为1000，这个是服务器规定的
-        let jqlResultNum = await this._fetchJqlResultNum(jql);
-        let issues = [];
-        for (let i=0; i<Math.ceil(jqlResultNum.total/eachTimeFetchNum); ++i){
-            let eachIssues = await this._fetchJqlIssues(jql, eachTimeFetchNum, i*eachTimeFetchNum, hasChangeLog, fieldsForSearch);
-            issues = issues.concat(eachIssues.issues);
-        }
+        let issues = await this._readAllIssue(jql, fieldsForSearch, hasChangeLog);
 
         // 从issues中提取值
         let issueValidFields = Issue.getValidFields();
@@ -291,6 +291,119 @@ export class JiraIssueReader{
         return [data, notReadIssueKey];
     }
 
+    // 为测试报告读取数据
+    // param:
+    //     jql(string) - JQL搜索语句
+    // return:
+    //     issues(Array<json>) - 读取的每个issue
+    async readForTestReport(jql){
+
+        // 先读取所有issue
+        let fieldsForSearch = Object.keys(JiraIssueReader.fieldReadConfig["fields"]);
+        let issues = await this._readAllIssue(jql, fieldsForSearch, true);
+
+        // 从issues中提取值
+        let issueValidFields = Issue.getValidFields();
+        let data = [];
+        for (const i of issues){
+            let projName = i["key"].slice(0,i["key"].indexOf("-"))
+            let issueType = i["fields"]["issuetype"]["name"];
+            if (issueType !== "故事") {
+                continue;
+            }
+            let readScheme = getIssueReadScheme(projName, issueType);
+            if (!readScheme) {
+                continue;
+            }
+            let o = {}
+            for (const field of issueValidFields) {
+                if("projName" === field){
+                    o["projName"] = projName;
+                    continue;
+                }
+                if("issueType" === field){
+                    o["issueType"] = issueType;
+                    continue;
+                }
+                let scheme = readScheme.howToReadField(field);
+                if (scheme) {
+                    let f = this._getDictValue(JiraIssueReader.fieldReadConfig, scheme)['f'];
+                    o[field] = f(i);
+                }
+            }
+            let f = this._getDictValue(JiraIssueReader.fieldReadConfig, ['changelog']);
+            o['changelog'] = f(i);
+            data.push(new Issue(o));
+        }
+
+        return data;
+    }
+
+    // 给定Bugs Key，返回这些Bug的Issue，不过只包含Status
+    async readBugStatus(bugsKey){
+        // 先读取所有issue
+        let fieldsForSearch = ['status'];
+        let jql = "key in (" + bugsKey.join() + ")";
+        let issues = await this._readAllIssue(jql, fieldsForSearch, false);
+
+        // 从issues中提取值
+        let issueValidFields = Issue.getValidFields();
+        let data = [];
+        for (const i of issues){
+            let f = this._getDictValue(JiraIssueReader.fieldReadConfig, ['fields', 'status'])['f'];
+            let o = {}
+            o['status'] = f(i);
+            data.push(new Issue(o));
+        }
+
+        return data;
+    }
+
+    // 获取issue关联的测试用例的key
+    // param:
+    //     issueKey - issue的key
+    // return:
+    //     testcaseKeys(Array<string>) - 测试用例的Keys
+    async readIssueLinkTestCases(issueKey){
+        let testcases = await this._fetchIssueLinkTestCases(issueKey);
+        let keys = [];
+        for (const t of testcases){
+            keys.push(t["key"]);
+        }
+        return keys;
+    }
+
+    // 获取issue关联的测试用例的Bug的key
+    // param:
+    //     issueKey - issue的key
+    // return:
+    //     testcaseBugKeys(Array<string>) - 测试用例的Bug的Keys
+    async readIssueLinkTestCaseBugs(issueKey){
+        let testcaseBugs = await this._fetchIssueLinkTestCaseBugs(issueKey);
+        let keys = [];
+        for (const t of testcaseBugs){
+            keys.push(t["key"]);
+        }
+        return keys;
+    }
+
+    // 获取issue关联的remotelink
+    // param:
+    //     issueKey - issue的key
+    // return:
+    //     RemoteLinks(Array<{type:link的类型, url:link的url}>) - remotelinks
+    async readIssueRemoteLinks(issueKey){
+        let links = await this._fetchIssueRemoteLinks(issueKey);
+
+        let retLinks = [];
+        for (const item of links) {
+            retLinks.push({
+                type : item["application"]["name"],
+                url : item["object"]["url"],
+            })
+        }
+        return retLinks;
+    }
 
     // 获取数据对应的JQL名字，用于搜索
     getJQLName(path){
@@ -305,6 +418,19 @@ export class JiraIssueReader{
         }else{
             return undefined;
         }
+    }
+
+    // 给定jql，要读取的field，返回读取的issue列表
+    async _readAllIssue(jql, fields, hasChangeLog){
+        // 先获取jql的总数目
+        let eachTimeFetchNum = 1000;        // 每次从Jira服务器获取issue的数目为1000，这个是服务器规定的
+        let jqlResultNum = await this._fetchJqlResultNum(jql);
+        let issues = [];
+        for (let i=0; i<Math.ceil(jqlResultNum.total/eachTimeFetchNum); ++i){
+            let eachIssues = await this._fetchJqlIssues(jql, eachTimeFetchNum, i*eachTimeFetchNum, hasChangeLog, fields);
+            issues = issues.concat(eachIssues.issues);
+        }
+        return issues;
     }
 
     // 获取JQL的总数目
@@ -326,6 +452,59 @@ export class JiraIssueReader{
         }).then(response => response.json());
     }
 
+    // 获取Issue相关联的测试用例(synapse)
+    async _fetchIssueLinkTestCases(issueKey){
+        let url = `https://jira.pkpm.cn/rest/synapse/latest/public/requirement/${issueKey}/linkedTestCases`;
+        
+        return fetch(url, {
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            headers: {
+                'user-agent': 'Mozilla/4.0 MDN Example',
+                'content-type': 'application/json'
+            },
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, same-origin, *omit
+            mode: 'cors', // no-cors, cors, *same-origin
+            redirect: 'follow', // manual, *follow, error
+            //referrer: 'no-referrer', // *client, no-referrer
+        }).then(response => response.json());
+    }
+
+    // 获取Issue相关联的测试用例产生的Bug(synapse)
+    async _fetchIssueLinkTestCaseBugs(issueKey){
+        let url = `https://jira.pkpm.cn/rest/synapse/latest/public/requirement/${issueKey}/getDefects`;
+        
+        return fetch(url, {
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            headers: {
+                'user-agent': 'Mozilla/4.0 MDN Example',
+                'content-type': 'application/json'
+            },
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, same-origin, *omit
+            mode: 'cors', // no-cors, cors, *same-origin
+            redirect: 'follow', // manual, *follow, error
+            //referrer: 'no-referrer', // *client, no-referrer
+        }).then(response => response.json());
+    }
+
+    // 获取Issue相关联的remoteLink
+    async _fetchIssueRemoteLinks(issueKey){
+        let url = `https://jira.pkpm.cn/rest/api/2/issue/${issueKey}/remotelink`;
+        
+        return fetch(url, {
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            headers: {
+                'user-agent': 'Mozilla/4.0 MDN Example',
+                'content-type': 'application/json'
+            },
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, same-origin, *omit
+            mode: 'cors', // no-cors, cors, *same-origin
+            redirect: 'follow', // manual, *follow, error
+            //referrer: 'no-referrer', // *client, no-referrer
+        }).then(response => response.json());
+    }
 
     // 获取Issues
     // 参考 https://docs.atlassian.com/software/jira/docs/api/REST/7.6.1/#api/2/search-search

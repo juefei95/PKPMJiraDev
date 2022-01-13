@@ -2,7 +2,7 @@
 这是个加强版的筛选器展示框架，所谓“加强版”是相对Jira原始的筛选器而言
 */
 
-import {  loadScript, loadCss } from "./../model/toolSet.js";
+import {  getHost, loadJsOrCss } from "./../model/toolSet.js";
 import { ViewConfig }           from "./viewConfig.js"
 import { Model }                from "./modelManager.js"
 
@@ -148,7 +148,7 @@ export class EnhancedFilterFrame{
 
     async _loadExternalResource(){
         
-        let host = window.isDebug ? "http://127.0.0.1:8887/resource/" : "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/resource/";
+        let host = getHost() + 'resource/';
         let loadList = [
             // ------------------- 依赖jquery和jquery-ui
             host + "jquery-2.2.4.min.js",
@@ -175,15 +175,7 @@ export class EnhancedFilterFrame{
         ];
 
         for (const s of loadList) {
-            await this._addPageDepends(window.document.head, s);
-        }
-    }
-
-    async _addPageDepends(w, s){
-        if (/\.js(\?.*)*$/g.test(s)){
-            await loadScript(w, s, false);
-        }else if(/\.css(\?.*)*$/g.test(s)){
-            await loadCss(w, s);
+            await loadJsOrCss(window.document.head, s);
         }
     }
 }
