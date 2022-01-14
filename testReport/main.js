@@ -62,6 +62,10 @@ class MainApp
         
         let host = getHost() + 'resource/';
         let loadList = [
+            host + "bootstrap4.1.3.min.css",
+            host + "bootstrap4.1.3.min.js",
+            host + "jquery-3.3.1.slim.min.js",
+            host + "popper1.14.3.min.js",
             host + "vue.3.2.26.js",
         ];
     
@@ -75,54 +79,60 @@ class MainApp
 function _template(){
     return `
         <h2>{{message}}</h2>
-        <table>
-            <tr>
-                <th>编号</th>
-                <th>ID</th>
-                <th>计划发布功能</th>
-                <th>实际发布功能</th>
-                <th>是否有产品设计</th>
-                <th>需求评审次数</th>
-                <th>需求验证次数</th>
-                <th>是否有需求验证点</th>
-                <th>研发时间（人天）</th>
-                <th>提测次数</th>
-                <th>计划需求评审时间</th>
-                <th>实际需求评审时间</th>
-                <th>计划提验时间</th>
-                <th>实际提验时间</th>
-                <th>计划提测时间</th>
-                <th>实际提测时间</th>
-                <th>延期天数</th>
-                <th>用例数</th>
-                <th>Bug数</th>
-                <th>解决率</th>
-            </tr>
-            <template v-for="(story, index) in storyList">
-                <tr>
-                    <td>{{index+1}}</td>
-                    <td><a :href="'https://jira.pkpm.cn/browse/'+story.id" target="_blank">{{story.id}}</a></td>
-                    <td>{{story.title}}</td>
-                    <td>{{story.published}}</td>
-                    <td>{{story.hasDoc}}</td>
-                    <td>{{story.designReviewCount}}</td>
-                    <td>{{story.designValidationCount}}</td>
-                    <td>{{story.hasDesignValidationPoint}}</td>
-                    <td>{{story.devDays}}</td>
-                    <td>{{story.testCommitCount}}</td>
-                    <td>{{story.docPlanReviewDate}}</td>
-                    <td>{{story.docActualReviewDate}}</td>
-                    <td>{{story.programPlanCommitDate}}</td>
-                    <td>{{story.programActualCommitDate}}</td>
-                    <td>{{story.designerPlanCommitTestDate}}</td>
-                    <td>{{story.designerActualCommitTestDate}}</td>
-                    <td>{{story.delayDays}}</td>
-                    <td>{{story.testcasesCount}}</td>
-                    <td>{{story.bugsCount}}</td>
-                    <td>{{story.bugResolveRate}}</td>
-                </tr>
-            </template>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>ID</th>
+                        <th>计划发布功能</th>
+                        <th>实际发布功能</th>
+                        <th>是否有产品设计</th>
+                        <th>需求评审次数</th>
+                        <th>需求验证次数</th>
+                        <th>是否有需求验证点</th>
+                        <th>研发时间（人天）</th>
+                        <th>提测次数</th>
+                        <th>计划需求评审时间</th>
+                        <th>实际需求评审时间</th>
+                        <th>计划提验时间</th>
+                        <th>实际提验时间</th>
+                        <th>计划提测时间</th>
+                        <th>实际提测时间</th>
+                        <th>延期天数</th>
+                        <th>用例数</th>
+                        <th>Bug数</th>
+                        <th>解决率</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template v-for="(story, index) in storyList">
+                        <tr>
+                            <td>{{index+1}}</td>
+                            <td><a :href="'https://jira.pkpm.cn/browse/'+story.id" target="_blank">{{story.id}}</a></td>
+                            <td>{{story.title}}</td>
+                            <td>{{story.published}}</td>
+                            <td>{{story.hasDoc}}</td>
+                            <td>{{story.designReviewCount}}</td>
+                            <td>{{story.designValidationCount}}</td>
+                            <td>{{story.hasDesignValidationPoint}}</td>
+                            <td>{{story.devDays}}</td>
+                            <td>{{story.testCommitCount}}</td>
+                            <td>{{story.docPlanReviewDate}}</td>
+                            <td>{{story.docActualReviewDate}}</td>
+                            <td>{{story.programPlanCommitDate}}</td>
+                            <td>{{story.programActualCommitDate}}</td>
+                            <td>{{story.designerPlanCommitTestDate}}</td>
+                            <td>{{story.designerActualCommitTestDate}}</td>
+                            <td>{{story.delayDays}}</td>
+                            <td>{{story.testcasesCount}}</td>
+                            <td>{{story.bugsCount}}</td>
+                            <td>{{story.bugResolveRate}}</td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
     `
 }
 
