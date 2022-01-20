@@ -337,6 +337,9 @@ export class ViewConfig extends AbstractModel{
         this["confluenceLink"] = {
 
         };
+        this["issuelinks"] = {
+
+        };
         this["docDraftPlanCommitDate"] = {   // 产品设计初稿计划提交的日期
             "filter" : {
                 type : 'DateRange',
