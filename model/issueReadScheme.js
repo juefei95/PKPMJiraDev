@@ -30,7 +30,7 @@ export function getIssueReadScheme(projName, issueType){
         }else if (issueType === "故障") {
             return PCIssueReadBugScheme;
         }
-    }else if (["YHT"].includes(projName)) {
+    }else if (["YHT", "PBRESSE"].includes(projName)) {
         if (issueType === "故事") {
             return PCIssueReadStoryScheme;
         }

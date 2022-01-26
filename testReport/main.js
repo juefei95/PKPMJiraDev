@@ -5,6 +5,7 @@ import { JiraIssueReader }          from './../model/jiraIssueReader.js'
 
 export async function helloTestReport(){
     try {
+        window.document.title = "测试报告";
         let app = new MainApp();
         await app.init();
     } catch (err) {
