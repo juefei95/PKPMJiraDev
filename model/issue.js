@@ -8,6 +8,7 @@ export class Issue{
 
     static emptyText = undefined;
     static invalidDate = undefined;
+    static emptyArray = undefined;
     // 获得通用的字段定义
     static getValidFields(){
         return [

@@ -157,7 +157,7 @@ export class ViewConfig extends AbstractModel{
                     if (record.affectVersions === GridViewModel.emptyText) {
                         return ViewConfig.renderEmptyField();
                     } else {
-                        return '<div>' + record.affectVersions + '</div>';
+                        return '<div>' + record.affectVersions.join(';') + '</div>';
                     }
                 },
             },

@@ -104,7 +104,14 @@ export class JiraIssueReader{
             },
             // 影响版本
             'versions'          : {
-                'f' : i => 'versions'          in i.fields && i.fields.versions.length > 0          ? i.fields.versions[0].name                     : Issue.emptyText,
+                'f' : i => {
+                    if('versions' in i.fields == false || i.fields.versions.length <= 0) return Issue.emptyArray;
+                    let affectVersions = [];
+                    for (let index = 0; index < i.fields.versions.length; index++) {
+                        affectVersions.push(i.fields.versions[index].name);
+                    }
+                    return affectVersions;
+                },
                 'jqlName' : 'affectedVersion',
             },
             // 修复版本

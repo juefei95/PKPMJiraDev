@@ -26,7 +26,7 @@ export class GridControl{
                         field:  k, // search field name
                         value: Array.from(selected), // field value (array of two values for operators: between, in)
                         type: 'list', // type of the field, if not defined search.type for the field will be used
-                        operator: 'in' // search operator, can be 'is', 'between', 'begins with', 'contains', 'ends with'
+                        operator: 'contains' // search operator, can be 'is', 'between', 'begins with', 'contains', 'ends with'
                         // if not defined it will be selected based on the type
                     });
                 }

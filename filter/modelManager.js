@@ -61,7 +61,11 @@ export class Model extends AbstractModel{
         let options = new Set();
         for (const issue of this.issues) {
             let v = issue.getAttr(propName);
-            options.add(v);
+            if (Array.isArray(v)) {
+                v.forEach(item => options.add(item))
+            }else{
+                options.add(v);
+            }
         }
         return options;
     }
@@ -76,7 +80,11 @@ export class Model extends AbstractModel{
         for (const issue of this.issues) {
             if (this.selectedIssueId.has(issue.getJiraId())) {
                 let v = issue.getAttr(propName);
-                propCount[v] ? propCount[v]+=1 : propCount[v]=1;
+                if (Array.isArray(v)) {
+                    v.forEach(item => propCount[item] ? propCount[item]+=1 : propCount[item]=1)
+                }else{
+                    propCount[v] ? propCount[v]+=1 : propCount[v]=1;
+                }
             }
         }
         return propCount;
@@ -158,19 +166,25 @@ export class Model extends AbstractModel{
         for (const issue of this.issues) {
             for (const [k,v] of Object.entries(filters)){
                 if (v["filter"].type == 'DropDown'){
-                    let attr = issue.getAttr(k);
-                    this.filterOptions[k].add(attr);
+                    let v = issue.getAttr(k);
+                    if (Array.isArray(v)) {
+                        v.forEach(item => this.filterOptions[k].add(item))
+                    }else{
+                        this.filterOptions[k].add(v);
+                    }
                 }
             }
         }
         let isFilterSelectedOptionChange = false;       // 是不是issues的改变会带来已选项的改变
         for (const [k,v] of Object.entries(filters)){
+            if (isFilterSelectedOptionChange == true) break;
             if (v["filter"].type == 'DropDown'){
                 if(this.filterSelectedOptions[k].size > 0){
                     for (const option of this.filterSelectedOptions[k]) {
                         if (!this.filterOptions[k].has(option)) {
                             this.filterSelectedOptions[k].delete(option);
                             isFilterSelectedOptionChange = true;
+                            break;
                         }
                     }
                 }
@@ -278,8 +292,12 @@ export class Model extends AbstractModel{
         for (const issue of this.issues) {
             for (const [k,v] of Object.entries(filters)){
                 if (v["filter"].type == 'DropDown'){
-                    let attr = issue.getAttr(k);
-                    this.filterOptions[k].add(attr);
+                    let v = issue.getAttr(k);
+                    if (Array.isArray(v)) {
+                        v.forEach(item => this.filterOptions[k].add(item))
+                    }else{
+                        this.filterOptions[k].add(v);
+                    }
                 }
             }
         }
