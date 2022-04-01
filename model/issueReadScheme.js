@@ -102,6 +102,8 @@ class JGIssueReadScheme extends IssueReadScheme{
         this.developer               = ["fields", "customfield_10538"];
         if (issueType === "故事") {
             this.tester              = ["fields", "customfield_10539"];
+            this.epicId              = ["fields", "customfield_10102"];
+            this.epicName            = ["fields", "epicName"];
         }else if(issueType === "故障"){
             this.tester              = ["fields", "reporter"];
         }

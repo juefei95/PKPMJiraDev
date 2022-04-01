@@ -716,12 +716,12 @@ export class ViewConfig extends AbstractModel{
         this["epicId"] = {
             "filter" : {
                 type : 'Text',
-                label : '史诗',
+                label : '史诗ID',
                 width : '200px',
                 placeholder : "请输入史诗的ID",
             },
             "grid" : {
-                caption: '史诗',
+                caption: '史诗ID',
                 sortable: true,
                 size: '100px',
                 render: function (record) {
@@ -729,6 +729,26 @@ export class ViewConfig extends AbstractModel{
                         return ViewConfig.renderEmptyField();
                     } else {
                         return '<div><a target="_blank" href="https://jira.pkpm.cn/browse/' + record.epicId + '">' + record.epicId + '</a></div>';
+                    }
+                },
+            },
+        };
+        this["epicName"] = {
+            "filter" : {
+                type : 'Text',
+                label : '史诗',
+                width : '200px',
+                placeholder : "请输入史诗名",
+            },
+            "grid" : {
+                caption: '史诗',
+                sortable: true,
+                size: '200px',
+                render: function (record) {
+                    if (record.epicName === GridViewModel.emptyText) {
+                        return ViewConfig.renderEmptyField();
+                    } else {
+                        return '<div><a target="_blank" href="https://jira.pkpm.cn/browse/' + record.epicId + '">' + record.epicName + '</a></div>';
                     }
                 },
             },

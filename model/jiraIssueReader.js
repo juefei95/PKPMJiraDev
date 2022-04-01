@@ -117,6 +117,17 @@ export class JiraIssueReader{
                 'f' : i => 'customfield_10102' in i.fields && i.fields.customfield_10102 !== null   ? i.fields.customfield_10102                    : Issue.emptyText,
                 'jqlName' : '史诗链接',
             },
+            // 史诗名称
+            'epicName' : {
+                'f' : async function(i){
+                    let epicId = 'customfield_10102' in i.fields && i.fields.customfield_10102 !== null ? i.fields.customfield_10102 : Issue.emptyText;
+                    if (epicId == Issue.emptyText) return Issue.emptyText;
+                    let epicIssues = await new JiraIssueReader()._fetchJqlIssues("id="+epicId, 1, 0, false, ["summary"]);
+                    let epicName = 'summary' in epicIssues.issues[0].fields ? epicIssues.issues[0].fields.summary : Issue.emptyText;
+                    return epicName;
+                },
+                'jqlName' : undefined,
+            },
             // 变更集号
             'customfield_10703' : {
                 'f' : i => 'customfield_10703' in i.fields && i.fields.customfield_10703 !== null   ? i.fields.customfield_10703                    : Issue.emptyText,
@@ -278,7 +289,7 @@ export class JiraIssueReader{
                 let scheme = readScheme.howToReadField(field);
                 if (scheme) {
                     let f = this._getDictValue(JiraIssueReader.fieldReadConfig, scheme)['f'];
-                    o[field] = f(i);
+                    o[field] = await f(i);
                 }
             }
             if (hasChangeLog) {

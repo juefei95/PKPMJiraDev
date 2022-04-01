@@ -46,6 +46,7 @@ export class Issue{
             "bugSeverity",
             "bugPhase",
             "epicId",
+            "epicName",
             "fixedChangeset",
             "testComment",
             "tester",

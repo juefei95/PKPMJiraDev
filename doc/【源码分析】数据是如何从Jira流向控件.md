@@ -10,6 +10,9 @@
 - ViewConfig.js是显示配置，它定义了Issue.js里的各个字段：
   - 在chart、filter、grid中是否可以展示
   - 在grid展示中，标题如何显示，宽度如何，如何渲染（比如空值会被渲染为斜体的Empty Field）
+  - 比如Grid展示
+    - 首先在gridVM.js的getGrids中调用viewConfig.getGridsDict，而viewConfig.getGridsDict返回viewConfig里定义的grid配置
+    - 然后在gridVM.js的getRecords中处理所有获取的issue。如果某个字段没有(undefined)，就会置为Empty Field，这样Grid展示时做特殊处理
 - 程序一共有三种显示方式：chart、filter和grid，每种显示方式都是MVVM设计模式，比如
   - gridVM.js就是grid显示方式的ViewModel，负责在Model和gridView之间做桥梁
   - gridView.js负责整个grid的显示相关，包括消息响应，在页面上的id管理等
