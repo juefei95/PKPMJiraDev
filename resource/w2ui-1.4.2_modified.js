@@ -2319,7 +2319,8 @@ w2utils.keyboard = (function (obj) {
                         // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ modify by sjx 20210618 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
                         // 修改下面这行是因为它把字段直接给变小写了，导致后续匹配不上，不知道w2ui的作者为什么这么做，可能我的场景和他设想的不一致吧
                         //var val1 = String(obj.parseField(rec, search.field)).toLowerCase();
-                        var val1 = String(obj.parseField(rec, search.field));
+                        var originVal = obj.parseField(rec, search.field);
+                        var val1 = String(originVal);
                         // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ modify by sjx 20210618 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
                         if (typeof sdata.value != 'undefined') {
@@ -2373,7 +2374,17 @@ w2utils.keyboard = (function (obj) {
                             case 'in':
                                 var tmp = sdata.value;
                                 if (sdata.svalue) tmp = sdata.svalue;
-                                if (tmp.indexOf(val1) !== -1) fl++;
+                                
+                                // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ modify by sjx 20220408 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+                                // 对cell Value是多个，过滤选项也是多个的情况做特殊处理
+                                // 这种情况下都是Array，只要有交集，就认为选中了
+                                if (Array.isArray(originVal) && Array.isArray(tmp)){
+                                    let intersection = originVal.filter(v => tmp.includes(v));
+                                    if (intersection.length > 0) fl++;
+                                }else{
+                                    if (tmp.indexOf(val1) !== -1) fl++;
+                                }
+                                // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ modify by sjx 20220408 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
                                 break;
                             case 'not in':
                                 var tmp = sdata.value;
