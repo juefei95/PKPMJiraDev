@@ -40,7 +40,8 @@ export function getIssueReadScheme(projName, issueType){
         }else if (issueType === "故障") {
             return MEPIssueReadBugScheme;
         }
-    }else if (["BIMSTRU","PBIMSDETAI","PBIMSPS","BIMBASEJM", "PBIMSDLSS"].includes(projName)) {
+    //}else if (["BIMSTRU","PBIMSDETAI","PBIMSPS","BIMBASEJM", "PBIMSDLSS"].includes(projName)) {
+    }else{ // 现在大部分项目的流程统一了，所以这里改成了else
         if (issueType === "故事") {
             return PBIMsDetailIssueReadStoryScheme;
         }else if (issueType === "故障") {
