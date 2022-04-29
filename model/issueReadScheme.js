@@ -215,6 +215,7 @@ class PBIMsDetailIssueReadScheme extends IssueReadScheme{
         }else if(issueType === "故障"){
             this.tester                    = ["fields", "reporter"];
         }
+        this.confluenceLink                = ["fields", "customfield_10713"];
         this.docDraftPlanCommitDate        = ["fields", "customfield_11415"];
         this.docDraftActualCommitDate      = ["fields", "customfield_11602"];
         this.docPlanCommitDate             = ["fields", "customfield_11415"];
