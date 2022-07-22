@@ -8,6 +8,8 @@ import {AbstractModel}      from './../common/model.js'
 import {Issue}              from './../model/issue.js'
 import { date2String }      from './../model/toolSet.js'
 import { GridViewModel }      from './gridVM.js'
+import { getJiraHost } from './../model/toolSet.js'
+
 
 export function getViewConfig(issues){
     // 统计项目类型和Issue类型
@@ -89,7 +91,7 @@ export class ViewConfig extends AbstractModel{
                 sortable: true,
                 size: '100px',
                 render: function (record) {
-                    return '<div><a target="_blank" href="https://jira.pkpm.cn/browse/' + record.jiraId + '">' + record.jiraId + '</a></div>';
+                    return '<div><a target="_blank" href="' + getJiraHost() + 'browse/' + record.jiraId + '">' + record.jiraId + '</a></div>';
                 }
             }
         };  
@@ -728,7 +730,7 @@ export class ViewConfig extends AbstractModel{
                     if (record.epicId === GridViewModel.emptyText) {
                         return ViewConfig.renderEmptyField();
                     } else {
-                        return '<div><a target="_blank" href="https://jira.pkpm.cn/browse/' + record.epicId + '">' + record.epicId + '</a></div>';
+                        return '<div><a target="_blank" href="' + getJiraHost() + 'browse/' + record.epicId + '">' + record.epicId + '</a></div>';
                     }
                 },
             },
@@ -748,7 +750,7 @@ export class ViewConfig extends AbstractModel{
                     if (record.epicName === GridViewModel.emptyText) {
                         return ViewConfig.renderEmptyField();
                     } else {
-                        return '<div><a target="_blank" href="https://jira.pkpm.cn/browse/' + record.epicId + '">' + record.epicName + '</a></div>';
+                        return '<div><a target="_blank" href="' + getJiraHost() + 'browse/' + record.epicId + '">' + record.epicName + '</a></div>';
                     }
                 },
             },

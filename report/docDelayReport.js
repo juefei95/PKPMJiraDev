@@ -5,7 +5,8 @@
 import { AbstractReport }               from "./abstractReport.js"
 import { ULView }                       from "./unorderedListView.js"
 import { diffDays, date2String }        from "../model/toolSet.js"
-import { Issue }                  from "../model/issue.js";
+import { Issue }                        from "../model/issue.js"
+import { getJiraHost }                  from '../model/toolSet.js'
 
 
 
@@ -30,7 +31,7 @@ export class DocDelayReport extends AbstractReport{
                     if (docPlanCommitDate !== Issue.invalidDate && diffDays(new Date(), docPlanCommitDate) > tbValues.delayDays) {
                         (items[designer] ||= []).push({
                             "jiraId" : {
-                                "link" : "https://jira.pkpm.cn/browse/",
+                                "link" : getJiraHost() + "browse/",
                                 "value" : jiraId,
                             },
                             "planDate" : {
@@ -45,7 +46,7 @@ export class DocDelayReport extends AbstractReport{
                     }else if(docPlanCommitDate === Issue.invalidDate) {
                         (items[designer] ||= []).push({
                             "jiraId" : {
-                                "link" : "https://jira.pkpm.cn/browse/",
+                                "link" : getJiraHost() + "browse/",
                                 "value" : jiraId,
                             },
                             "planDate" : {
@@ -67,7 +68,7 @@ export class DocDelayReport extends AbstractReport{
                     if (docPlanReviewDate !== Issue.invalidDate && diffDays(new Date(), docPlanReviewDate) > tbValues.delayDays) {
                         (items[designer] ||= []).push({
                             "jiraId" : {
-                                "link" : "https://jira.pkpm.cn/browse/",
+                                "link" : getJiraHost() + "browse/",
                                 "value" : jiraId,
                             }, 
                             "planDate" : {
@@ -82,7 +83,7 @@ export class DocDelayReport extends AbstractReport{
                     }else if (docPlanReviewDate === Issue.invalidDate){
                         (items[designer] ||= []).push({
                             "jiraId" : {
-                                "link" : "https://jira.pkpm.cn/browse/",
+                                "link" : getJiraHost() + "browse/",
                                 "value" : jiraId,
                             }, 
                             "planDate" : {

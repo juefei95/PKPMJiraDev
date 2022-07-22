@@ -1,3 +1,9 @@
+function getJiraHost(){
+    return "https://jira.pkpm.cn/";
+}
+function getScriptHost(){
+    return "http://127.0.0.1:8887/";
+}
 
 // 打开新的标签页，展示更好用的筛选器或者报告
 // mode(string) - 模式 filter或report
@@ -13,6 +19,10 @@ async function showEnhanceTab(mode, scriptUrl, isDebug = false){
         w.jql = jql;
         w.mode = mode;
         w.isDebug = isDebug;
+        //w.jiraHost = "https://jira.pkpm.cn/"
+        //w.scriptHost = "https://jira.pkpm.cn/"
+        w.jiraHost = getJiraHost();
+        w.scriptHost = getScriptHost();
         // 修改新打开页面的title
         let tt = document.createElement("title");
         tt.innerHTML = '~~';
@@ -54,12 +64,12 @@ async function loadScript(dom, scriptUrl) {
 
 async function showFilter(){
 
-    await showEnhanceTab('filter', 'https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/entryPoint.js')
+    await showEnhanceTab('filter', getScriptHost() + 'entryPoint.js')
 }
 
 async function showReport(){
 
-    await showEnhanceTab('report', 'https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/entryPoint.js')
+    await showEnhanceTab('report', getScriptHost() + 'entryPoint.js')
 }
 
 async function showTestReport(){
@@ -67,4 +77,4 @@ async function showTestReport(){
     await showEnhanceTab('testReport', 'https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/entryPoint.js')
 }
 
-showEnhanceTab('filter', 'http://127.0.0.1:8887/entryPoint.js', true)
+showEnhanceTab('filter', getScriptHost() + 'entryPoint.js', true)

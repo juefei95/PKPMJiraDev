@@ -1,7 +1,7 @@
 /*
 写入Jira数据
 */
-
+import { getJiraHost } from './toolSet.js'
 
 export class JiraIssueWriter{
 
@@ -15,7 +15,7 @@ export class JiraIssueWriter{
      */
     async setIssueDateField(issueKey, field, dateStr, successCallBack, failCallBack){
 
-        fetch('https://jira.pkpm.cn/rest/api/2/issue/'+issueKey+'/', {
+        fetch(getJiraHost() + 'rest/api/2/issue/'+issueKey+'/', {
             method: 'PUT', // *GET, POST, PUT, DELETE, etc.
             body: JSON.stringify(
             {
@@ -52,7 +52,7 @@ export class JiraIssueWriter{
      */
     async setIssueUserField(issueKey, field, username, successCallBack, failCallBack){
 
-        fetch('https://jira.pkpm.cn/rest/api/2/issue/'+issueKey+'/', {
+        fetch(getJiraHost() + 'rest/api/2/issue/'+issueKey+'/', {
             method: 'PUT', // *GET, POST, PUT, DELETE, etc.
             body: JSON.stringify({ "fields": {
                 [field]: { "name": username }},

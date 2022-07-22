@@ -1,7 +1,8 @@
 
-import { printInfo, loadJsOrCss, getHost }                from "./../model/toolSet.js";
+import { printInfo, loadJsOrCss, getScriptHost }                from "./../model/toolSet.js";
 import { JQL }                      from './../model/jqlParser.js';
 import { JiraIssueReader }          from './../model/jiraIssueReader.js'
+import { getJiraHost }              from './../model/toolSet.js'
 
 export async function helloTestReport(){
     try {
@@ -61,7 +62,7 @@ class MainApp
 
     async _loadExternalResource(){
         
-        let host = getHost() + 'resource/';
+        let host = getScriptHost() + 'resource/';
         let loadList = [
             host + "bootstrap4.1.3.min.css",
             host + "bootstrap4.1.3.min.js",
@@ -110,7 +111,7 @@ function _template(){
                     <template v-for="(story, index) in storyList">
                         <tr>
                             <td>{{index+1}}</td>
-                            <td><a :href="'https://jira.pkpm.cn/browse/'+story.id" target="_blank">{{story.id}}</a></td>
+                            <td><a :href="'{{jiraHost}}browse/'+story.id" target="_blank">{{story.id}}</a></td>
                             <td>{{story.title}}</td>
                             <td>{{story.published}}</td>
                             <td>{{story.hasDoc}}</td>
@@ -145,6 +146,7 @@ function _data(){
             //    id : "abc-1",
             //}
         ],
+        "jiraHost" : getJiraHost(),
     }
 }
 

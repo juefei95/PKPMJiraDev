@@ -13,7 +13,9 @@ import { Issue }  from "./issue.js"
  */
 export function getIssueReadScheme(projName, issueType){
     if (["JGVIRUS"].includes(projName)) {
-        if (issueType === "故事") {
+        if (issueType === "Epic") {
+            return JGIssueReadEpicScheme;
+        }else if (issueType === "故事") {
             return JGIssueReadStoryScheme;
         }else if (issueType === "故障") {
             return JGIssueReadBugScheme;
@@ -107,6 +109,8 @@ class JGIssueReadScheme extends IssueReadScheme{
             this.epicName            = ["fields", "epicName"];
         }else if(issueType === "故障"){
             this.tester              = ["fields", "reporter"];
+        }else if(issueType === "Epic"){
+            this.developer              = ["fields", "assignee"];
         }
         this.confluenceLink          = ["fields", "customfield_10713"];
         this.docPlanReviewDate       = ["fields", "customfield_11415"];
@@ -234,6 +238,7 @@ class PBIMsDetailIssueReadScheme extends IssueReadScheme{
 }
 
 let DeafaultIssueReadScheme          = new IssueReadScheme();
+let JGIssueReadEpicScheme           = new JGIssueReadScheme("Epic");
 let JGIssueReadStoryScheme           = new JGIssueReadScheme("故事");
 let JGIssueReadBugScheme             = new JGIssueReadScheme("故障");
 let STSIssueReadStoryScheme          = new STSIssueReadScheme("故事");

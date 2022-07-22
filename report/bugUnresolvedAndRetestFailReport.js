@@ -5,8 +5,8 @@
 import { AbstractReport }               from "./abstractReport.js"
 import { ULView }                       from "./unorderedListView.js"
 import { diffDays, date2String }        from "../model/toolSet.js"
-import { Issue }                  from "../model/issue.js";
-
+import { Issue }                        from "../model/issue.js"
+import { getJiraHost }                  from '../model/toolSet.js' 
 
 
 export class BugUnresolvedAndRetestFailReport extends AbstractReport{
@@ -29,7 +29,7 @@ export class BugUnresolvedAndRetestFailReport extends AbstractReport{
                 let tester = issue.getTester();
                 (items[developer] ||= []).push({
                     "jiraId" : {
-                        "link" : "https://jira.pkpm.cn/browse/",
+                        "link" : getJiraHost() + "browse/",
                         "value" : jiraId,
                     },
                     "tester" : {

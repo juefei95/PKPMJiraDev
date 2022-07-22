@@ -1,6 +1,11 @@
 // 返回HOST
-export function getHost(){
-    return window.isDebug ? "http://127.0.0.1:8887/" : "https://shijianxin.gitlabpages.it.pkpm.cn/pkpmjiradev/";
+export function getScriptHost(){
+    return window.scriptHost;
+}
+
+// 返回当前Jira Host地址
+export function getJiraHost(){
+    return window.jiraHost;
 }
 
 export async function loadJsOrCss(dom, scriptUrl){

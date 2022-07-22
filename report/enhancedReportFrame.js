@@ -2,7 +2,7 @@
 报告方式显示的框架
 */
 
-import {  getHost, loadJsOrCss } from "./../model/toolSet.js";
+import {  getScriptHost, loadJsOrCss } from "./../model/toolSet.js";
 import { getReport }            from "./reportFactory.js";
 
 export class EnhancedReportFrame{
@@ -69,7 +69,7 @@ export class EnhancedReportFrame{
 
     async _loadExternalResource(){
         
-        let host = getHost() + 'resource/';
+        let host = getScriptHost() + 'resource/';
         let loadList = [
             // ------------------- 依赖jquery和jquery-ui
             host + "jquery-2.2.4.min.js",

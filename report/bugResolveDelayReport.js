@@ -5,8 +5,8 @@ Bug解决逾期报告
 import { AbstractReport }               from "./abstractReport.js"
 import { ULView }                       from "./unorderedListView.js"
 import { diffDays, date2String }        from "../model/toolSet.js"
-import { Issue }                  from "../model/issue.js";
-
+import { Issue }                        from "../model/issue.js";
+import { getJiraHost }                  from '../model/toolSet.js'
 
 
 export class BugResolveDelayReport extends AbstractReport{
@@ -30,7 +30,7 @@ export class BugResolveDelayReport extends AbstractReport{
                 let assignee = issue.getAssignee();
                 (items[assignee] ||= []).push({
                     "jiraId" : {
-                        "link" : "https://jira.pkpm.cn/browse/",
+                        "link" : getJiraHost() + "browse/",
                         "value" : jiraId,
                     },
                     "tester" : {

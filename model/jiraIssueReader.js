@@ -4,6 +4,7 @@
 
 import { Issue } from "./issue.js";
 import { getIssueReadScheme, IssueReadScheme } from "./issueReadScheme.js";
+import { getJiraHost } from './toolSet.js'
 
 export class JiraIssueReader{
 
@@ -453,7 +454,7 @@ export class JiraIssueReader{
 
     // 获取JQL的总数目
     async _fetchJqlResultNum(){
-        return fetch('https://jira.pkpm.cn/rest/api/2/search/', {
+        return fetch(getJiraHost() + 'rest/api/2/search/', {
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             body: JSON.stringify({jql: jql,
                                 maxResults : 0,
@@ -472,7 +473,7 @@ export class JiraIssueReader{
 
     // 获取Issue相关联的测试用例(synapse)
     async _fetchIssueLinkTestCases(issueKey){
-        let url = `https://jira.pkpm.cn/rest/synapse/latest/public/requirement/${issueKey}/linkedTestCases`;
+        let url = getJiraHost() + `rest/synapse/latest/public/requirement/${issueKey}/linkedTestCases`;
         
         return fetch(url, {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
@@ -490,7 +491,7 @@ export class JiraIssueReader{
 
     // 获取Issue相关联的测试用例产生的Bug(synapse)
     async _fetchIssueLinkTestCaseBugs(issueKey){
-        let url = `https://jira.pkpm.cn/rest/synapse/latest/public/requirement/${issueKey}/getDefects`;
+        let url = getJiraHost() + `rest/synapse/latest/public/requirement/${issueKey}/getDefects`;
         
         return fetch(url, {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
@@ -508,7 +509,7 @@ export class JiraIssueReader{
 
     // 获取Issue相关联的remoteLink
     async _fetchIssueRemoteLinks(issueKey){
-        let url = `https://jira.pkpm.cn/rest/api/2/issue/${issueKey}/remotelink`;
+        let url = getJiraHost() + `rest/api/2/issue/${issueKey}/remotelink`;
         
         return fetch(url, {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
@@ -532,7 +533,7 @@ export class JiraIssueReader{
             fields2 = fields.filter(f => f != "changelog");
         }
         let expand = hasChangeLog ? ["changelog"] : [];
-        return fetch('https://jira.pkpm.cn/rest/api/2/search/', {
+        return fetch(getJiraHost() + 'rest/api/2/search/', {
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             body: JSON.stringify({jql: jql,
                                 startAt : startAt,
@@ -553,7 +554,7 @@ export class JiraIssueReader{
     }
 
     async _fetchCurrentUserName(){
-        return fetch('https://jira.pkpm.cn/rest/api/2/myself/', {
+        return fetch(getJiraHost() + 'rest/api/2/myself/', {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             //body: JSON.stringify({jql: "key=BIMMEP-4773",
             //                    //maxResults : 0,
@@ -572,7 +573,7 @@ export class JiraIssueReader{
 
     // 给某一个Issue添加评论
     async addComment(issueKey, comment){
-        return fetch('https://jira.pkpm.cn/rest/api/2/issue/' + issueKey + '/comment', {
+        return fetch(getJiraHost() + 'rest/api/2/issue/' + issueKey + '/comment', {
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             body: JSON.stringify({
                 "body": comment}), // must match 'Content-Type' header

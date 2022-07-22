@@ -1,6 +1,7 @@
 
 import { View } from './../common/view.js'
 import { BtnViewModel } from './btnVM.js'
+import { getJiraHost } from './../model/toolSet.js'
 
 export class BtnPanel extends View{
     
@@ -120,7 +121,7 @@ export class BtnPanel extends View{
     _openJQL(){
         let [ret, newJQL] = this.vm.genJQLWithSelection();
         if (ret) {
-            window.open("https://jira.pkpm.cn/issues/?jql=" + encodeURIComponent(newJQL));
+            window.open(getJiraHost() + "issues/?jql=" + encodeURIComponent(newJQL));
         }else{
             alert(newJQL);
         }

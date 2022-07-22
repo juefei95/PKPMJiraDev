@@ -2,7 +2,7 @@
 /*
 以多Bar方式展示Report
 */
-
+import { getJiraHost } from './../model/toolSet.js'
 
 export class MultiBarView{
     constructor(id, label, datasets){
@@ -51,7 +51,7 @@ export class MultiBarView{
                         let index           = bar._index;
                         let datasetIndex    = bar._datasetIndex;
                         let issueIds        = bar._chart.data.datasets[datasetIndex].issueId[index];
-                        let url             = encodeURI("https://jira.pkpm.cn/issues/?jql=key in ("+issueIds.join(",")+") ORDER BY createdDate ASC");
+                        let url             = encodeURI(getJiraHost() + "issues/?jql=key in ("+issueIds.join(",")+") ORDER BY createdDate ASC");
                         window.open(url, '_blank').focus();
                     }
                 }

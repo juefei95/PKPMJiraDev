@@ -6,8 +6,8 @@
  import { genHtmlTable }                 from "./genHtmlTable.js"
  import { GridView }                     from "./gridView.js"
  import { diffDays, date2String }        from "../model/toolSet.js"
- import { Issue }                        from "../model/issue.js";
- 
+ import { Issue }                        from "../model/issue.js"
+ import { getJiraHost }                  from '../model/toolSet.js'
  
  
 export class DateDiffReport extends AbstractReport{
@@ -54,7 +54,7 @@ export class DateDiffReport extends AbstractReport{
             field : "user", caption : "User", sortable : true, size : '100px',
         },{
             field : "jiraId", caption : "JiraID", sortable : true, size : '100px', render : function (record) {
-                return '<div><a target="_blank" href="https://jira.pkpm.cn/browse/' + record.jiraId + '">' + record.jiraId + '</a></div>';
+                return '<div><a target="_blank" href="' + getJiraHost() + 'browse/' + record.jiraId + '">' + record.jiraId + '</a></div>';
             }
         },{
             field : "title", caption : "标题", sortable : true, size : '200px',

@@ -2,7 +2,7 @@
 这是个加强版的筛选器展示框架，所谓“加强版”是相对Jira原始的筛选器而言
 */
 
-import {  getHost, loadJsOrCss } from "./../model/toolSet.js";
+import {  getScriptHost, loadJsOrCss } from "./../model/toolSet.js";
 import { ViewConfig }           from "./viewConfig.js"
 import { Model }                from "./modelManager.js"
 
@@ -148,7 +148,7 @@ export class EnhancedFilterFrame{
 
     async _loadExternalResource(){
         
-        let host = getHost() + 'resource/';
+        let host = getScriptHost() + 'resource/';
         let loadList = [
             // ------------------- 依赖jquery和jquery-ui
             host + "jquery-2.2.4.min.js",

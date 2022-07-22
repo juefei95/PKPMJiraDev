@@ -5,8 +5,8 @@
 import { AbstractReport }               from "./abstractReport.js"
 import { ULView }                       from "./unorderedListView.js"
 import { diffDays, date2String }        from "../model/toolSet.js"
-import { Issue }                        from "../model/issue.js";
-
+import { Issue }                        from "../model/issue.js"
+import { getJiraHost }                  from '../model/toolSet.js'
 
 
 export class RequirementVerifyLongTimeReport extends AbstractReport{
@@ -30,7 +30,7 @@ export class RequirementVerifyLongTimeReport extends AbstractReport{
                     let designer = issue.getDesigner();
                     (items[designer] ||= []).push({
                         "jiraId" : {
-                            "link" : "https://jira.pkpm.cn/browse/",
+                            "link" : getJiraHost() + "browse/",
                             "value" : jiraId,
                         },
                         "verifyDate" : {

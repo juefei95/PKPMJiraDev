@@ -5,7 +5,8 @@
 import { AbstractReport }               from "./abstractReport.js"
 import { ULView }                       from "./unorderedListView.js"
 import { diffDays, date2String }        from "./../model/toolSet.js"
-import { Issue }                  from "./../model/issue.js";
+import { Issue }                        from "./../model/issue.js"
+import { getJiraHost }                  from './../model/toolSet.js'
 
 export class DeveloperCommitDelayReport extends AbstractReport{
     constructor(reportName, id, config, model){
@@ -28,7 +29,7 @@ export class DeveloperCommitDelayReport extends AbstractReport{
                     let title = issue.getTitle();
                     (items[designer] ||= []).push({
                         "jiraId" : {
-                            "link" : "https://jira.pkpm.cn/browse/",
+                            "link" : getJiraHost() + "browse/",
                             "value" : jiraId,
                         },
                         "developer" : {
