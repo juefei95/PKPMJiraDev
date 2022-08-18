@@ -109,6 +109,7 @@ class JGIssueReadScheme extends IssueReadScheme{
             this.epicName            = ["fields", "epicName"];
         }else if(issueType === "故障"){
             this.tester              = ["fields", "reporter"];
+            this.bugPriority         = ["fields", "customfield_10510"];
         }else if(issueType === "Epic"){
             this.developer              = ["fields", "assignee"];
         }
@@ -116,7 +117,6 @@ class JGIssueReadScheme extends IssueReadScheme{
         this.docPlanReviewDate       = ["fields", "customfield_11415"];
         this.programPlanCommitDate   = ["fields", "customfield_11308"];
         this.resolvePerson           = ["fields", "customfield_10716"];
-        this.bugPriority             = ["fields", "customfield_10510"];
     }
 }
 
