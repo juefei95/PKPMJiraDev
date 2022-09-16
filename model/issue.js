@@ -55,6 +55,7 @@ export class Issue{
             "resolvePerson",
             "createDate",
             "resolutionDate",
+            "sprint",
         ];
     }
 

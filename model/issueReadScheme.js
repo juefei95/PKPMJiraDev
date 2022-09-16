@@ -74,6 +74,7 @@ export class IssueReadScheme{
         this.bugSeverity            = ["fields", "customfield_10510"];
         this.bugPhase               = ["fields", "customfield_10408"];
         this.resolvePerson          = ["fields", "customfield_10716"];
+        this.sprint                 = ["fields", "customfield_10101"];
     }
 
     howToReadField(field){

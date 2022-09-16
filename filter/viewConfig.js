@@ -896,6 +896,29 @@ export class ViewConfig extends AbstractModel{
                 },
             },
         };
+        this["sprint"] = {
+            "chart" : {
+                "visible" : false,
+            },
+            "filter" : {
+                type : 'DropDown',
+                label : 'Sprint',
+                width : '200px',
+                placeholder : "请选择Sprint",
+            },
+            "grid" : {
+                caption: 'Sprint',
+                sortable: true,
+                size: '60px',
+                render: function (record) {
+                    if (record.sprint === GridViewModel.emptyText) {
+                        return ViewConfig.renderEmptyField();
+                    } else {
+                        return '<div>' + record.sprint + '</div>';
+                    }
+                },
+            },
+        };
         //#endregion 配置各字段的显示
     }
 

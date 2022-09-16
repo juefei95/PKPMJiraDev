@@ -246,6 +246,11 @@ export class JiraIssueReader{
                 'f' : i => 'customfield_11602' in i.fields && i.fields.customfield_11602 !== null   ? new Date(i.fields.customfield_11602)          : Issue.invalidDate,
                 'jqlName' : '产品实际提交时间',
             },
+            // Sprint
+            'customfield_10101' : {
+                'f' : i => 'customfield_10101' in i.fields && i.fields.customfield_10101 !== null && i.fields.customfield_10101.length > 0   ? /name=(.*?)\,/.exec(i.fields.customfield_10101[0])[1]          : Issue.emptyText,
+                'jqlName' : 'Sprint',
+            },
         },
         'changelog' : i => {
             let cl = [];
