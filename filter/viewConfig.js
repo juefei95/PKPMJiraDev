@@ -914,7 +914,7 @@ export class ViewConfig extends AbstractModel{
                     if (record.sprint === GridViewModel.emptyText) {
                         return ViewConfig.renderEmptyField();
                     } else {
-                        return '<div>' + record.sprint + '</div>';
+                        return '<div>' + record.sprint.join(';')  + '</div>';
                     }
                 },
             },

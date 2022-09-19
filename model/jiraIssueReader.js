@@ -248,7 +248,14 @@ export class JiraIssueReader{
             },
             // Sprint
             'customfield_10101' : {
-                'f' : i => 'customfield_10101' in i.fields && i.fields.customfield_10101 !== null && i.fields.customfield_10101.length > 0   ? /name=(.*?)\,/.exec(i.fields.customfield_10101[0])[1]          : Issue.emptyText,
+                'f' : i => {
+                    if('customfield_10101' in i.fields == false || i.fields.customfield_10101 == null || i.fields.customfield_10101.length <= 0) return Issue.emptyArray;
+                    let sprints = [];
+                    for (let index = 0; index < i.fields.customfield_10101.length; index++) {
+                        sprints.push(/name=(.*?)\,/.exec(i.fields.customfield_10101[index])[1]);
+                    }
+                    return sprints;
+                },
                 'jqlName' : 'Sprint',
             },
         },
