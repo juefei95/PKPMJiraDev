@@ -79,12 +79,18 @@ export function diffDays(date1, date2){
 
 
 // 生成日期数组，左开右闭
-export function dateRange(startDate, endDate, steps = 1) {
+export function dateRange(startDate, endDate, steps = 1, valueMode = 'string') {
     const dateArray = [];
-    let currentDate = startDate;
+    let currentDate = new Date(startDate);
     
     while (currentDate < endDate) {
-        dateArray.push(date2String(new Date(currentDate)));
+        if (valueMode == 'string'){
+            dateArray.push(date2String(new Date(currentDate)));
+        }else if (valueMode == 'date'){
+            dateArray.push(new Date(currentDate));
+        }else if (valueMode == 'number'){
+            dateArray.push(new Date(currentDate).getTime());
+        }
         // Use UTC date to prevent problems with time zones and DST
         currentDate.setUTCDate(currentDate.getUTCDate() + steps);
     }
@@ -423,4 +429,30 @@ export function randomRGB() {
 export function cloneDate(date1){
     if(date1 == undefined) return undefined;
     return new Date(date1.valueOf());
+}
+
+// 最小二乘法
+export function leastSquare(y,x){
+    var lr = {};
+    var n = y.length;
+    var sum_x = 0;
+    var sum_y = 0;
+    var sum_xy = 0;
+    var sum_xx = 0;
+    var sum_yy = 0;
+
+    for (var i = 0; i < y.length; i++) {
+
+        sum_x += x[i];
+        sum_y += y[i];
+        sum_xy += (x[i]*y[i]);
+        sum_xx += (x[i]*x[i]);
+        sum_yy += (y[i]*y[i]);
+    } 
+
+    lr['slope'] = (n * sum_xy - sum_x * sum_y) / (n*sum_xx - sum_x * sum_x);
+    lr['intercept'] = (sum_y - lr.slope * sum_x)/n;
+    lr['r2'] = Math.pow((n*sum_xy - sum_x*sum_y)/Math.sqrt((n*sum_xx-sum_x*sum_x)*(n*sum_yy-sum_y*sum_y)),2);
+
+    return lr;
 }

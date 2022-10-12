@@ -42,7 +42,7 @@ export class MultiLineView{
                         anchor :'end',
                         align :'top',
                         formatter: function(value, context) {
-                            if (context.dataIndex === context.dataset.data.length - 1)
+                            if (context.dataset.pluginShowEndLabel && context.dataIndex === context.dataset.data.length - 1)
                             {
                                 return value.y;
                             }

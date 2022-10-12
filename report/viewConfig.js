@@ -184,12 +184,16 @@ let storyReportViewConfig = {
                     "type" : "dateRange",
                     "name" : "起止时间",
                 },
+                "timelineDateRangePred" : {
+                    "type" : "dateRange",
+                    "name" : "预测起止时间",
+                },
                 "apply" : {
                     "type" : "applyButton",
                 },
                 "saveData" : {
                     "type" : "button",
-                    "name" : "保存数据",
+                    "name" : "导出Excel",
                 },
             },
         },
