@@ -18,3 +18,13 @@
     - reportFactory.js是工厂模式负责创建各种report
     - 各种View.js负责报告里的各种展示方式实现
 - confPermission目录保存了一个油猴脚本，方便Confluence空间管理员批量设置页面的权限
+
+
+# 开发时如何测试
+
+在oldcode目录下有jiraEnhanceScriptrunnerInject.js。该文件是最早代码没有被纳入到Jira服务器里时（其实现在给Jira服务器的代码就是该文件里的代码），我在本地使用的入口。
+
+1. 在VSCode中打开本项目Go Live，确保本地服务器地址是127.0.0.1:8087。该地址要和jiraEnhanceScriptrunnerInject.js里getScriptHost函数返回的一致
+2. 在Jira页面打开F12控制台
+3. 把jiraEnhanceScriptrunnerInject.js的内容全部拷贝到Console里并执行
+4. 修改jiraEnhanceScriptrunnerInject.js的最后一句决定了执行不同的功能入口
