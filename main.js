@@ -1,6 +1,7 @@
 import { helloReport } from "./report/main.js";
 import { helloFilter } from "./filter/main.js";
 import { helloTestReport } from "./testReport/main.js";
+import { helloCreator } from "./creator/main.js";
 import { JiraIssueReader } from "./model/jiraIssueReader.js"
 
 export async function main(){
@@ -29,6 +30,8 @@ export async function main(){
         helloFilter();
     }else if (window.mode === "testReport") {
         helloTestReport();
+    }else if (window.mode === "issueCreator") {
+        helloCreator();
     }else{
         alert("mode参数传递错误");
     }

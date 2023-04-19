@@ -2,7 +2,7 @@ function getJiraHost(){
     return "https://jira.pkpm.cn/";
 }
 function getScriptHost(){
-    return "https://jira.pkpm.cn/";
+    return "http://127.0.0.1:8887/";
 }
 
 // 打开新的标签页，展示更好用的筛选器或者报告
@@ -77,4 +77,9 @@ async function showTestReport(){
     await showEnhanceTab('testReport', getScriptHost() + 'entryPoint.js')
 }
 
-showEnhanceTab('filter', getScriptHost() + 'entryPoint.js', true)
+async function showIssueCreator(){
+
+    await showEnhanceTab('issueCreator', getScriptHost() + 'entryPoint.js')
+}
+
+showEnhanceTab('issueCreator', getScriptHost() + 'entryPoint.js', true)
