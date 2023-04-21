@@ -169,7 +169,7 @@ export class BtnPanel{
                     
                     let epicRet = await new JiraIssueCreator().createJiraIssue(epicIssue);
 
-                    this._ret2Html(epicIssue, epicRet);
+                    _this._ret2Html(epicIssue, epicRet);
 
                     if (isCreateSameNameStory && "key" in epicRet){
                         const storyIssue = {
@@ -191,7 +191,7 @@ export class BtnPanel{
 
                         let storyRet = await new JiraIssueCreator().createJiraIssue(storyIssue);
 
-                        this._ret2Html(storyIssue, storyRet);
+                        _this._ret2Html(storyIssue, storyRet);
                     }
                 }
            },
@@ -315,7 +315,7 @@ export class BtnPanel{
 
                     let storyRet = await new JiraIssueCreator().createJiraIssue(storyIssue);
 
-                    this._ret2Html(storyIssue, storyRet);
+                    _this._ret2Html(storyIssue, storyRet);
                 }
            },
         });
