@@ -370,6 +370,7 @@ export class BtnPanel{
             spanStatusBold.innerText = "创建成功：";
             let aStatus = document.createElement('a');
             aStatus.href = `https://jira.pkpm.cn/browse/${retObj["key"]}`
+            aStatus.target="_blank"
             aStatus.innerText = `https://jira.pkpm.cn/browse/${retObj["key"]}`
             spanStatus.appendChild(aStatus)
         }else{
