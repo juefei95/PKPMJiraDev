@@ -201,7 +201,7 @@ export class BtnPanel{
                                     log : JSON.stringify({
                                         "request" : storyIssue,
                                         "ret" : storyRet,
-                                    }
+                                    })
                                 }
                             }
                         ));
