@@ -12,7 +12,7 @@ export class BtnPanel{
             addEpic  : 'addEpic',
             addStory  : 'addStory',
             clearLog  : 'clearLog',
-            test  : 'test',
+            // test  : 'test',
 
             // 创建史诗对话框的控件id
             createEpicDlgProject                : 'createEpicDlgProject',
@@ -51,7 +51,6 @@ export class BtnPanel{
                 <button class="w2ui-btn" id="${this.ids.addEpic}">添加史诗 </button>
                 <button class="w2ui-btn" id="${this.ids.addStory}">添加故事 </button>
                 <button class="w2ui-btn" id="${this.ids.clearLog}">清空输出 </button>
-                <button class="w2ui-btn" id="${this.ids.test}">test </button>
             </div>
         `;
         return html;
@@ -64,7 +63,7 @@ export class BtnPanel{
         $('#' + this.ids.addEpic).on( "click", this._addEpic.bind(this) );
         $('#' + this.ids.addStory).on( "click", this._addStory.bind(this) );
         $('#' + this.ids.clearLog).on( "click", this._clearLog.bind(this) );
-        $('#' + this.ids.test).on( "click", this._test.bind(this) );
+        // $('#' + this.ids.test).on( "click", this._test.bind(this) );
     }
 
     
@@ -333,32 +332,32 @@ export class BtnPanel{
     ));
     }
 
-    _test(){
-        const retObj = {
-            "errorMessages": [],
-            "errors": {
-                "components": "组件名称“12”是无效的"
-            },
-            "key" : "JGVIRUS-21072"
-        }
-        const reqIssue = {
-            "fields": {
-                "project":
-                {
-                    "key": "JGVIRUS"
-                },
-                "summary": "层间板功能优化",
-                //"description": "描述-测试自动创建史诗",
-                "customfield_10104": "层间板功能优化",
-                "components": [{"name":"PM"}],
-                "versions": [{"name":"main"}],
-                "issuetype": {
-                    "name": "Epic"
-                }
-            }
-        }
-        this._ret2Html(reqIssue, retObj);
-    }
+    // _test(){
+    //     const retObj = {
+    //         "errorMessages": [],
+    //         "errors": {
+    //             "components": "组件名称“12”是无效的"
+    //         },
+    //         "key" : "JGVIRUS-21072"
+    //     }
+    //     const reqIssue = {
+    //         "fields": {
+    //             "project":
+    //             {
+    //                 "key": "JGVIRUS"
+    //             },
+    //             "summary": "层间板功能优化",
+    //             //"description": "描述-测试自动创建史诗",
+    //             "customfield_10104": "层间板功能优化",
+    //             "components": [{"name":"PM"}],
+    //             "versions": [{"name":"main"}],
+    //             "issuetype": {
+    //                 "name": "Epic"
+    //             }
+    //         }
+    //     }
+    //     this._ret2Html(reqIssue, retObj);
+    // }
 
     _ret2Html(reqIssue, retObj){
 
