@@ -11,6 +11,8 @@ export class BtnPanel{
         this.ids = {
             addEpic  : 'addEpic',
             addStory  : 'addStory',
+            clearLog  : 'clearLog',
+            test  : 'test',
 
             // 创建史诗对话框的控件id
             createEpicDlgProject                : 'createEpicDlgProject',
@@ -48,6 +50,8 @@ export class BtnPanel{
             <div style="float:left;margin:4px">
                 <button class="w2ui-btn" id="${this.ids.addEpic}">添加史诗 </button>
                 <button class="w2ui-btn" id="${this.ids.addStory}">添加故事 </button>
+                <button class="w2ui-btn" id="${this.ids.clearLog}">清空输出 </button>
+                <button class="w2ui-btn" id="${this.ids.test}">test </button>
             </div>
         `;
         return html;
@@ -59,6 +63,8 @@ export class BtnPanel{
         // 绑定回调函数
         $('#' + this.ids.addEpic).on( "click", this._addEpic.bind(this) );
         $('#' + this.ids.addStory).on( "click", this._addStory.bind(this) );
+        $('#' + this.ids.clearLog).on( "click", this._clearLog.bind(this) );
+        $('#' + this.ids.test).on( "click", this._test.bind(this) );
     }
 
     
@@ -164,16 +170,7 @@ export class BtnPanel{
                     
                     let epicRet = await new JiraIssueCreator().createJiraIssue(epicIssue);
 
-                    window.dispatchEvent(new CustomEvent(_this.logMsg,{
-                            detail :{
-                                flush: true,
-                                log : JSON.stringify({
-                                    "request" : epicIssue,
-                                    "ret" : epicRet,
-                                }),
-                            }
-                        }
-                    ));
+                    _ret2Html(epicIssue, epicRet);;
 
                     if (isCreateSameNameStory && "key" in epicRet){
                         const storyIssue = {
@@ -195,16 +192,7 @@ export class BtnPanel{
 
                         let storyRet = await new JiraIssueCreator().createJiraIssue(storyIssue);
 
-                        window.dispatchEvent(new CustomEvent(_this.logMsg,{
-                                detail :{
-                                    flush: false,
-                                    log : JSON.stringify({
-                                        "request" : storyIssue,
-                                        "ret" : storyRet,
-                                    })
-                                }
-                            }
-                        ));
+                        _ret2Html(storyIssue, storyRet);;
                     }
                 }
            },
@@ -328,19 +316,98 @@ export class BtnPanel{
 
                     let storyRet = await new JiraIssueCreator().createJiraIssue(storyIssue);
 
-                    window.dispatchEvent(new CustomEvent(_this.logMsg,{
-                            detail :{
-                                flush: true,
-                                log : JSON.stringify({
-                                    "request" : storyIssue,
-                                    "ret" : storyRet,
-                                }),
-                            }
-                        }
-                    ));
+                    _ret2Html(storyIssue, storyRet);
                 }
            },
         });
     }
     
+    _clearLog(){
+        
+        window.dispatchEvent(new CustomEvent(this.logMsg,{
+            detail :{
+                flush: true,
+                log : {},
+            }
+        }
+    ));
+    }
+
+    _test(){
+        const retObj = {
+            "errorMessages": [],
+            "errors": {
+                "components": "组件名称“12”是无效的"
+            },
+            "key" : "JGVIRUS-21072"
+        }
+        const reqIssue = {
+            "fields": {
+                "project":
+                {
+                    "key": "JGVIRUS"
+                },
+                "summary": "层间板功能优化",
+                //"description": "描述-测试自动创建史诗",
+                "customfield_10104": "层间板功能优化",
+                "components": [{"name":"PM"}],
+                "versions": [{"name":"main"}],
+                "issuetype": {
+                    "name": "Epic"
+                }
+            }
+        }
+        this._ret2Html(reqIssue, retObj);
+    }
+
+    _ret2Html(reqIssue, retObj){
+
+        let divStatus = document.createElement('div');
+
+        let spanStatus = document.createElement('span');
+        let spanStatusBold = document.createElement('b');
+        spanStatus.appendChild(spanStatusBold);
+        if ("key" in retObj){
+            spanStatusBold.innerText = "创建成功：";
+            let aStatus = document.createElement('a');
+            aStatus.href = `https://jira.pkpm.cn/browse/${retObj["key"]}`
+            aStatus.innerText = `https://jira.pkpm.cn/browse/${retObj["key"]}`
+            spanStatus.appendChild(aStatus)
+        }else{
+            spanStatusBold.innerText = "创建失败："
+        }
+        divStatus.appendChild(spanStatus)
+        divStatus.appendChild(document.createElement('br'))
+
+        let spanReq = document.createElement('span');
+        let spanReqBold = document.createElement('b');
+        spanReqBold.innerText = "请求如下："
+        spanReq.appendChild(spanReqBold);
+        divStatus.appendChild(spanReq)
+        divStatus.appendChild(document.createElement('br'))
+        let spanReqJson = document.createElement('span');
+        spanReqJson.innerText = JSON.stringify(reqIssue);
+        divStatus.appendChild(spanReqJson)
+        divStatus.appendChild(document.createElement('br'))
+
+        let spanRet = document.createElement('span');
+        let spanRetBold = document.createElement('b');
+        spanRetBold.innerText = "返回如下："
+        spanRet.appendChild(spanRetBold);
+        divStatus.appendChild(spanRet)
+        divStatus.appendChild(document.createElement('br'))
+        let spanRetJson = document.createElement('span');
+        spanRetJson.innerText = JSON.stringify(retObj);
+        divStatus.appendChild(spanRetJson)
+        divStatus.appendChild(document.createElement('br'))
+        
+
+        window.dispatchEvent(new CustomEvent(this.logMsg,{
+                detail :{
+                    flush: false,
+                    log : divStatus,
+                }
+            }
+        ));
+    }
 }

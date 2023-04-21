@@ -2,6 +2,7 @@
 import {  getScriptHost, loadJsOrCss } from "./../model/toolSet.js";
 
 import { BtnPanel }             from './btnView.js'
+import { LoggerPanel }             from './loggerView.js'
 
 export class CreatorFrame{
     constructor(model){
@@ -13,7 +14,7 @@ export class CreatorFrame{
             outmostLayoutName               : 'outmostLayoutName',                    // 最外层级的w2ui的布局名，用来后续引用用
 
             btnPanel                        : 'btnPanel',
-            logPanel                        : 'logPanel',
+            loggerPanel                     : 'loggerPanel',
 
         };      // 各种控件ID定义
         this.msg = {
@@ -21,10 +22,8 @@ export class CreatorFrame{
         }
 
         // 各种Panel
-        this.btnPanel       = new BtnPanel      (this.ids.btnPanel, this.msg.showCreateIssuesLog, this.model);
-        
-        // 响应消息
-        window.addEventListener(this.msg.showCreateIssuesLog, this._showLog.bind(this));
+        this.btnPanel          = new BtnPanel      (this.ids.btnPanel, this.msg.showCreateIssuesLog, this.model);
+        this.loggerPanel       = new LoggerPanel   (this.ids.loggerPanel, this.msg.showCreateIssuesLog);
 
     }
 
@@ -41,7 +40,7 @@ export class CreatorFrame{
         this._createLayout();
         // 每个layout里放置容器
         w2ui[this.ids.outmostLayoutName].html('top', this.btnPanel.createHtml());
-        w2ui[this.ids.outmostLayoutName].html('main', `<div id="${this.ids.logPanel}"></div>`);
+        w2ui[this.ids.outmostLayoutName].html('main', this.loggerPanel.createHtml());
         // 容器里填充控件
         this._configControls();
     }
@@ -77,18 +76,9 @@ export class CreatorFrame{
     // 控件都渲染好后，设置回调、事件响应等
     _configControls(event){
         this.btnPanel.configControls();
+        this.loggerPanel.configControls();
     }
 
-    // 显示日志
-    _showLog(e){
-        if(e.detail.flush) document.getElementById(this.ids.logPanel).innerHTML = '';
-
-        let spanEle = document.createElement('span');
-        spanEle.innerText = e.detail.log;
-        document.getElementById(this.ids.logPanel).appendChild(spanEle);
-        let br = document.createElement("br");
-        document.getElementById(this.ids.logPanel).appendChild(br);
-    }
 
     async _loadExternalResource(){
         

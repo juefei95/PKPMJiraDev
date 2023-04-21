@@ -1,7 +1,7 @@
 
 import { printInfo }                from "./../model/toolSet.js";
 import { JiraSite }                 from './../model/jiraSite.js'
-import { CreatorFrame }             from "./creatorFrame.js";
+import { CreatorFrame }             from "./creatorFrame.js?q=1";
 import { Model }                    from "./model.js";
 
 export async function helloCreator(){
