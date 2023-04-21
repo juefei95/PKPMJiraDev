@@ -192,10 +192,16 @@ export class BtnPanel{
                                }
                            }
                         }
+
+                        let storyRet = await new JiraIssueCreator().createJiraIssue(storyIssue);
+
                         window.dispatchEvent(new CustomEvent(_this.logMsg,{
                                 detail :{
                                     flush: false,
-                                    log : JSON.stringify(storyIssue),
+                                    log : JSON.stringify({
+                                        "request" : storyIssue,
+                                        "ret" : storyRet,
+                                    }
                                 }
                             }
                         ));
