@@ -1,3 +1,6 @@
+相关文档参考doc目录下
+
+
 # 模块划分
 
 - oldcode目录下放的是最早油猴脚本的文件，现在的代码是在那之上重构的，这里仅仅是保存，以后可删除
@@ -28,3 +31,7 @@
 2. 在Jira页面打开F12控制台
 3. 把jiraEnhanceScriptrunnerInject.js的内容全部拷贝到Console里并执行
 4. 修改jiraEnhanceScriptrunnerInject.js的最后一句决定了执行不同的功能入口
+
+# 如何同步给Jira服务器
+
+测试结束后，可以联系公司Jira管理员（目前是王泽宏）。目前Jira上通过Script Runner把搜索问题页面上一个按钮和该脚本绑定起来。我需要提供给Jira管理员的就是jiraEnhanceScriptrunnerInject.js，并根据目前Jira服务器上对应脚本来补充新增加的功能。不用担心，Jira管理员那有相关文档。
