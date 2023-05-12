@@ -111,7 +111,7 @@ function _template(){
                     <template v-for="(story, index) in storyList">
                         <tr>
                             <td>{{index+1}}</td>
-                            <td><a :href="'{{jiraHost}}browse/'+story.id" target="_blank">{{story.id}}</a></td>
+                            <td><a :href="story.url" target="_blank">{{story.id}}</a></td>
                             <td>{{story.title}}</td>
                             <td>{{story.published}}</td>
                             <td>{{story.hasDoc}}</td>
@@ -184,6 +184,7 @@ async function _mount(){
         let testcases = await reader.readIssueLinkTestCases(issueKey);
         this.storyList.push({
             id : issueKey,
+            url : getJiraHost() + 'browse/'+ issueKey,
             title : issue.getTitle(),
             hasDoc : (issue.getAttr("confluenceLink") != undefined ? true : (await reader.readIssueRemoteLinks(issueKey)).some(l => l.type === "Confluence"))  ? "√" : "x",
             published : ["完成", "需求已发布"].includes(issue.getStatus()) ? "√" : "x",

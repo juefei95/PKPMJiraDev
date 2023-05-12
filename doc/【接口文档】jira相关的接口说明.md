@@ -179,6 +179,7 @@ TODO
 
 # 如何获取某个Issue关联的测试用例产生的Bug
 
+- 【DOC】 https://goldfingerholdings.atlassian.net/wiki/spaces/SRT/pages/25985678/REST+API
 - 【GET】 https://jira.pkpm.cn/rest/synapse/latest/public/requirement/BIMSTRU-6373/getDefects
 - 返回Bug列表
     ```json
