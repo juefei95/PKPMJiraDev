@@ -172,11 +172,11 @@ async function _mount(){
         if (testcaseBugs.length != 0) testcaseBugsStatus = await reader.readBugStatus(testcaseBugs);
         let resolvedBugCount = 0;
         if (issueLinkBug.length !=0) {
-            issueLinkBug.forEach(b => ["已解决","已关闭"].includes(b.status) ? resolvedBugCount++ : 0);
+            issueLinkBug.forEach(b => ["已关闭"].includes(b.status) ? resolvedBugCount++ : 0);
         }
         if (testcaseBugs.length !=0) {
             for (let index = 0; index < testcaseBugs.length; index++) {
-                ["已解决","已关闭"].includes(testcaseBugsStatus[index].getStatus()) ? resolvedBugCount++ : 0;
+                ["已关闭"].includes(testcaseBugsStatus[index].getStatus()) ? resolvedBugCount++ : 0;
             }
         }
         let bugsCount = issueLinkBug.length + testcaseBugs.length;
