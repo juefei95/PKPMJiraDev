@@ -2,7 +2,7 @@
 # Full project: https://gitlab.com/pages/plain-html
 pages:
   tags:
-    - page
+    - ubuntu-runner
   stage: deploy
   script:
     - mkdir .public
