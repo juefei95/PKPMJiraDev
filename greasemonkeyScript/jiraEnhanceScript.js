@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PkpmJiraEnhance
 // @namespace    https://jira.pkpm.cn/
-// @version      0.1
+// @version      0.1.1
 // @description  增强Jira的显示，符合PKPM的使用习惯
 // @author       You
 // @match        https://jira.pkpm.cn/browse/*
@@ -33,7 +33,7 @@
     function getWhoChangeToCodeMerge() {
         let divs = document.getElementsByClassName("actionContainer");
         for(let i=divs.length-1; i>=0; i--){
-            let tds = divs[8].getElementsByTagName('td');
+            let tds = divs[i].getElementsByTagName('td');
             for(let j=0; j<tds.length; j++){
                 if(tds[j].innerText=="状态"){
                     return tds[j-2].innerText;
@@ -46,10 +46,16 @@
         $("a#changehistory-tabpanel").click();
     }
 
-    switchToHistoryPanel();
-    let user = getWhoChangeToCodeMerge();
-    if(user){
-        addPeopleDetail('谁改到了合并代码：', user);
+    function delay(time) {
+        return new Promise(resolve => setTimeout(resolve, time));
     }
+
+    switchToHistoryPanel();
+    delay(3000).then(function(){
+        let user = getWhoChangeToCodeMerge();
+        if(user){
+            addPeopleDetail('谁改到了合并代码：', user);
+        }
+    });
 
 })();
