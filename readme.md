@@ -20,7 +20,9 @@
     - enhancedReportFrame.js是整个报告页面的框架
     - reportFactory.js是工厂模式负责创建各种report
     - 各种View.js负责报告里的各种展示方式实现
-- confPermission目录保存了一个油猴脚本，方便Confluence空间管理员批量设置页面的权限
+- greasemonkeyScript目录村的是油猴脚本
+  - jiraEnhanceScript.js是对Jira页面的加强改动
+  - confPermission.js是方便Confluence空间管理员批量设置页面的权限
 
 
 # 开发时如何测试
