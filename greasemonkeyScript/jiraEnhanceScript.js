@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PkpmJiraEnhance
 // @namespace    https://jira.pkpm.cn/
-// @version      0.1.3
+// @version      0.1.4
 // @description  增强Jira的显示，符合PKPM的使用习惯
 // @author       You
 // @match        https://jira.pkpm.cn/browse/*
@@ -36,7 +36,7 @@
             let tds = divs[i].getElementsByTagName('td');
             for(let j=0; j<tds.length; j++){
                 if(tds[j].innerText=="状态" 
-                && tds[j+1].innerText.search("负责人审核中")!=-1 
+                && (tds[j+1].innerText.search("负责人审核中")!=-1 || tds[j+1].innerText.search("研发中")!=-1)
                 && tds[j+2].innerText.search("合并代码中")!=-1){
                     return divs[i].getElementsByClassName('user-hover user-avatar')[0].innerText;
                 }
