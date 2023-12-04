@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PkpmJiraEnhance
 // @namespace    https://jira.pkpm.cn/
-// @version      0.1.2
+// @version      0.1.3
 // @description  增强Jira的显示，符合PKPM的使用习惯
 // @author       You
 // @match        https://jira.pkpm.cn/browse/*
@@ -35,7 +35,9 @@
         for(let i=divs.length-1; i>=0; i--){
             let tds = divs[i].getElementsByTagName('td');
             for(let j=0; j<tds.length; j++){
-                if(tds[j].innerText=="状态"){
+                if(tds[j].innerText=="状态" 
+                && tds[j+1].innerText.search("负责人审核中")!=-1 
+                && tds[j+2].innerText.search("合并代码中")!=-1){
                     return divs[i].getElementsByClassName('user-hover user-avatar')[0].innerText;
                 }
             }
@@ -51,7 +53,7 @@
     }
 
     switchToHistoryPanel();
-    delay(3000).then(function(){
+    delay(1000).then(function(){
         let user = getWhoChangeToCodeMerge();
         if(user){
             addPeopleDetail('谁改到了合并代码：', user);
