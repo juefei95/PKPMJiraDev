@@ -82,4 +82,4 @@ async function showIssueCreator(){
     await showEnhanceTab('issueCreator', getScriptHost() + 'entryPoint.js')
 }
 
-showEnhanceTab('issueCreator', getScriptHost() + 'entryPoint.js', true)
+showEnhanceTab('report', getScriptHost() + 'entryPoint.js', true)

@@ -133,7 +133,7 @@ export class StoryTimelineReport extends AbstractReport{
             data : this.designLinePred,    // clone not shallow copy
             fill : false,
             borderDash: [10,5],
-            borderColor : 'grey',
+            borderColor : 'yellow',
             borderWidth : 4,
             pointRadius: 0,
         },{
@@ -147,7 +147,7 @@ export class StoryTimelineReport extends AbstractReport{
             data : this.developLinePred,    // clone not shallow copy
             fill : false,
             borderDash: [10,5],
-            borderColor : 'green',
+            borderColor : 'red',
             borderWidth : 4,
             pointRadius: 0,
         },{
@@ -161,7 +161,7 @@ export class StoryTimelineReport extends AbstractReport{
             data : this.testLinePred,    // clone not shallow copy
             fill : false,
             borderDash: [10,5],
-            borderColor : 'brown',
+            borderColor : 'green',
             borderWidth : 4,
             pointRadius: 0,
         }];
