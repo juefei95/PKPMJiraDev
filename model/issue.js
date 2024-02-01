@@ -56,6 +56,7 @@ export class Issue{
             "createDate",
             "resolutionDate",
             "sprint",
+            "storyPoint",
         ];
     }
 
@@ -327,5 +328,10 @@ export class Issue{
             }
         }
         return [undefined, undefined, undefined];
+    }
+
+    // Story Point
+    getStoryPoint(){
+        return this.issue.storyPoint;
     }
 }

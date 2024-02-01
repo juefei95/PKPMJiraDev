@@ -105,6 +105,7 @@ function _template(){
                         <th>用例数</th>
                         <th>Bug数</th>
                         <th>解决率</th>
+                        <th>StoryPoint</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -130,6 +131,7 @@ function _template(){
                             <td>{{story.testcasesCount}}</td>
                             <td>{{story.bugsCount}}</td>
                             <td>{{story.bugResolveRate}}</td>
+                            <td>{{story.storyPoint}}</td>
                         </tr>
                     </template>
                 </tbody>
@@ -201,6 +203,7 @@ async function _mount(){
             testcasesCount : testcases.length,
             bugsCount : bugsCount,
             bugResolveRate : bugResolveRate,
+            storyPoint : issue.getStoryPoint(),
         })
     }
 }

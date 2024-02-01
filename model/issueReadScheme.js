@@ -75,6 +75,7 @@ export class IssueReadScheme{
         this.bugPhase               = ["fields", "customfield_10408"];
         this.resolvePerson          = ["fields", "customfield_10716"];
         this.sprint                 = ["fields", "customfield_10101"];
+        this.storyPoint             = ["fields", "customfield_10106"];
     }
 
     howToReadField(field){

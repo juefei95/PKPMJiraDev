@@ -2,7 +2,7 @@ function getJiraHost(){
     return "https://jira.pkpm.cn/";
 }
 function getScriptHost(){
-    return "http://127.0.0.1:8887/";
+    return "http://127.0.0.1:5500/";
 }
 
 // 打开新的标签页，展示更好用的筛选器或者报告

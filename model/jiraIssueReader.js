@@ -258,6 +258,11 @@ export class JiraIssueReader{
                 },
                 'jqlName' : 'Sprint',
             },
+            // story point
+            'customfield_10106' : {
+                'f' : i => 'customfield_10106' in i.fields && i.fields.customfield_10106 !== null   ? i.fields.customfield_10106.toString()          : Issue.emptyText,
+                'jqlName' : 'Story Point',
+            },
         },
         'changelog' : i => {
             let cl = [];

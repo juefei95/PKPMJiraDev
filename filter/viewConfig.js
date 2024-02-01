@@ -919,6 +919,29 @@ export class ViewConfig extends AbstractModel{
                 },
             },
         };
+        this["storyPoint"] = {
+            "chart" : {
+                "visible" : false,
+            },
+            "filter" : {
+                type : 'DropDown',
+                label : 'StoryPoint',
+                width : '200px',
+                placeholder : "请选择StoryPoint",
+            },
+            "grid" : {
+                caption: 'StoryPoint',
+                sortable: true,
+                size: '60px',
+                render: function (record) {
+                    if (record.storyPoint === GridViewModel.emptyText) {
+                        return ViewConfig.renderEmptyField();
+                    } else {
+                        return '<div>' + record.storyPoint + '</div>';
+                    }
+                },
+            },
+        };
         //#endregion 配置各字段的显示
     }
 
