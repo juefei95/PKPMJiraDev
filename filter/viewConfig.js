@@ -10,7 +10,12 @@ import { date2String }      from './../model/toolSet.js'
 import { GridViewModel }      from './gridVM.js'
 import { getJiraHost } from './../model/toolSet.js'
 
-
+/**
+ * 根据传入的issue集合来判断应该选用哪个项目的显示策略，判断依据是issue里哪个项目最多，那种类型的issue最多，就选用对应的issue显示策略
+ * 所谓的显示策略，就是在筛选器界面，哪些控件是默认显示的，哪些数据是默认显示的
+ * @param {*} issues 
+ * @returns 显示策略
+ */
 export function getViewConfig(issues){
     // 统计项目类型和Issue类型
     let projType = {};
@@ -1035,7 +1040,10 @@ export class ViewConfig extends AbstractModel{
         return grids;
     }
 
-    
+    /**
+     * 在本类（ViewConfig）的构造函数里配置了所有字段的展示效果。本函数先获取Issue支持的所有字段(Field)，然后按照字段去找其展示效果，并返回
+     * @returns 
+     */
     getFiltersDict(){
         let issueValidFields = Issue.getValidFields();
         let filters = {};

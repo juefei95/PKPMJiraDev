@@ -132,6 +132,8 @@ export class FilterPanel extends View{
     configControls(){
         
         // 把filter DOM和filter控件接起来
+        // 这里vm.getFilters返回的是viewConfig里配置的各字段(field)对应的Filter、Chart的展示效果。
+        // for循环里k就是field，v["filter"]就是filter的展示效果
         for (const [k, v] of Object.entries(this.vm.getFilters())){
             this.filters.push(CreateFilterControl(v["filter"].type, {vm : this.vm, key : k, id : k+"Filter", placeholder : v["filter"].placeholder ? v["filter"].placeholder : ""}));
         }
