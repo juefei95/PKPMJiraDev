@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PkpmJiraEnhance
 // @namespace    https://jira.pkpm.cn/
-// @version      0.1.5
+// @version      0.1.6
 // @description  增强Jira的显示，符合PKPM的使用习惯
 // @author       You
 // @match        https://jira.pkpm.cn/browse/*
@@ -66,16 +66,19 @@
         return new Promise(resolve => setTimeout(resolve, time));
     }
 
-    switchToHistoryPanel();
-    delay(1000).then(function(){
-        let codemanager = getWhoChangeToCodeMerge();
-        if(codemanager){
-            addPeopleDetail('谁改到了合并代码', codemanager);
-        }
-        let tester = getWhoDoTest();
-        if(tester){
-            addPeopleDetail('谁做的测试', tester);
-        }
-    });
+    $(document).ready(function(){
+        switchToHistoryPanel();
+        delay(1000).then(function(){
+            let codemanager = getWhoChangeToCodeMerge();
+            if(codemanager){
+                addPeopleDetail('谁改到了合并代码', codemanager);
+            }
+            let tester = getWhoDoTest();
+            if(tester){
+                addPeopleDetail('谁做的测试', tester);
+            }
+        });
+
+    })
 
 })();
